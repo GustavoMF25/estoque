@@ -72,7 +72,7 @@
                 style="border-radius: 50%;" aria-label="Perfil do usuário">
                 <img src="{{ !empty(Auth::user()->profile_photo_url) ? Auth::user()->profile_photo_url : asset('imagens/avatar.png') }}"
                     alt="{{ Auth::user()->name }}" class="rounded-circle img-fluid"
-                    style="height: 2rem; width: 2rem; object-fit: cover;">
+                    style="height: 3rem; width: 3rem; object-fit: cover;">
             </button>
 
             {{-- <a class="nav-link" data-toggle="dropdown" href="#">
