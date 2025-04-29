@@ -12,29 +12,30 @@
         ecosystem to be a breath of fresh air. We hope you love it.
     </p>
 </div> --}}
-
-<div class="accordion mt-5" id="accordion">
-    <div class="card card-primary shadow-sm">
+<div id="accordion" class="mt-5">
+    <div class="card card-primary">
         <div class="card-header">
-            <h4 class="card-title w-100 mb-0">
-                <button class="btn btn-link text-white text-start w-100" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+            <h4 class="card-title w-100 text-center">
+                <a class="d-block w-100" data-toggle="collapse" href="#collapseOne">
                     Bem-vindo ao seu sistema de gestão
-                </button>
+                </a>
             </h4>
         </div>
-
-        <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordion">
+        <div id="collapseOne" class="collapse show" data-parent="#accordion">
             <div class="card-body">
                 <p>
                     Este sistema foi desenvolvido para oferecer uma base moderna, elegante e eficiente para administrar
                     estoques, produtos e vendas de maneira descomplicada.
                 </p>
                 <p>
-                    Combinando o poder do <strong>Laravel Jetstream</strong>, o visual profissional do <strong>AdminLTE</strong>
-                    e a robustez do <strong>Bootstrap 5</strong>, você terá à disposição uma plataforma ágil e intuitiva.
+                    Combinando o poder do <strong>Laravel Jetstream</strong>, o visual profissional do
+                    <strong>AdminLTE</strong>
+                    e a robustez do <strong>Bootstrap 5</strong>, você terá à disposição uma plataforma ágil e
+                    intuitiva.
                 </p>
                 <p>
-                    Acreditamos que o desenvolvimento e a gestão devem ser prazerosos — por isso, entregamos uma estrutura
+                    Acreditamos que o desenvolvimento e a gestão devem ser prazerosos — por isso, entregamos uma
+                    estrutura
                     sólida, pronta para ser personalizada e expandida conforme suas necessidades.
                 </p>
                 <p>
@@ -43,5 +44,5 @@
             </div>
         </div>
     </div>
-</div>
 
+</div>

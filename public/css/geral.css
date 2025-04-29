@@ -1,0 +1,22 @@
+dialog::backdrop {
+    background: rgba(0, 0, 0, 0.5); /* fundo escuro */
+}
+
+dialog[open] {
+    display: flex !important;
+    position: fixed !important; /* FORÇA ficar fixo na tela toda */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    justify-content: center; /* Centraliza horizontal */
+    align-items: center; /* Centraliza vertical */
+    background: transparent; /* Transparente, o backdrop já cuida */
+    padding: 0;
+    border: none;
+    margin: 0;
+    z-index: 1050; /* Acima de tudo */
+}
+.modal-dialog {
+    margin: 0px !important;
+}

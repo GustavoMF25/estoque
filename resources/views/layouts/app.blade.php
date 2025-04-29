@@ -15,6 +15,9 @@
     <!-- Font Awesome -->
     <link href="{{ asset('adminlte/plugins/fontawesome-free/css/all.min.css') }}" rel="stylesheet">
 
+    <link href="{{ asset('adminlte/plugins/dropzone/min/dropzone.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/geral.css') }}" rel="stylesheet">
+
     <!-- Styles -->
     @livewireStyles
 </head>
@@ -39,9 +42,12 @@
     </div>
 
     <!-- Scripts -->
+    @yield('css')
     <script src="{{ asset('adminlte/plugins/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('adminlte/dist/js/adminlte.min.js') }}"></script>
+    <script src="{{ asset('adminlte/plugins/dropzone/min/dropzone.min.js') }}"></script>
+    <script src="{{ asset('js/geral.js') }}"></script>
 
     @livewireScripts
 </body>
