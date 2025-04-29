@@ -18,6 +18,57 @@
 
                                 <label class="form-label">{{ __('Profile Photo') }}</label>
 
+                                <div x-data="{ photoName: null, photoPreview: null }" class="col-span-6 sm:col-span-4">
+
+                                    <!-- Ações -->
+                                    <div id="actions" class="row">
+                                        <div class="col-lg-6">
+                                            <div class="btn-group w-100">
+                                                <!-- Botão de escolher arquivo -->
+                                                <label class="btn btn-success col fileinput-button mb-0">
+                                                    <i class="fas fa-plus"></i>
+                                                    <span>Add files</span>
+                                                    <input id="photo" type="file" accept="image/png, image/jpeg" class="d-none"
+                                                        wire:model.live="photo" x-ref="photo"
+                                                        x-on:change="
+                                                            photoName = $refs.photo.files[0].name;
+                                                            const reader = new FileReader();
+                                                            reader.onload = (e) => {
+                                                                photoPreview = e.target.result;
+                                                            };
+                                                            reader.readAsDataURL($refs.photo.files[0]);
+                                                        " />
+                                                </label>
+
+                                                <!-- Botão de cancelar -->
+                                                <button type="button" class="btn btn-warning col cancel"
+                                                    x-on:click.prevent="photoName = null; photoPreview = null; $refs.photo.value = '';">
+                                                    <i class="fas fa-times-circle"></i>
+                                                    <span>Cancel upload</span>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        {{-- <!-- Barra de progresso -->
+                                        <div class="col-lg-6 d-flex align-items-center">
+                                            <div class="fileupload-process w-100">
+                                                <div id="total-progress" class="progress progress-striped active"
+                                                    role="progressbar" aria-valuemin="0" aria-valuemax="100"
+                                                    aria-valuenow="0">
+                                                    <div class="progress-bar progress-bar-success"
+                                                        x-bind:style="photoPreview ? 'width: 100%' : 'width: 0%'"></div>
+                                                </div>
+                                            </div>
+                                        </div> --}}
+                                    </div>
+
+                                    <!-- Preview Atual -->
+                                    <div class="mt-4" x-show="photoPreview" style="display: none;">
+                                        <img :src="photoPreview" class="rounded-full object-cover" width="150" height="150">
+                                    </div>
+
+                                    <x-input-error for="photo" class="mt-2" />
+                                </div>
 
                                 <!-- Preview Atual -->
                                 <div class="mt-2">
