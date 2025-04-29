@@ -17,7 +17,7 @@
         <div class="card-header">
             <h4 class="card-title w-100 text-center">
                 <a class="d-block w-100" data-toggle="collapse" href="#collapseOne">
-                    Bem-vindo ao seu sistema de gestão
+                    <b>Bem-vindo ao seu sistema de gestão</b>
                 </a>
             </h4>
         </div>
