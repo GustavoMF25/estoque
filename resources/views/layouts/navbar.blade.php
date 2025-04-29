@@ -51,13 +51,13 @@
                     <i class="fas fa-solid fa-user mr-2"></i>
                     {{ __('Profile') }}
                 </a>
-                @if (Laravel\Jetstream\Jetstream::hasApiFeatures())
+                {{-- @if (Laravel\Jetstream\Jetstream::hasApiFeatures())
                     <div class="dropdown-divider"></div>
                     <a href="{{ route('api-tokens.index') }}" class="dropdown-item">
                         <i class="fas fa-route mr-2"></i>
                         {{ __('API Tokens') }}
                     </a>
-                @endif
+                @endif --}}
                 <div class="dropdown-divider"></div>
                 <form method="POST" action="{{ route('logout') }}" x-data>
                     @csrf
