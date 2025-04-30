@@ -20,6 +20,8 @@
 
     <!-- Styles -->
     @livewireStyles
+    @rappasoftTableStyles
+    @rappasoftTableThirdPartyStyles
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -55,6 +57,9 @@
     <script src="{{ asset('js/geral.js') }}"></script>
 
     @livewireScripts
+
+    @rappasoftTableScripts
+    @rappasoftTableThirdPartyScripts
 </body>
 
 </html>
