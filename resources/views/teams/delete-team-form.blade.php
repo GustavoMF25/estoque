@@ -1,16 +1,11 @@
-<x-action-section>
-    <x-slot name="title">
-        {{ __('Delete Team') }}
-    </x-slot>
+<x-basic.content-page :title="__('Delete Team')" :class="'card-primary'">
 
-    <x-slot name="description">
-        {{ __('Permanently delete this team.') }}
-    </x-slot>
 
-    <x-slot name="content">
-        <div class="max-w-xl text-sm text-gray-600">
-            {{ __('Once a team is deleted, all of its resources and data will be permanently deleted. Before deleting this team, please download any data or information regarding this team that you wish to retain.') }}
-        </div>
+    {{ __('Permanently delete this team.') }}
+
+    <div name="content">
+        {{ __('Once a team is deleted, all of its resources and data will be permanently deleted. Before deleting this team, please download any data or information regarding this team that you wish to retain.') }}
+
 
         <div class="mt-5">
             <x-danger-button wire:click="$toggle('confirmingTeamDeletion')" wire:loading.attr="disabled">
@@ -38,5 +33,5 @@
                 </x-danger-button>
             </x-slot>
         </x-confirmation-modal>
-    </x-slot>
-</x-action-section>
+    </div>
+</x-basic.content-page>

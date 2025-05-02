@@ -11,33 +11,47 @@ class UsuarioController extends Controller
     public function index()
     {
         $usuarios = User::all();
-        return view('configurar.usuario', compact('usuarios'));
+        return view('configurar.usuario.index', compact('usuarios'));
     }
 
     public function create()
     {
-        return view('usuarios.create');
+        return view('configurar.usuario.create');
     }
 
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|confirmed|min:6',
-            'cpf' => 'nullable',
-            'perfil' => 'required|in:admin,gerente,operador',
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed',
+            'cpf' => 'nullable|string|max:14',
+            'status' => 'required|string|in:ativo,inativo',
+            'perfil' => 'required|string|in:admin,gerente,operador',
         ]);
-
-        User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'cpf' => $request->cpf,
-            'perfil' => $request->perfil,
-            'status' => 'ativo',
-            'password' => Hash::make($request->password),
+        $user = User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
+            'cpf' => $validated['cpf'] ?? null,
+            'status' => $validated['status'],
+            'perfil' => $validated['perfil'],
         ]);
 
         return redirect()->route('usuarios.index')->with('success', 'Usuário cadastrado com sucesso.');
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $user = User::findOrFail($id);
+            $user->delete();
+
+            return redirect()->route('usuarios.index')
+                ->with('success', 'Usuário excluído com sucesso!');
+        } catch (\Exception $e) {
+            return redirect()->route('usuarios.index')
+                ->with('error', 'Erro ao excluir o usuário: ' . $e->getMessage());
+        }
     }
 }

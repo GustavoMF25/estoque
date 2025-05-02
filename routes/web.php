@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\EmpresaController;
+use App\Http\Controllers\EstoqueController;
+use App\Http\Controllers\LojaController;
+use App\Http\Controllers\UsuarioController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,7 +30,15 @@ Route::middleware([
         return view('dashboard');
     })->name('dashboard');
 
-    Route::get('/usuarios', [App\Http\Controllers\UsuarioController::class, 'index'])->name('usuarios.index');
-    Route::get('/usuarios/create', [App\Http\Controllers\UsuarioController::class, 'create'])->name('usuarios.create');
-    Route::post('/usuarios', [App\Http\Controllers\UsuarioController::class, 'store'])->name('usuarios.store');
+    Route::get('/usuarios', [UsuarioController::class, 'index'])->name('usuarios.index');
+    Route::get('/usuarios/create', [UsuarioController::class, 'create'])->name('usuarios.create');
+    Route::post('/usuarios', [UsuarioController::class, 'store'])->name('usuarios.store');
+    Route::resource('usuarios', UsuarioController::class);
+
+
+    Route::get('/empresa', [EmpresaController::class, 'edit'])->name('empresa.edit');
+    Route::put('/empresa', [EmpresaController::class, 'update'])->name('empresa.update');
+
+    Route::resource('lojas', LojaController::class);
+    Route::resource('estoques', EstoqueController::class);
 });

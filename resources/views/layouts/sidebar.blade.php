@@ -2,7 +2,7 @@
     <!-- Brand Logo -->
     <a href="{{ route('dashboard') }}" class="brand-link">
         <x-application-mark class="block h-9 w-auto" />
-        <span class="brand-text font-weight-light">Estoque - <small>SyntaxWeb</small></span>
+        <span class="brand-text font-weight-light">{{ $empresa->nome }} - <small>Sistema </small></span>
     </a>
 
     <!-- Sidebar -->
@@ -31,23 +31,42 @@
                         </p>
                     </a>
                 </li>
-                <li class="nav-item menu-open">
+                <li class="nav-item">
                     <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-cogs"></i>
+                        <span class="right badge badge-danger">New</span>
                         <p>
-                            Configurações
+                            Configurações 
                             <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="{{ route('usuarios.index') }}" class="nav-link {{ request()->routeIs('usuarios.index') ? 'active' : '' }}">
-                                <i class="far fa-user nav-icon"></i>
+                            <a href="{{ route('usuarios.index') }}"
+                                class="nav-link {{ request()->routeIs('usuarios.index') ? 'active' : '' }}">
+                                <i class="fas fa-user nav-icon"></i>
                                 <p>Usuarios</p>
                             </a>
                         </li>
-                        
+                        <li class="nav-item">
+                            <a href="{{ route('empresa.edit') }}"
+                                class="nav-link {{ request()->routeIs('empresa.edit') ? 'active' : '' }}">
+                                <i class="fas fa-building"></i>
+                                <p>Empresa</p>
+                            </a>
+                        </li>
+
                     </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('lojas.index') }}"
+                        class="nav-link {{ request()->routeIs('lojas.index') ? 'active' : '' }}">
+                        <i class="fas fa-store"></i>
+                        <p>
+                            Lojas 
+                            <span class="right badge badge-danger">New</span>
+                        </p>
+                    </a>
                 </li>
 
             </ul>

@@ -9,7 +9,48 @@
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
         <!-- Messages Dropdown Menu -->
-        
+
+        {{-- @if (Laravel\Jetstream\Jetstream::hasTeamFeatures())
+            <li class="nav-item dropdown">
+                <a class="nav-link" data-toggle="dropdown" href="#">
+                    <i class="fas fa-exchange-alt"></i> {{ Auth::user()->currentTeam->name }}
+                </a>
+                <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                    <span class="dropdown-item dropdown-header">{{ __('Manage Team') }}</span>
+                    <div class="dropdown-divider"></div>
+                    <a href="{{ route('teams.show', Auth::user()->currentTeam->id) }}" class="dropdown-item">
+                        <i class="fas fa-users mr-2"></i> {{ __('Team Settings') }}
+                    </a>
+
+
+                    <div class="dropdown-divider"></div>
+                    @can('create', Laravel\Jetstream\Jetstream::newTeamModel())
+                        <a href="{{ route('teams.create') }}" class="dropdown-item">
+                            <i class="fas fa-plus mr-2"></i> {{ __('Create New Team') }}
+                        </a>
+                    @endcan
+
+                    <div class="dropdown-divider"></div>
+                    <a href="{{ route('teams.show', Auth::user()->currentTeam->id) }}" class="dropdown-item">
+                        <i class="fas fa-users mr-2"></i> {{ __('Team Settings') }}
+                    </a>
+                    <div class="dropdown-divider"></div>
+
+                    <div class="p-2">
+                        @if (Auth::user()->allTeams()->count() > 1)
+
+                            <i class="fas fa-exchange-alt mr-2"></i> {{ __('Switch Teams') }}
+
+                            @foreach (Auth::user()->allTeams() as $team)
+                                <x-switchable-team :team="$team" />
+                            @endforeach
+                        @endif
+
+                    </div>
+                </div>
+            </li>
+        @endif --}}
+
         <li class="nav-item dropdown">
 
             <button type="button" data-toggle="dropdown" class="btn p-0 border-0 bg-transparent"
@@ -23,6 +64,8 @@
                 <i class="far fa-comments"></i>
                 <span class="badge badge-danger navbar-badge">3</span>
             </a> --}}
+
+
             <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
                 {{-- @if (Laravel\Jetstream\Jetstream::managesProfilePhotos())
                         <button class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition">
@@ -61,9 +104,9 @@
                 <div class="dropdown-divider"></div>
                 <form method="POST" action="{{ route('logout') }}" x-data>
                     @csrf
-                  
+
                     <a href="{{ route('logout') }}" class="dropdown-item" @click.prevent="$root.submit();">
-                        <i class="fas fa-sign-out-alt mr-2"></i> 
+                        <i class="fas fa-sign-out-alt mr-2"></i>
                         {{ __('Log Out') }}
                     </a>
                 </form>
