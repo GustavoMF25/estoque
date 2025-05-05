@@ -2,7 +2,7 @@
 <div>
     <form wire:submit.prevent="updateProfileInformation" id="profileForm" enctype="multipart/form-data">
 
-        <div class="card card-primary">
+        <div class="card card-secondary">
             <div class="card-header">
                 <h4 class="card-title w-100">
                     {{ __('Profile Information') }}
@@ -122,12 +122,12 @@
 
                 <!-- Actions -->
                 <div class="row mt-4">
-                    <div class="col-10">
+                    <div class="col-md-10">
                         <b>
                             {{ __('Update your account\'s profile information and email address.') }}
                         </b>
                     </div>
-                    <div class="col-2">
+                    <div class="col-md-2 col-12">
                         <x-action-message class="me-3" on="saved">
                             {{ __('Saved.') }}
                         </x-action-message>

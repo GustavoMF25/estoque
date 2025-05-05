@@ -1,5 +1,5 @@
 <form wire:submit="updatePassword">
-    <div class="card card-primary">
+    <div class="card card-secondary">
         <div class="card-header">
             <h4 class="card-title w-100">
                 {{ __('Update Password') }}
@@ -42,7 +42,7 @@
                         {{ __('Update your account\'s profile information and email address.') }}
                     </b>
                 </div>
-                <div class="col-2">
+                <div class="col-md-2 col-12">
                     <x-action-message class="me-3" on="saved">
                         {{ __('Saved.') }}
                     </x-action-message>

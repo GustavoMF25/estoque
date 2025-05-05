@@ -32,6 +32,17 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a href="{{ route('lojas.index') }}"
+                        class="nav-link {{ request()->routeIs('lojas.index') ? 'active' : '' }}">
+                        <i class="fas fa-store"></i>
+                        <p>
+                            Lojas 
+                            <span class="right badge badge-danger">New</span>
+                        </p>
+                    </a>
+                </li>
+
+                <li class="nav-item">
                     <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-cogs"></i>
                         <span class="right badge badge-danger">New</span>
@@ -57,16 +68,6 @@
                         </li>
 
                     </ul>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('lojas.index') }}"
-                        class="nav-link {{ request()->routeIs('lojas.index') ? 'active' : '' }}">
-                        <i class="fas fa-store"></i>
-                        <p>
-                            Lojas 
-                            <span class="right badge badge-danger">New</span>
-                        </p>
-                    </a>
                 </li>
 
             </ul>

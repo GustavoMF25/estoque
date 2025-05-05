@@ -28,7 +28,7 @@ class LojaController extends Controller
         ]);
 
         Loja::create([
-            'empresa_id' => auth()->user()->empresa_id ?? 1, // ajuste conforme necessário
+            'empresa_id' => auth()->user()->empresa_id ?? 1,
             'nome' => $request->nome,
             'endereco' => $request->endereco,
             'telefone' => $request->telefone,

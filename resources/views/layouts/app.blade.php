@@ -7,6 +7,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $empresa->nome }} - {{ config('app.name', 'Laravel') }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" type="imagex/png" href="{{ asset('storage/' . $empresa->logo) }}">
 
     <!-- AdminLTE CSS -->
     <link href="{{ asset('adminlte/dist/css/adminlte.min.css') }}" rel="stylesheet">
