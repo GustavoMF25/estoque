@@ -10,14 +10,12 @@ class EstoqueController extends Controller
 {
     public function index()
     {
-        $estoques = Estoque::with('loja')->get();
-        return view('estoques.index', compact('estoques'));
+        return view('estoque.index');
     }
 
     public function create()
     {
-        $lojas = Loja::all();
-        return view('estoques.create', compact('lojas'));
+        return view('estoque.create');
     }
 
     public function store(Request $request)
@@ -25,11 +23,12 @@ class EstoqueController extends Controller
         $request->validate([
             'nome' => 'required|string|max:255',
             'descricao' => 'nullable|string',
-            'quantidade_maxima' => 'nullable|integer',
+            'localizacao' => 'required|string|max:150',
+            'quantidade_maxima' => 'nullable|integer|min:0',
             'loja_id' => 'nullable|exists:lojas,id',
         ]);
 
-        Estoque::create($request->only('nome', 'descricao', 'quantidade_maxima', 'loja_id'));
+        Estoque::create($request->only('nome', 'descricao', 'quantidade_maxima', 'loja_id','localizacao'));
 
         return redirect()->route('estoques.index')->with('success', 'Estoque criado com sucesso!');
     }

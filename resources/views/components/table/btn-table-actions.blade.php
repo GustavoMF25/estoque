@@ -1,5 +1,5 @@
 <div class="d-flex">
-    @if (!empty($remove))
+    @if (!empty($remove) && auth()->user()->perfil === 'admin')
         <form action="{{ $remove['route'] }}" method="POST"
             onsubmit="return confirm('Deseja realmente excluir este registro?')">
             @csrf

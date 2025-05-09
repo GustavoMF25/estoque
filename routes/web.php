@@ -3,6 +3,7 @@
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\EstoqueController;
 use App\Http\Controllers\LojaController;
+use App\Http\Controllers\ProdutosController;
 use App\Http\Controllers\UsuarioController;
 use Illuminate\Support\Facades\Route;
 
@@ -41,4 +42,5 @@ Route::middleware([
 
     Route::resource('lojas', LojaController::class);
     Route::resource('estoques', EstoqueController::class);
+    Route::resource('produtos', ProdutosController::class)->only(['index', 'create', 'store','destroy']);
 });

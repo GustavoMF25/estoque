@@ -12,9 +12,10 @@ class Estoque extends Model
     protected $fillable = [
         'loja_id',
         'nome',
+        'localizacao',
         'descricao',
         'quantidade_maxima',
-        'status',
+        'status',        
     ];
 
     public function loja()

@@ -15,6 +15,7 @@
     <link href="{{ asset('adminlte/plugins/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
     <!-- Font Awesome -->
     <link href="{{ asset('adminlte/plugins/fontawesome-free/css/all.min.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('adminlte/plugins/toastr/toastr.min.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.css" />
 
     <link href="{{ asset('css/geral.css') }}" rel="stylesheet">
@@ -49,13 +50,26 @@
     <script src="{{ asset('adminlte/plugins/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('adminlte/dist/js/adminlte.min.js') }}"></script>
+    <script src="{{ asset('js/geral.js') }}"></script>
+    <script src="{{ asset('adminlte/plugins/toastr/toastr.min.js') }}"></script>
+
     <script>
+        document.addEventListener("DOMContentLoaded", function(e) {
+            @if (session('success'))
+                toastr.success(@json(session('success')))
+            @endif
+
+            @if (session('error'))
+                toastr.error(@json(session('error')))
+            @endif
+        })
+
         window.Dropzone = window.Dropzone || {};
         window.Dropzone.autoDiscover = false;
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.js"></script>
 
-    <script src="{{ asset('js/geral.js') }}"></script>
+
 
     @livewireScripts
 

@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('estoques', function (Blueprint $table) {
             $table->id();
             $table->foreignId('loja_id')->nullable()->constrained('lojas')->onDelete('set null');
+            $table->string('localizacao');
             $table->string('nome');
             $table->text('descricao')->nullable();
             $table->integer('quantidade_maxima')->nullable();
-
             $table->enum('status', ['ativo', 'inativo'])->default('ativo');
             $table->timestamps();
         });

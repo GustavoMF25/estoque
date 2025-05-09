@@ -32,6 +32,26 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a href="{{ route('estoques.index') }}"
+                        class="nav-link {{ request()->routeIs('estoques.index') ? 'active' : '' }}">
+                        <i class="fas fa-warehouse"></i>
+                        <p>
+                            Estoque 
+                            <span class="right badge badge-danger">New</span>
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('produtos.index') }}"
+                        class="nav-link {{ request()->routeIs('produtos.index') ? 'active' : '' }}">
+                        <i class="fas fa-warehouse"></i>
+                        <p>
+                            Produto 
+                            <span class="right badge badge-danger">New</span>
+                        </p>
+                    </a>
+                </li>
+                {{-- <li class="nav-item">
                     <a href="{{ route('lojas.index') }}"
                         class="nav-link {{ request()->routeIs('lojas.index') ? 'active' : '' }}">
                         <i class="fas fa-store"></i>
@@ -40,7 +60,7 @@
                             <span class="right badge badge-danger">New</span>
                         </p>
                     </a>
-                </li>
+                </li> --}}
 
                 <li class="nav-item">
                     <a href="#" class="nav-link">
