@@ -24,10 +24,6 @@ dialog[open] {
     /* Acima de tudo */
 }
 
-.modal-dialog {
-    margin: 0px !important;
-}
-
 /* public/css/custom.css */
 .sidebar {
     background-color: #2c3a28 !important;

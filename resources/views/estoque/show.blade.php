@@ -1,3 +1,3 @@
 <div>
-   {{-- @dump($estoque) --}}
+   {{$estoque->nome}}
 </div>

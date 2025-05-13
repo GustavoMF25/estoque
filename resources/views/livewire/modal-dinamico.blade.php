@@ -4,13 +4,13 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="titulo">{{ $titulo }}</h5>
-                    <button type="button" class="close" wire:click="fecharModal"><span>&times;</span></button>
+                    <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
                 </div>
                 <div class="modal-body" id="body">
                     {!! $conteudo !!}
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-secondary" wire:click="fecharModal">Fechar</button>
+                    <button class="btn btn-secondary" data-dismiss="modal">Fechar</button>
                 </div>
             </div>
         </div>
