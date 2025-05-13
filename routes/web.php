@@ -42,5 +42,7 @@ Route::middleware([
 
     Route::resource('lojas', LojaController::class);
     Route::resource('estoques', EstoqueController::class);
-    Route::resource('produtos', ProdutosController::class)->only(['index', 'create', 'store','destroy']);
+    Route::patch('estoques/{id}/restaurar', [EstoqueController::class, 'restore'])->name('estoques.restore');
+
+    Route::resource('produtos', ProdutosController::class)->only(['index', 'create', 'store', 'destroy']);
 });

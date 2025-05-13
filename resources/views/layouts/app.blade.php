@@ -43,7 +43,9 @@
         <!-- Footer -->
         {{-- @include('layouts.footer') --}}
 
+
     </div>
+    @livewire('modal-dinamico')
 
     <!-- Scripts -->
     @yield('css')

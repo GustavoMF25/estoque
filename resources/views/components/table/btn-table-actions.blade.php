@@ -8,8 +8,12 @@
                 <i class="fas fa-trash-alt"></i>
             </button>
         </form>
-        {{-- <a href="{{ $remove['route'] }}" class="btn btn-block btn-outline-danger">
-            <i class="fas fa-trash"></i>
-        </a> --}}
     @endif
+
+    @if (!empty($show))
+        <x-table.btn-ver :title="$show['title']" :view="$show['view']" />
+
+@endif
+
+
 </div>

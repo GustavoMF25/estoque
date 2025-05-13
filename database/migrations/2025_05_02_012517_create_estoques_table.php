@@ -19,6 +19,7 @@ return new class extends Migration
             $table->text('descricao')->nullable();
             $table->integer('quantidade_maxima')->nullable();
             $table->enum('status', ['ativo', 'inativo'])->default('ativo');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

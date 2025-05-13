@@ -44,3 +44,11 @@ dialog[open] {
 .card-header {
     background-color: #2c3a28 !important;
 }
+
+.modal.modal-custom-center .modal-dialog {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  margin: 0 auto;
+}

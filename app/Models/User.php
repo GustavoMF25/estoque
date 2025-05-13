@@ -26,7 +26,11 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name', 'email', 'password','cpf', 'status'
+        'name',
+        'email',
+        'password',
+        'cpf',
+        'status'
     ];
 
     /**
@@ -58,4 +62,9 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url',
     ];
+
+    public function isAdmin()
+    {
+        return $this->perfil === 'admin';
+    }
 }

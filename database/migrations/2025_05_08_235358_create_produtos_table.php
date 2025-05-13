@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('imagem')->nullable();
             $table->foreignId('estoque_id')->constrained('estoques')->onDelete('cascade');
             $table->boolean('ativo')->default(true);
+            $table->softDeletes();
             $table->timestamps();
         });
     }

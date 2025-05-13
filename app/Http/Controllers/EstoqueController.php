@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Estoque;
 use App\Models\Loja;
+use Exception;
 use Illuminate\Http\Request;
 
 class EstoqueController extends Controller
@@ -28,7 +29,7 @@ class EstoqueController extends Controller
             'loja_id' => 'nullable|exists:lojas,id',
         ]);
 
-        Estoque::create($request->only('nome', 'descricao', 'quantidade_maxima', 'loja_id','localizacao'));
+        Estoque::create($request->only('nome', 'descricao', 'quantidade_maxima', 'loja_id', 'localizacao'));
 
         return redirect()->route('estoques.index')->with('success', 'Estoque criado com sucesso!');
     }
@@ -55,7 +56,23 @@ class EstoqueController extends Controller
 
     public function destroy(Estoque $estoque)
     {
-        $estoque->delete();
-        return redirect()->route('estoques.index')->with('success', 'Estoque removido com sucesso!');
+        try {
+            if (optional(auth()->user())->isAdmin()) {
+                $estoque->delete();
+                return redirect()->route('estoques.index')->with('success', 'Estoque removido com sucesso!');
+            }else{
+            return redirect()->route('estoques.index')->with('error', 'Estoque não removido, sem permissão.');    
+            }
+        } catch (Exception $err) {
+            return redirect()->route('estoques.index')->with('error', 'Estoque não removido ' . $err->getMessage());
+        }
+    }
+
+    public function restore($id)
+    {
+        $estoque = Estoque::withTrashed()->findOrFail($id);
+        $estoque->restore();
+
+        return redirect()->route('estoques.index')->with('success', 'Estoque restaurado com sucesso!');
     }
 }

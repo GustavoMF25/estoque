@@ -5,6 +5,8 @@ namespace App\Livewire;
 use App\Models\User;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
+use Rappasoft\LaravelLivewireTables\Views\Columns\ImageColumn;
+use Illuminate\Database\Eloquent\Builder;
 
 class UserTable extends DataTableComponent
 {
@@ -23,10 +25,34 @@ class UserTable extends DataTableComponent
             ->setDefaultPerPage(5);
     }
 
+    public function builder(): Builder
+    {
+        $query =  User::query()
+            ->select([
+                'users.id',
+                'users.name',
+                'users.email',
+                'users.cpf', // 🔥 o que estava faltando!
+                'users.status',
+                'users.perfil',
+                'users.profile_photo_path',
+                'users.created_at',
+            ]);
+        return $query;
+    }
 
     public function columns(): array
     {
         return [
+            ImageColumn::make('Avatar')
+                ->location(function ($row) {
+                    return asset('storage/' . $row->profile_photo_path);
+                })
+                ->attributes(fn($row) => [
+                    'class' => 'img-circle',
+                    'style' => 'width: 50px;',
+                    'alt' => $row->nome . ' Avatar',
+                ]),
             Column::make('Nome', 'name')
                 ->searchable()
                 ->sortable(),
