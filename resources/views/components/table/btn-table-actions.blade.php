@@ -26,7 +26,7 @@
             @csrf
             @method('PATCH')
             <button type="submit" class="btn btn-sm btn-info" title="Restaurar">
-                <i class="far fa-rotate-left"></i>
+                <i class="fas fa-sync-alt"></i>
             </button>
         </form>
     @endif
