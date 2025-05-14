@@ -5,7 +5,7 @@
         <p><strong>Nome:</strong> {{ $produto->nome }}</p>
         <p><strong>Código de Barras:</strong> {{ $produto->codigo_barras }}</p>
         <p><strong>Unidade:</strong> {{ $produto->unidade }}</p>
-        <p><strong>Preço:</strong> R$ {{ \App\Helpers\FormatHelper::brl($produto->preco) }}</p>
+        <p><strong>Preço:</strong>{{ \App\Helpers\FormatHelper::brl($produto->preco) }}</p>
         <p><strong>Estoque:</strong> {{ $produto->estoque->nome ?? '—' }}</p>
         <p><strong>Status:</strong>
             <span class="badge badge-{{ $produto->ativo ? 'success' : 'secondary' }}">
