@@ -36,7 +36,7 @@
                         class="nav-link {{ request()->routeIs('estoques.index') ? 'active' : '' }}">
                         <i class="fas fa-warehouse"></i>
                         <p>
-                            Estoque 
+                            Estoque
                             <span class="right badge badge-danger">New</span>
                         </p>
                     </a>
@@ -46,7 +46,7 @@
                         class="nav-link {{ request()->routeIs('produtos.index') ? 'active' : '' }}">
                         <i class="fas fa-warehouse"></i>
                         <p>
-                            Produto 
+                            Produto
                             <span class="right badge badge-danger">New</span>
                         </p>
                     </a>
@@ -61,34 +61,35 @@
                         </p>
                     </a>
                 </li> --}}
+                @if (optional(auth()->user())->isAdmin())
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon fas fa-cogs"></i>
+                            <span class="right badge badge-danger">New</span>
+                            <p>
+                                Configurações
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{ route('usuarios.index') }}"
+                                    class="nav-link {{ request()->routeIs('usuarios.index') ? 'active' : '' }}">
+                                    <i class="fas fa-user nav-icon"></i>
+                                    <p>Usuarios</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('empresa.edit') }}"
+                                    class="nav-link {{ request()->routeIs('empresa.edit') ? 'active' : '' }}">
+                                    <i class="fas fa-building"></i>
+                                    <p>Empresa</p>
+                                </a>
+                            </li>
 
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="nav-icon fas fa-cogs"></i>
-                        <span class="right badge badge-danger">New</span>
-                        <p>
-                            Configurações 
-                            <i class="right fas fa-angle-left"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{{ route('usuarios.index') }}"
-                                class="nav-link {{ request()->routeIs('usuarios.index') ? 'active' : '' }}">
-                                <i class="fas fa-user nav-icon"></i>
-                                <p>Usuarios</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('empresa.edit') }}"
-                                class="nav-link {{ request()->routeIs('empresa.edit') ? 'active' : '' }}">
-                                <i class="fas fa-building"></i>
-                                <p>Empresa</p>
-                            </a>
-                        </li>
-
-                    </ul>
-                </li>
+                        </ul>
+                    </li>
+                @endif
 
             </ul>
         </nav>
