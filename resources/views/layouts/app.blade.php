@@ -64,6 +64,10 @@
             @if (session('error'))
                 toastr.error(@json(session('error')))
             @endif
+
+            Livewire.on('msgtSuccess', message => {
+                toastr.success(message);
+            });
         })
 
         window.Dropzone = window.Dropzone || {};

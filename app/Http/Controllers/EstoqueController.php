@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Estoque;
 use App\Models\Loja;
+use App\Services\MovimentacaoService;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class EstoqueController extends Controller
 {
@@ -57,22 +59,64 @@ class EstoqueController extends Controller
     public function destroy(Estoque $estoque)
     {
         try {
-            if (optional(auth()->user())->isAdmin()) {
-                $estoque->delete();
-                return redirect()->route('estoques.index')->with('success', 'Estoque removido com sucesso!');
-            }else{
-            return redirect()->route('estoques.index')->with('error', 'Estoque não removido, sem permissão.');    
+            if (!optional(auth()->user())->isAdmin()) {
+                return redirect()->route('estoques.index')->with('error', 'Estoque não removido, sem permissão.');
             }
+
+            $produtos = $estoque->produtos()->get();
+            foreach ($produtos as $produto) {
+                MovimentacaoService::registrar([
+                    'produto_id' => $produto->id,
+                    'tipo' => 'cancelamento',
+                    'quantidade' => 1,
+                    'observacao' => 'Estoque removido: movimentação automática de cancelamento'
+                ]);
+            }
+
+            $estoque->delete();
+
+            return redirect()->route('estoques.index')->with('success', 'Estoque removido com sucesso!');
         } catch (Exception $err) {
-            return redirect()->route('estoques.index')->with('error', 'Estoque não removido ' . $err->getMessage());
+            return redirect()->route('estoques.index')->with('error', 'Estoque não removido: ' . $err->getMessage());
         }
     }
 
+
+
+
     public function restore($id)
     {
-        $estoque = Estoque::withTrashed()->findOrFail($id);
-        $estoque->restore();
+        try {
+            DB::transaction(function () use ($id) {
+                $estoque = Estoque::withTrashed()->findOrFail($id);
+                $estoque->restore();
 
-        return redirect()->route('estoques.index')->with('success', 'Estoque restaurado com sucesso!');
+                $produtos = $estoque->produtos()->withTrashed()->get();
+
+                foreach ($produtos as $produto) {
+                    $produto->restore();
+                    $movCancelamento = $produto->movimentacoes()
+                        ->where('tipo', 'cancelamento')
+                        ->latest()
+                        ->first();
+
+                    if ($movCancelamento) {
+                        $movAnterior = $produto->movimentacoes()
+                            ->where('id', '<', $movCancelamento->id)
+                            ->latest()
+                            ->first();
+                        if ($movAnterior) {
+                            $produto->ultimaMovimentacao()->update([
+                                'tipo' => $movAnterior->tipo
+                            ]);
+                        }
+                    }
+                }
+            });
+
+            return redirect()->route('estoques.index')->with('success', 'Estoque e produtos restaurados com sucesso!');
+        } catch (Exception $e) {
+            return redirect()->route('estoques.index')->with('error', 'Erro ao restaurar estoque: ' . $e->getMessage());
+        }
     }
 }

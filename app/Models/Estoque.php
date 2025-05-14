@@ -23,4 +23,9 @@ class Estoque extends Model
     {
         return $this->belongsTo(Loja::class);
     }
+
+    public function produtos()
+{
+    return $this->hasMany(Produto::class);
+}
 }

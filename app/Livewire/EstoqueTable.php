@@ -10,24 +10,7 @@ use Rappasoft\LaravelLivewireTables\Views\Column;
 class EstoqueTable extends DataTableComponent
 {
     protected $model = Estoque::class;
-    public $modalAberto = false;
-    public $modalTitulo = '';
-    public $modalConteudo = '';
-
-    public function abrirModal($titulo, $conteudo)
-    {
-        $this->modalTitulo = $titulo;
-        $this->modalConteudo = $conteudo;
-        $this->modalAberto = true;
-    }
-
-    public function fecharModal()
-    {
-        $this->modalAberto = false;
-        $this->modalTitulo = '';
-        $this->modalConteudo = '';
-    }
-
+    
     public function builder(): Builder
     {
         $query =  Estoque::query();
@@ -52,7 +35,8 @@ class EstoqueTable extends DataTableComponent
                 'class' => 'table table-bordered table-striped table-hover align-middle',
             ])
             ->setPaginationEnabled(true)
-            ->setPerPage(10);
+            ->setPerPageAccepted([5, 10, 25, 50])
+            ->setDefaultPerPage(5);
     }
 
     public function columns(): array
@@ -71,7 +55,10 @@ class EstoqueTable extends DataTableComponent
                         ],
                         'show' => [
                             'title' => 'Estoque → ' . $row->nome,
-                            'view' => view('estoque.show', ['estoque' => \App\Models\Estoque::withTrashed()->find($value)])->render()
+                            'view' => view('estoque.show', ['estoque' => \App\Models\Estoque::withTrashed()->withCount('produtos')->find($value)])->render()
+                        ],
+                        'restore' => [
+                            'route' => route('estoques.restore', $value)
                         ]
                     ]);
                 }),

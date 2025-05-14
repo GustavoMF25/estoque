@@ -56,7 +56,7 @@ class ProdutoTable extends DataTableComponent
                     'style' => 'width: 40px;',
                     'alt' => $row->nome . ' Avatar',
                 ]),
-            Column::make('Nome', 'Nome')->sortable(),
+            Column::make('Nome', 'Nome')->sortable()->searchable(),
 
             Column::make('Código de Barras', 'codigo_barras')->searchable()
                 ->sortable()
@@ -73,11 +73,20 @@ class ProdutoTable extends DataTableComponent
                 ->sortable(),
             Column::make('Criado em', 'created_at')->sortable()->format(fn($value) => $value->format('d/m/Y')),
             Column::make('Ações', 'id')
-                ->format(function ($value) {
+                ->format(function ($value, $row) {
+                    $produto = Produto::with(['estoque', 'movimentacoes'])->withTrashed()->findOrFail($value);
                     return view('components.table.btn-table-actions', [
                         "remove" => [
                             'route' => route('produtos.destroy', $value),
-                        ]
+                        ],
+                        'show' => [
+                            'title' => 'Estoque → ' . $row->nome,
+                            'view' => view('produto.show', ['produto' => $produto])->render()
+                        ],
+                        // 'edit' => [
+                        //     'title' => 'Editar Produto: ' . $produto->nome,
+                        //     'view' => '<livewire:produto-editar :produto-id="' . $produto->id . '" />'
+                        // ]
                     ]);
                 }),
         ];
