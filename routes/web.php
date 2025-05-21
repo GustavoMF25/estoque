@@ -22,27 +22,25 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::middleware([
-    'auth:sanctum',
-    config('jetstream.auth_session'),
-    'verified',
-])->group(function () {
+Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->group(function () {
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
 
-    Route::get('/usuarios', [UsuarioController::class, 'index'])->name('usuarios.index');
-    Route::get('/usuarios/create', [UsuarioController::class, 'create'])->name('usuarios.create');
-    Route::post('/usuarios', [UsuarioController::class, 'store'])->name('usuarios.store');
-    Route::resource('usuarios', UsuarioController::class);
+    Route::middleware(['auth', 'perfil:admin'])->group(function () {
+        Route::get('/usuarios', [UsuarioController::class, 'index'])->name('usuarios.index');
+        Route::get('/usuarios/create', [UsuarioController::class, 'create'])->name('usuarios.create');
+        Route::post('/usuarios', [UsuarioController::class, 'store'])->name('usuarios.store');
+        Route::resource('usuarios', UsuarioController::class);
 
-
-    Route::get('/empresa', [EmpresaController::class, 'edit'])->name('empresa.edit');
-    Route::put('/empresa', [EmpresaController::class, 'update'])->name('empresa.update');
+        Route::get('/empresa', [EmpresaController::class, 'edit'])->name('empresa.edit');
+        Route::put('/empresa', [EmpresaController::class, 'update'])->name('empresa.update');
+    });
 
     Route::resource('lojas', LojaController::class);
     Route::resource('estoques', EstoqueController::class);
     Route::patch('estoques/{id}/restaurar', [EstoqueController::class, 'restore'])->name('estoques.restore');
 
     Route::resource('produtos', ProdutosController::class)->only(['index', 'create', 'store', 'destroy']);
+    Route::post('/produtos/vender', [ProdutosController::class, 'vender'])->name('produtos.vender');
 });

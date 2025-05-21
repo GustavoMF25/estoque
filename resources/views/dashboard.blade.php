@@ -1,17 +1,12 @@
 <x-app-layout>
     <div class="content">
-        <x-slot name="header">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __('Dashboard') }}
-            </h2>
-        </x-slot>
-    
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white">
-                    <x-welcome />
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+
                 </div>
-            </div>
-        </div>
+            </div><!-- /.container-fluid -->
+        </section>
+        <x-welcome />
     </div>
 </x-app-layout>

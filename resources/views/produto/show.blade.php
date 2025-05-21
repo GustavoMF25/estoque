@@ -15,10 +15,10 @@
         <p><strong>Criado em:</strong> {{ $produto->created_at->format('d/m/Y H:i') }}</p>
 
         @if ($produto->imagem)
-            <div class="text-center mt-3">
-                <img src="{{ asset('storage/' . $produto->imagem) }}" class="img-thumbnail" style="max-width: 150px;"
-                    alt="Imagem do Produto">
-            </div>
+        <div class="text-center mt-3">
+            <img src="{{ asset('storage/' . $produto->imagem) }}" class="img-thumbnail" style="max-width: 150px;"
+                alt="Imagem do Produto">
+        </div>
         @endif
     </div>
 
@@ -37,30 +37,9 @@
             <div id="collapseOne" class="collapse" data-parent="#accordion">
                 <div class="card-body">
                     @if ($produto->movimentacoes->isEmpty())
-                        <p class="text-muted">Nenhuma movimentação registrada.</p>
+                    <p class="text-muted">Nenhuma movimentação registrada.</p>
                     @else
-                        <div class="table-responsive">
-                            <table class="table table-sm table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>Tipo</th>
-                                        <th>Quantidade</th>
-                                        <th>Data</th>
-                                        <th>Observação</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($produto->movimentacoes as $mov)
-                                        <tr>
-                                            <td>{{ ucfirst($mov->tipo) }}</td>
-                                            <td>{{ $mov->quantidade }}</td>
-                                            <td>{{ $mov->created_at->format('d/m/Y H:i') }}</td>
-                                            <td>{{ $mov->observacao ?? '—' }}</td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
+                    <livewire:produto-movimentacoes-table :produto-id="$produto->id" />
                     @endif
                 </div>
             </div>

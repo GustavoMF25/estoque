@@ -24,7 +24,6 @@ class ProdutosController extends Controller
         return view('produto.create', compact('estoques'));
     }
 
-
     public function store(Request $request)
     {
         try {
@@ -33,7 +32,6 @@ class ProdutosController extends Controller
             return redirect()->route('produtos.index')->with('error', 'Produtos não cadastrados: ' . $err->getMessage());
         }
     }
-
 
     public function destroy(Produto $produto)
     {
@@ -54,6 +52,37 @@ class ProdutosController extends Controller
             return redirect()->route('produtos.index')->with('error', 'Sem permissão para remover.');
         } catch (Exception $err) {
             return redirect()->route('produtos.index')->with('error', 'Produtos não removido ' . $err->getMessage());
+        }
+    }
+    public function vender(Request $request)
+    {
+        try {
+            $request->validate([
+                'nome' => 'required|string',
+                'quantidade' => 'required|integer|min:1',
+            ]);
+
+            $quantidadeRestante = $request->quantidade;
+
+            // Busca os produtos com o nome fornecido
+            $produtos = Produto::where('nome', $request->nome)->whereHas('ultimaMovimentacao', function ($query) {
+                $query->where('tipo', 'disponivel');
+            })->get();
+
+            foreach ($produtos as $produto) {
+                if ($quantidadeRestante <= 0) break;
+                MovimentacaoService::registrar([
+                    'produto_id' => $produto->id,
+                    'tipo' => 'saida',
+                    'quantidade' => 1,
+                    'observacao' => 'Vendido',
+                ]);
+                $quantidadeRestante--;
+            }
+            return redirect()->back()->with('success', 'Venda registrada com sucesso!');
+        } catch (Exception $err) {
+
+            return redirect()->back()->with('error', 'Produtos não vendido ' . $err->getMessage());
         }
     }
 }

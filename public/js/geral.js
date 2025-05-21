@@ -1,4 +1,4 @@
-function abrirModal(id, conteudo = '', textoConfirmar = '') {
+function abrirModal(id, conteudo = '', textoConfirmar = '', formId = '') {
     const modal = document.getElementById(id);
     if (!modal) return console.error(`Modal com ID '${id}' não encontrado.`);
 
@@ -9,16 +9,13 @@ function abrirModal(id, conteudo = '', textoConfirmar = '') {
     const confirmBtn = modal.querySelector('#confirmarBtn');
     if (confirmBtn && textoConfirmar) confirmBtn.innerText = textoConfirmar;
 
-    // Fecha o modal se já estiver aberto para evitar erro
     if (typeof modal.open === 'boolean' && modal.open) {
         modal.close();
     }
 
-    // Só chama showModal se suportado
     if (typeof modal.showModal === 'function') {
         modal.showModal();
     } else {
-        // Fallback para browser que não suporta <dialog> nativamente
         modal.setAttribute('open', true);
     }
 }

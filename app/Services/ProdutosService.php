@@ -53,6 +53,12 @@ class ProdutosService
                 'quantidade' => 1,
                 'observacao' => 'Cadastro inicial do produto'
             ]);
+            MovimentacaoService::registrar([
+                'produto_id' => $produto->id,
+                'tipo' => 'disponivel',
+                'quantidade' => 1,
+                'observacao' => 'Disponível para venda'
+            ]);
         }
         
         return redirect()->route('produtos.index')->with('success', 'Produtos cadastrados com sucesso!');

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->enum('tipo', [
                 'entrada',
                 'saida',
+                'disponivel',
                 'ajuste_positivo',
                 'ajuste_negativo',
                 'transferencia',
