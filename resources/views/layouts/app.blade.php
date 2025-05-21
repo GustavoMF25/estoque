@@ -48,13 +48,17 @@
     @livewire('modal-dinamico')
 
     <!-- Scripts -->
+
     @yield('css')
     <script src="{{ asset('adminlte/plugins/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('adminlte/dist/js/adminlte.min.js') }}"></script>
     <script src="{{ asset('js/geral.js') }}"></script>
     <script src="{{ asset('adminlte/plugins/toastr/toastr.min.js') }}"></script>
-
+    <!-- Livewire e Rappasoft -->
+    @livewireScripts
+    @rappasoftTableScripts
+    @rappasoftTableThirdPartyScripts
     <script>
         document.addEventListener("DOMContentLoaded", function(e) {
             @if (session('success'))
@@ -77,10 +81,7 @@
 
 
 
-    @livewireScripts
 
-    @rappasoftTableScripts
-    @rappasoftTableThirdPartyScripts
 </body>
 
 </html>

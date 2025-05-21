@@ -3,27 +3,28 @@
 namespace App\Livewire;
 
 use Livewire\Component;
-
+use Livewire\Livewire;
 
 class ModalDinamico extends Component
 {
     public $titulo = '';
     public $conteudo = '';
+    public $componente = '';
+    public $props = '';
     public $formId = '';
     public $aberto = false;
 
-    // protected $listeners = ['abrirModal'];
+    protected $listeners = ['abrirModal'];
 
     // protected $listeners = ['abrirModal', 'fecharModal'];
 
-    public function abrirModal($titulo, $conteudo, $formId = '')
+    public function abrirModal($titulo, $componente, $props = [], $formId = null)
     {
         $this->titulo = $titulo;
-        $this->conteudo = $conteudo;
         $this->formId = $formId;
-        $this->aberto = true;
-
-        $this->dispatchBrowserEvent('abrir-modal-bootstrap');
+        $props['formId'] = $formId;
+        $this->conteudo = Livewire::mount($componente, $props);
+        // $this->dispatchBrowserEvent('abrir-modal-bootstrap');
     }
 
     public function render()

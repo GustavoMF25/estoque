@@ -81,7 +81,8 @@ class ProdutoTable extends DataTableComponent
                         ],
                         'show' => [
                             'title' => 'Estoque → ' . $row->nome,
-                            'view' => view('produto.show', ['produto' => $produto])->render()
+                            'componente' => 'produto.produto-visualizar',
+                            'props' => ['produtoId' => $produto->id]
                         ],
                         // 'edit' => [
                         //     'title' => 'Editar Produto: ' . $produto->nome,

@@ -1,22 +1,25 @@
 <div class="small-box bg-success">
     <div class="inner">
-        <h3>{{$quantidade}}</h3>
+        <h3>{{ $quantidade }}</h3>
 
         <p>Vendas</p>
     </div>
     <div class="icon">
         <i class="fas fa-solid fa-store"></i>
     </div>
-    <a href="#"  onclick="
+    <a href="#"
+        onclick="
         window.dispatchEvent(new CustomEvent('abrirModal', {
             detail: {
                 titulo: 'Cadastrar Venda/Saida',
                 formId: 'formVenda',
-                conteudo: {{ \Illuminate\Support\Js::from($view) }},
+                componente: 'produto.modal-cadastrar-venda',
             }
+                
         }));
         $('#modal-sm').modal('show');
-    " class="small-box-footer">
+    "
+        class="small-box-footer">
         Cadastrar <i class="fas fa-arrow-circle-right"></i>
     </a>
 </div>

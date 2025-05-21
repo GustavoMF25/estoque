@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Produto;
 
 use App\Models\Estoque;
 use App\Models\Produto;
@@ -25,10 +25,10 @@ class VenderProdutoCard extends Component
             ->groupBy('nome')
             ->get();
 
-        $this->view = $view = view('produto.modal-cadastrar-venda', ['produtos' => $produtosAgrupados])->render();
+        $this->view = $view = view('livewire.produto.modal-cadastrar-venda', ['produtos' => $produtosAgrupados])->render();
     }
     public function render()
     {
-        return view('livewire.vender-produto-card');
+        return view('livewire.produto.vender-produto-card');
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Produto;
 
 use App\Models\Estoque;
 use App\Models\Produto;
@@ -20,14 +20,11 @@ class CadastrarProdutoCard extends Component
             $query->where('tipo', 'disponivel');
         })->count();
         $estoques = Estoque::all();
-        $this->view = $view = view('produto.modal-cadastrar-produto', ['estoques' => $estoques])->render();
+        $this->view = $view = view('livewire.produto.modal-cadastrar-produto', ['estoques' => $estoques])->render();
     }
 
     public function render()
     {
-        return view('livewire.cadastrar-produto-card', [
-            'quantidade' => $this->quantidade,
-            'view' => $this->view, // passa também para o Blade
-        ]);
+        return view('livewire.produto.cadastrar-produto-card');
     }
 }

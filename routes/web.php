@@ -5,6 +5,7 @@ use App\Http\Controllers\EstoqueController;
 use App\Http\Controllers\LojaController;
 use App\Http\Controllers\ProdutosController;
 use App\Http\Controllers\UsuarioController;
+use App\Livewire\TesteLivewire;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -43,4 +44,5 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
 
     Route::resource('produtos', ProdutosController::class)->only(['index', 'create', 'store', 'destroy']);
     Route::post('/produtos/vender', [ProdutosController::class, 'vender'])->name('produtos.vender');
+
 });

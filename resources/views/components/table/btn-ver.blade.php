@@ -1,11 +1,12 @@
-@props(['title', 'view'])
+@props(['title', 'componente','props'])
 
 <button
     onclick="
         window.dispatchEvent(new CustomEvent('abrirModal', {
             detail: {
                 titulo: {{ \Illuminate\Support\Js::from($title) }},
-                conteudo: {{ \Illuminate\Support\Js::from($view) }}
+                componente: {{ \Illuminate\Support\Js::from($componente) }},
+                props: {{ \Illuminate\Support\Js::from($props) }}
             }
         }));
         $('#modal-sm').modal('show');

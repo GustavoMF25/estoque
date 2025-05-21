@@ -53,9 +53,11 @@ class EstoqueTable extends DataTableComponent
                         "remove" => [
                             'route' => route('estoques.destroy', $value),
                         ],
+                        
                         'show' => [
                             'title' => 'Estoque → ' . $row->nome,
-                            'view' => view('estoque.show', ['estoque' => \App\Models\Estoque::withTrashed()->withCount('produtos')->find($value)])->render()
+                            'componente' => 'estoque.estoque-visualizar',
+                            'props' => ['estoqueId' => $value]
                         ],
                         'restore' => [
                             'route' => route('estoques.restore', $value)

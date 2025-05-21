@@ -39,7 +39,7 @@
                     @if ($produto->movimentacoes->isEmpty())
                     <p class="text-muted">Nenhuma movimentação registrada.</p>
                     @else
-                    <livewire:produto-movimentacoes-table :produto-id="$produto->id" />
+                    <livewire:produto-movimentacoes-table :produto-id="$produto->id" wire:key="produto-table-movimentacoes-{{$produto->id}}" />
                     @endif
                 </div>
             </div>

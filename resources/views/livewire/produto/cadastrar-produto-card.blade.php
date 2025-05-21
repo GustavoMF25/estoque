@@ -12,7 +12,7 @@
             detail: {
                 titulo: 'Cadastrar produto',
                 formId: 'cadastrarProduto',
-                conteudo: {{ \Illuminate\Support\Js::from($view) }},
+                componente: 'produto.modal-cadastrar-produto'
             }
         }));
         $('#modal-sm').modal('show');
