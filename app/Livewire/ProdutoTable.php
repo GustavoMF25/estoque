@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use Rappasoft\LaravelLivewireTables\Views\Columns\ImageColumn;
+use Rappasoft\LaravelLivewireTables\Views\Filters\SelectFilter;
 
 class ProdutoTable extends DataTableComponent
 {
@@ -41,6 +42,37 @@ class ProdutoTable extends DataTableComponent
         ])
             ->with('estoque', 'ultimaMovimentacao');
         return $query;
+    }
+
+    public function filters(): array
+    {
+        return [
+            SelectFilter::make('Estoque')
+                ->options(
+                    \App\Models\Estoque::pluck('nome', 'id')->prepend('Todos', '')->toArray()
+                )
+                ->filter(function (Builder $query, $value) {
+                    if ($value) {
+                        $query->where('estoque_id', $value);
+                    }
+                }),
+
+            SelectFilter::make('Status')
+                ->options([
+                    '' => 'Todos',
+                    'entrada' => 'Entrada',
+                    'disponivel' => 'Disponível',
+                    'saida' => 'Vendido',
+                    'sem_movimentacao' => 'Sem Movimentação',
+                ])
+                ->filter(function (Builder $query, $value) {
+                    if ($value === 'sem_movimentacao') {
+                        $query->doesntHave('ultimaMovimentacao');
+                    } elseif ($value) {
+                        $query->whereHas('ultimaMovimentacao', fn($q) => $q->where('tipo', $value));
+                    }
+                })
+        ];
     }
 
 
