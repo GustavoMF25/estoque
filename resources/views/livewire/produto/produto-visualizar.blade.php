@@ -15,16 +15,13 @@
         <p><strong>Criado em:</strong> {{ $produto->created_at->format('d/m/Y H:i') }}</p>
 
         @if ($produto->imagem)
-        <div class="text-center mt-3">
-            <img src="{{ asset('storage/' . $produto->imagem) }}" class="img-thumbnail" style="max-width: 150px;"
-                alt="Imagem do Produto">
-        </div>
+            <div class="text-center mt-3">
+                <img src="{{ asset('storage/' . $produto->imagem) }}" class="img-thumbnail" style="max-width: 150px;"
+                    alt="Imagem do Produto">
+            </div>
         @endif
     </div>
-
     <hr>
-
-
     <div id="accordion" class="mt-5">
         <div class="card card-primary">
             <div class="card-header">
@@ -35,11 +32,34 @@
                 </h4>
             </div>
             <div id="collapseOne" class="collapse" data-parent="#accordion">
-                <div class="card-body">
+                <div wire:ignore.self class="card-body">
                     @if ($produto->movimentacoes->isEmpty())
-                    <p class="text-muted">Nenhuma movimentação registrada.</p>
+                        <p class="text-muted">Nenhuma movimentação registrada.</p>
                     @else
-                    <livewire:produto-movimentacoes-table :produto-id="$produto->id" wire:key="produto-table-movimentacoes-{{$produto->id}}" />
+                        <div class="table-responsive mt-3">
+                            <table class="table table-striped table-hover  table-bordered">
+                                <thead class="">
+                                    <tr>
+                                        <th>Tipo</th>
+                                        <th>Quantidade</th>
+                                        <th>Usuário</th>
+                                        <th>Observação</th>
+                                        <th>Data</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($produto->movimentacoes as $mov)
+                                        <tr>
+                                            <td>{{ ucfirst($mov->tipo) }}</td>
+                                            <td>{{ $mov->quantidade }}</td>
+                                            <td>{{ $mov->usuario->name ?? '—' }}</td>
+                                            <td>{{ $mov->observacao ?? '—' }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($mov->created_at)->format('d/m/Y H:i') }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     @endif
                 </div>
             </div>

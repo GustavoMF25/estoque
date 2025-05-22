@@ -27,7 +27,8 @@ class ProdutosController extends Controller
     public function store(Request $request)
     {
         try {
-            return ProdutosService::cadastraProduto($request);
+            ProdutosService::cadastraProduto($request);
+            return redirect()->route('produtos.index')->with('success', 'Produtos cadastrados com sucesso!');
         } catch (Exception $err) {
             return redirect()->route('produtos.index')->with('error', 'Produtos não cadastrados: ' . $err->getMessage());
         }

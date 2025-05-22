@@ -11,7 +11,9 @@ use Rappasoft\LaravelLivewireTables\Views\Column;
 class ProdutoMovimentacoesTable extends DataTableComponent
 {
 
-    protected $model = Produto::class;
+    protected $model = Movimentacao::class;
+
+    public $produtoId;
 
     public function mount($produtoId)
     {
@@ -30,7 +32,7 @@ class ProdutoMovimentacoesTable extends DataTableComponent
 
     public function builder(): Builder
     {
-        return Movimentacao::where('produto_id', $this->produtoId);
+        return Movimentacao::with('usuario')->where('produto_id', $this->produtoId);
     }
 
 
