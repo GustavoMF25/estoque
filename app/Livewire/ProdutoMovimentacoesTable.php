@@ -13,6 +13,8 @@ class ProdutoMovimentacoesTable extends DataTableComponent
 
     protected $model = Movimentacao::class;
 
+    protected $listeners = ['refreshTabelaMovimentacoes' => '$refresh'];
+
     public $produtoId;
 
     public function mount($produtoId)
@@ -32,6 +34,7 @@ class ProdutoMovimentacoesTable extends DataTableComponent
 
     public function builder(): Builder
     {
+        // dd(Movimentacao::with('usuario')->where('produto_id', $this->produtoId)->get());
         return Movimentacao::with('usuario')->where('produto_id', $this->produtoId);
     }
 

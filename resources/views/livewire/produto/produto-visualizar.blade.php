@@ -33,6 +33,7 @@
             </div>
             <div id="collapseOne" class="collapse" data-parent="#accordion">
                 <div wire:ignore.self class="card-body">
+                    
                     @if ($produto->movimentacoes->isEmpty())
                         <p class="text-muted">Nenhuma movimentação registrada.</p>
                     @else

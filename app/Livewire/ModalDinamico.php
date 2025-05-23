@@ -24,7 +24,8 @@ class ModalDinamico extends Component
         $this->formId = $formId;
         $props['formId'] = $formId;
         $this->conteudo = Livewire::mount($componente, $props);
-        // $this->dispatchBrowserEvent('abrir-modal-bootstrap');
+        $this->dispatch('refreshTabelaMovimentacoes');
+        
     }
 
     public function render()
