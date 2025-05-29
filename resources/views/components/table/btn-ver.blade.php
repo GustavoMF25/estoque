@@ -1,4 +1,4 @@
-@props(['title', 'componente','props'])
+@props(['title', 'componente','props', 'formId'])
 
 <button
     onclick="
@@ -7,7 +7,7 @@
                 titulo: {{ \Illuminate\Support\Js::from($title) }},
                 componente: {{ \Illuminate\Support\Js::from($componente) }},
                 props: {{ \Illuminate\Support\Js::from($props) }},
-                formId: {{ \Illuminate\Support\Js::from($formId) }}
+                formId: {{ \Illuminate\Support\Js::from(!empty($formId) ? $formId : null) }}
             }
         }));
         $('#modal-sm').modal('show');
