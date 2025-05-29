@@ -19,6 +19,7 @@ class AtualizarUsuario extends Component
     public $password;
     public $password_confirmation;
     public $profile_photo;
+    public $perfil;
     public $formId;
 
     public $user;
@@ -30,6 +31,7 @@ class AtualizarUsuario extends Component
         $this->user = User::findOrFail($userId);
         $this->name = $this->user->name;
         $this->email = $this->user->email;
+        $this->perfil = $this->user->perfil;
     }
 
     public function rules()
@@ -39,6 +41,7 @@ class AtualizarUsuario extends Component
             'email' => 'required|email|unique:users,email,' . $this->userId,
             'password' => 'nullable|min:8|confirmed',
             'profile_photo' => 'nullable|image|max:2048',
+            'perfil' => 'required|in:admin,operador,gerente',
         ];
     }
 
@@ -48,6 +51,7 @@ class AtualizarUsuario extends Component
 
         $this->user->name = $this->name;
         $this->user->email = $this->email;
+        $this->user->perfil = $this->perfil;
 
         if ($this->password) {
             $this->user->password = Hash::make($this->password);
