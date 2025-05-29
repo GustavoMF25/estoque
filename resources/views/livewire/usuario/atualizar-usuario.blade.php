@@ -1,10 +1,4 @@
 <div>
-    <h3>Editar Usuário: {{ $user->name }}</h3>
-
-    {{-- @if (session()->has('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif --}}
-
     <form wire:submit.prevent="save" id="{{$formId}}" enctype="multipart/form-data">
         <div class="mb-3">
             <label class="form-label">Nome</label>
