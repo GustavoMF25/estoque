@@ -74,6 +74,15 @@
             });
         })
 
+        window.addEventListener('toastr:success', event => {
+            const detail = event.detail?.[0] ?? {};
+            toastr.success(detail.success || 'Sucesso!');
+        });
+        window.addEventListener('toastr:error', event => {
+            const detail = event.detail?.[0] ?? {};
+            toastr.error(detail.error || 'Error!');
+        });
+
         window.Dropzone = window.Dropzone || {};
         window.Dropzone.autoDiscover = false;
     </script>

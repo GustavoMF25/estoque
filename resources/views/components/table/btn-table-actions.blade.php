@@ -15,14 +15,16 @@
     @endif
 
     @if (!empty($edit))
-        <x-table.btn-edit :title="$edit['title']" :view="$edit['view']" />
+        @if (!empty($edit) && auth()->user()->perfil === 'admin' || $edit['permitir'])
+            <x-table.btn-edit :title="$edit['title']" :componente="$edit['componente']" :props="$edit['props']" :formId="$edit['formId']" />
+        @endif
     @endif
 
 
 
     @if (!empty($restore))
         <form action="{{ $restore['route'] }}" method="POST"
-            onsubmit="return confirm('Deseja realmente restalrar este registro?')">
+            onsubmit="return confirm('Deseja realmente restaurar este registro?')">
             @csrf
             @method('PATCH')
             <button type="submit" class="btn btn-sm btn-info" title="Restaurar">

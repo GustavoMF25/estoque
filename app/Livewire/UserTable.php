@@ -7,10 +7,13 @@ use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use Rappasoft\LaravelLivewireTables\Views\Columns\ImageColumn;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class UserTable extends DataTableComponent
 {
     protected $model = User::class;
+
+    protected $listeners = ['refreshTabelaUsuarios' => '$refresh'];
 
     public function configure(): void
     {
@@ -82,9 +85,17 @@ class UserTable extends DataTableComponent
 
             Column::make('Ações', 'id')
                 ->format(function ($value) {
+                    $user = User::findOrFail($value);
                     return view('components.table.btn-table-actions', [
                         "remove" => [
                             'route' => route('usuarios.destroy', $value),
+                        ],
+                        'edit' => [
+                            'title' => 'Editar Usuario → ' . $user->name,
+                            'componente' => 'usuario.atualizar-usuario',
+                            'props' => ['userId' => $user->id , 'formId' => 'formUserUpdate'],
+                            'formId' => 'formUserUpdate',
+                            'permitir' => Auth::id() == $user->id
                         ]
                     ]);
                 })

@@ -117,8 +117,9 @@ class ProdutoTable extends DataTableComponent
                             'props' => ['produtoId' => $produto->id]
                         ],
                         // 'edit' => [
-                        //     'title' => 'Editar Produto: ' . $produto->nome,
-                        //     'view' => '<livewire:produto-editar :produto-id="' . $produto->id . '" />'
+                        //    'title' => 'Editar Estoque → ' . $row->nome,
+                        //     'componente' => 'produto.produto-visualizar',
+                        //     'props' => ['produtoId' => $produto->id]
                         // ]
                     ]);
                 }),
