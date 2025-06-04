@@ -3,7 +3,8 @@ FROM php:8.3-apache
 # Instalar dependências de sistema e extensões PHP para Laravel
 RUN apt-get update && apt-get install -y \
     zip unzip git curl gnupg ca-certificates lsb-release libpng-dev libjpeg-dev libonig-dev libxml2-dev libzip-dev \
-    && docker-php-ext-install pdo pdo_mysql mysqli zip gd mbstring default-mysql-client
+    default-mysql-client \
+    && docker-php-ext-install pdo pdo_mysql mysqli zip gd mbstring
 
 # Instalar Node.js (LTS) + npm via NodeSource
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
