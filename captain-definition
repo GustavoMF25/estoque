@@ -1,0 +1,7 @@
+{
+  "schemaVersion": 2,
+  "dockerfilePath": "./docker/Dockerfile",
+  "instanceCount": 1,
+  "notExposeAsWebApp": false,
+  "containerHttpPort": "80"
+}
