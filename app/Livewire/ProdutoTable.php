@@ -37,7 +37,7 @@ class ProdutoTable extends DataTableComponent
             'quantidade_produtos',
             'data_criacao',
             'estoque_nome',
-        ]);
+        ])->orderBy('nome', 'asc');
         return $query;
     }
 
