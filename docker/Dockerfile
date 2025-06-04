@@ -3,7 +3,7 @@ FROM php:8.3-apache
 # Instalar dependências de sistema e extensões PHP para Laravel
 RUN apt-get update && apt-get install -y \
     zip unzip git curl gnupg ca-certificates lsb-release libpng-dev libjpeg-dev libonig-dev libxml2-dev libzip-dev \
-    && docker-php-ext-install pdo pdo_mysql mysqli zip gd mbstring
+    && docker-php-ext-install pdo pdo_mysql mysqli zip gd mbstring mysql-client
 
 # Instalar Node.js (LTS) + npm via NodeSource
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
@@ -36,8 +36,11 @@ RUN cp .env.example .env
 # ✅ Gera APP_KEY
 RUN php artisan key:generate
 
+# ✅ Limpe o cache
+RUN php artisan config:cache
+
 # 🧠 Espera o banco subir (opcional: evita race condition no CapRover)
-RUN bash -c 'until mysqladmin ping -h "$DB_HOST" --silent; do echo "⌛ Aguardando banco..."; sleep 3; done'
+RUN bash -c 'until mysqladmin ping -h "${DB_HOST}" -u"${DB_USERNAME}" -p"${DB_PASSWORD}" --silent; do echo "⌛ Aguardando banco..."; sleep 3; done'
 
 # ✅ Executa migrações e seed
 RUN php artisan migrate --force && php artisan db:seed --force
