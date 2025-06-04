@@ -15,6 +15,5 @@ php artisan db:seed --force
 
 php artisan storage:link
 
-exec apache2-foreground
-
 php artisan up
+exec apache2-foreground

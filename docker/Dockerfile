@@ -31,6 +31,9 @@ RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 # Permissões iniciais (não necessário se usar bind mount no compose)
 RUN chown -R www-data:www-data /var/www/html
 
+RUN chown -R www-data:www-data /var/www/html/storage
+RUN chmod -R 775 /var/www/html/storage
+
 # ✅ Cria .env baseado no exemplo
 RUN cp .env.example .env
 
