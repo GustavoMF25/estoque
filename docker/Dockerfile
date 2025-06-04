@@ -40,8 +40,8 @@ RUN php artisan key:generate
 # ✅ Limpe o cache
 RUN php artisan config:cache
 
-# 🧠 Espera o banco subir (opcional: evita race condition no CapRover)
-RUN bash -c 'until mysqladmin ping -h "${DB_HOST}" -u"${DB_USERNAME}" -p"${DB_PASSWORD}" --silent; do echo "⌛ Aguardando banco..."; sleep 3; done'
+# # 🧠 Espera o banco subir (opcional: evita race condition no CapRover)
+# RUN bash -c 'until mysqladmin ping -h "${DB_HOST}" -u"${DB_USERNAME}" -p"${DB_PASSWORD}" --silent; do echo "⌛ Aguardando banco..."; sleep 3; done'
 
 # ✅ Executa migrações e seed
 RUN php artisan migrate --force && php artisan db:seed --force
