@@ -34,17 +34,9 @@ RUN chown -R www-data:www-data /var/www/html
 # ✅ Cria .env baseado no exemplo
 RUN cp .env.example .env
 
-# ✅ Gera APP_KEY
-RUN php artisan key:generate
-
-# ✅ Limpe o cache
-RUN php artisan config:cache
-
-# # 🧠 Espera o banco subir (opcional: evita race condition no CapRover)
-# RUN bash -c 'until mysqladmin ping -h "${DB_HOST}" -u"${DB_USERNAME}" -p"${DB_PASSWORD}" --silent; do echo "⌛ Aguardando banco..."; sleep 3; done'
-
-# ✅ Executa migrações e seed
-RUN php artisan migrate --force && php artisan db:seed --force
+COPY ./docker/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
 
 # Permissões
 RUN chown -R www-data:www-data storage bootstrap/cache
