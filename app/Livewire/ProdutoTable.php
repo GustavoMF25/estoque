@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Helpers\FormatHelper;
 use App\Models\Produto;
+use App\Models\ProdutosAgrupados;
 use Illuminate\Database\Eloquent\Builder;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
@@ -27,20 +28,16 @@ class ProdutoTable extends DataTableComponent
 
     public function builder(): Builder
     {
-        $query =  Produto::query();
-        if (optional(auth()->user())->isAdmin()) {
-            $query->withTrashed();
-        }
+        $query =  ProdutosAgrupados::query();
         $query->select([
-            'produtos.id',
-            'produtos.nome',
-            'produtos.codigo_barras',
-            'produtos.imagem', // 🔥 o que estava faltando!
-            'produtos.preco',
-            'produtos.estoque_id',
-            'produtos.created_at',
-        ])
-            ->with('estoque', 'ultimaMovimentacao');
+            'nome',
+            'imagem', // 🔥 o que estava faltando!
+            'preco',
+            'estoque_id',
+            'quantidade_produtos',
+            'data_criacao',
+            'estoque_nome',
+        ]);
         return $query;
     }
 
@@ -90,7 +87,7 @@ class ProdutoTable extends DataTableComponent
                 ]),
             Column::make('Nome', 'Nome')->sortable()->searchable(),
 
-            Column::make('Código de Barras', 'codigo_barras')->searchable()
+            Column::make('Quantidade', 'quantidade_produtos')->searchable()
                 ->sortable()
                 ->searchable(),
             Column::make('Preço', 'preco')
@@ -98,23 +95,25 @@ class ProdutoTable extends DataTableComponent
                     return FormatHelper::brl($value);
                 })
                 ->searchable(),
-            Column::make('Estoque', 'estoque.nome')->searchable(),
-            Column::make('Status', 'ultimaMovimentacao.tipo')
-                ->label(fn($row) => ucfirst(str_replace('_', ' ', optional($row->ultimaMovimentacao)->tipo ?? 'sem movimentação')))
+            Column::make('Estoque', 'estoque_nome')->searchable(),
+            Column::make('Status', 'ultima_movimentacao')
+                ->format(function ($value, $row) {
+                    return ucfirst(str_replace('_', ' ', $value ?? 'sem movimentação'));
+                })
                 ->searchable()
                 ->sortable(),
-            Column::make('Criado em', 'created_at')->sortable()->format(fn($value) => $value->format('d/m/Y')),
-            Column::make('Ações', 'id')
+            Column::make('Ações', 'nome')
                 ->format(function ($value, $row) {
-                    $produto = Produto::with(['estoque', 'movimentacoes'])->withTrashed()->findOrFail($value);
+                    // dump($row);
+                    // return '';
                     return view('components.table.btn-table-actions', [
-                        "remove" => [
-                            'route' => route('produtos.destroy', $value),
-                        ],
+                        // "remove" => [
+                        //     'route' => route('produtos.destroy', $value),
+                        // ],
                         'show' => [
                             'title' => 'Estoque → ' . $row->nome,
                             'componente' => 'produto.produto-visualizar',
-                            'props' => ['produtoId' => $produto->id]
+                            'props' => ['nome' => $row->nome, 'estoque_id' => $row->estoque_id, 'ultima_movimentacao' => $row->ultima_movimentacao]
                         ],
                         // 'edit' => [
                         //    'title' => 'Editar Estoque → ' . $row->nome,
