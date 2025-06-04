@@ -29,3 +29,7 @@ RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
 # Permissões iniciais (não necessário se usar bind mount no compose)
 RUN chown -R www-data:www-data /var/www/html
+
+RUN cp .env.example .env
+
+RUN php artisan key:generate
