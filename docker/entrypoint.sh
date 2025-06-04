@@ -1,5 +1,7 @@
 #!/bin/bash
 
+php artisan down
+
 php artisan config:cache
 
 # Espera o banco ficar pronto
@@ -11,4 +13,8 @@ done
 php artisan migrate --force
 php artisan db:seed --force
 
+php artisan storage:link
+
 exec apache2-foreground
+
+php artisan up
