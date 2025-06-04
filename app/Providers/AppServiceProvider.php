@@ -20,6 +20,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        View::share('empresa', \App\Models\Empresa::first());
+        // View::share('empresa', \App\Models\Empresa::first());
     }
 }
