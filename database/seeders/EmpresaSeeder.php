@@ -21,23 +21,36 @@ class EmpresaSeeder extends Seeder
             $bg = imagecolorallocate($img, 0, 123, 255);
             $textColor = imagecolorallocate($img, 255, 255, 255);
             imagestring($img, 5, 25, 30, 'LOGO', $textColor);
-        
+
             ob_start();
             imagepng($img);
             $imageData = ob_get_clean();
             imagedestroy($img);
-        
+
             Storage::disk('public')->put($logoPath, $imageData);
         }
 
-        Empresa::create([
-            'nome' => 'Sofá Store Ltda',
-            'razao_social' => 'Sofá Store Comércio de Estofados LTDA',
-            'cnpj' => '12.345.678/0001-99',
-            'telefone' => '(21) 98765-4321',
-            'email' => 'contato@sofastore.com.br',
-            'endereco' => 'Av. Principal, 123 - Centro, Rio de Janeiro - RJ',
-            'logo' => $logoPath,
-        ]);
+        Empresa::updateOrCreate(
+            ['nome' => 'Sofá Store Ltda'],
+            [
+                'nome' => 'Sofá Store Ltda',
+                'razao_social' => 'Sofá Store Comércio de Estofados LTDA',
+                'cnpj' => '12.345.678/0001-99',
+                'telefone' => '(21) 98765-4321',
+                'email' => 'contato@sofastore.com.br',
+                'endereco' => 'Av. Principal, 123 - Centro, Rio de Janeiro - RJ',
+                'logo' => $logoPath,
+            ]
+        );
+
+        // Empresa::create([
+        //     'nome' => 'Sofá Store Ltda',
+        //     'razao_social' => 'Sofá Store Comércio de Estofados LTDA',
+        //     'cnpj' => '12.345.678/0001-99',
+        //     'telefone' => '(21) 98765-4321',
+        //     'email' => 'contato@sofastore.com.br',
+        //     'endereco' => 'Av. Principal, 123 - Centro, Rio de Janeiro - RJ',
+        //     'logo' => $logoPath,
+        // ]);
     }
 }
