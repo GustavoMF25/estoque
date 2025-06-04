@@ -43,4 +43,4 @@ RUN bash -c 'until mysqladmin ping -h "$DB_HOST" --silent; do echo "⌛ Aguardan
 RUN php artisan migrate --force && php artisan db:seed --force
 
 # Permissões
-RUN chown
+RUN chown -R www-data:www-data storage bootstrap/cache
