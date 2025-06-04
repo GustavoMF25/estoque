@@ -20,6 +20,7 @@ class DefaultUserSeeder extends Seeder
                 'name' => 'Administrador',
                 'email' => 'admin@admin.com',
                 'email_verified_at' => now(),
+                'perfil' => 'admin',
                 'password' => Hash::make('12345678'), // 🔒
                 'remember_token' => \Str::random(10),
             ]
