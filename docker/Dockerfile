@@ -34,6 +34,9 @@ RUN chown -R www-data:www-data /var/www/html
 RUN chown -R www-data:www-data /var/www/html/storage
 RUN chmod -R 775 /var/www/html/storage
 
+RUN mkdir -p /var/www/html/storage/app/public/logos
+
+
 # ✅ Cria .env baseado no exemplo
 RUN cp .env.example .env
 
