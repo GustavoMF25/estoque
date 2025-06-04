@@ -24,6 +24,7 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Define o diretório do projeto
 WORKDIR /var/www/html
+COPY . /var/www/html
 
 # Permissões iniciais (não necessário se usar bind mount no compose)
 RUN chown -R www-data:www-data /var/www/html
