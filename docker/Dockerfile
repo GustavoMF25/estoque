@@ -30,6 +30,17 @@ RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 # Permissões iniciais (não necessário se usar bind mount no compose)
 RUN chown -R www-data:www-data /var/www/html
 
+# ✅ Cria .env baseado no exemplo
 RUN cp .env.example .env
 
+# ✅ Gera APP_KEY
 RUN php artisan key:generate
+
+# 🧠 Espera o banco subir (opcional: evita race condition no CapRover)
+RUN bash -c 'until mysqladmin ping -h "$DB_HOST" --silent; do echo "⌛ Aguardando banco..."; sleep 3; done'
+
+# ✅ Executa migrações e seed
+RUN php artisan migrate --force && php artisan db:seed --force
+
+# Permissões
+RUN chown
