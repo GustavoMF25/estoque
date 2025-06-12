@@ -70,11 +70,16 @@ class ProdutosVisualizarTable extends DataTableComponent
             Column::make('Estoque', 'estoque.nome')
                 ->searchable(),
             Column::make('Status', 'ultimaMovimentacao.tipo')
-                ->label(fn($row) => view('components.table.status-badge', ['status' => optional($row->ultimaMovimentacao)->tipo] ))
+                ->label(fn($row) => view('components.table.status-badge', ['status' => optional($row->ultimaMovimentacao)->tipo]))
                 ->searchable()
                 ->sortable(),
             Column::make('Vendido por', 'ultimaMovimentacao.user_id')
-                ->label(fn($row) => optional($row->ultimaMovimentacao->usuario)->name ?? '—')
+                // ->label(fn($row) => optional($row->ultimaMovimentacao->usuario)->name ?? '—')
+                ->format(function ($value, $row) {
+                    if ($row->ultimaMovimentacao->tipo == 'saida') {
+                        return optional($row->ultimaMovimentacao->usuario)->name;
+                    }
+                })
                 ->searchable()
                 ->sortable(),
             Column::make('Criado em', 'created_at')
