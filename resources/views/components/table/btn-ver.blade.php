@@ -1,7 +1,8 @@
-@props(['title', 'componente','props', 'formId'])
+@props(['title', 'componente', 'props', 'formId', 'modal', 'route'])
 
-<button
-    onclick="
+@if ($modal)
+    <button
+        onclick="
         window.dispatchEvent(new CustomEvent('abrirModal', {
             detail: {
                 titulo: {{ \Illuminate\Support\Js::from($title) }},
@@ -12,6 +13,13 @@
         }));
         $('#modal-sm').modal('show');
     "
-    class="btn btn-sm btn-info">
-    <i class="fas fa-eye"></i>
-</button>
+        class="btn btn-sm btn-info">
+        <i class="fas fa-eye"></i>
+    </button>
+@endif
+
+@if (!$modal)
+    <a href="{{ $route }}" class="btn btn-sm btn-info">
+        <i class="fas fa-eye"></i>
+    </a>
+@endif

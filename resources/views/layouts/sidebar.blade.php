@@ -27,7 +27,6 @@
                         <i class="nav-icon fas fa-solid fa-user"></i>
                         <p>
                             Perfil
-                            <span class="right badge badge-danger">New</span>
                         </p>
                     </a>
                 </li>
@@ -37,17 +36,15 @@
                         <i class="fas fa-warehouse"></i>
                         <p>
                             Estoque
-                            <span class="right badge badge-danger">New</span>
                         </p>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{{ route('produtos.index') }}"
                         class="nav-link {{ request()->routeIs('produtos.index') ? 'active' : '' }}">
-                        <i class="fas fa-warehouse"></i>
+                        <i class="fas fa-layer-group"></i>
                         <p>
                             Produto
-                            <span class="right badge badge-danger">New</span>
                         </p>
                     </a>
                 </li>
@@ -65,7 +62,7 @@
                     <li class="nav-item">
                         <a href="#" class="nav-link">
                             <i class="nav-icon fas fa-cogs"></i>
-                            <span class="right badge badge-danger">New</span>
+                            
                             <p>
                                 Configurações
                                 <i class="right fas fa-angle-left"></i>

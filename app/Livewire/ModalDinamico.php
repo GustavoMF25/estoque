@@ -23,6 +23,7 @@ class ModalDinamico extends Component
         $this->titulo = $titulo;
         $this->formId = $formId;
         $props['formId'] = $formId;
+
         $this->conteudo = Livewire::mount($componente, $props);
         $this->dispatch('refreshTabelaMovimentacoes');
         

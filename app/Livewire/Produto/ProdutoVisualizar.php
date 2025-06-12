@@ -7,36 +7,18 @@ use Livewire\Component;
 
 class ProdutoVisualizar extends Component
 {
-    public $produtos;
     public $nome;
+    public $estoque_id;
+    public $ultima_movimentacao;
+    public $image;
 
     public function mount($nome = null, $estoque_id = null, $ultima_movimentacao = null)
     {
-        $query = Produto::with(['estoque', 'ultimaMovimentacao'])->withTrashed();
-
-        if (!empty($nome)) {
-            $query->where('produtos.nome', 'LIKE', "%{$nome}%");
-        }
-
-        if (!empty($estoque_id)) {
-            $query->where('produtos.estoque_id', $estoque_id);
-        }
-        if (!empty($ultima_movimentacao)) {
-            $query->whereHas('ultimaMovimentacao', function ($q) use($ultima_movimentacao) {
-                $q->where('tipo', $ultima_movimentacao);
-            });
-        }
-        $query->select([
-            'produtos.id',
-            'produtos.nome',
-            'produtos.imagem',
-            'produtos.preco',
-            'produtos.estoque_id',
-            'produtos.created_at',
-        ]);
-
-        $this->produtos = $query->get();
         $this->nome = $nome;
+        $this->estoque_id = $estoque_id;
+        $this->ultima_movimentacao = $ultima_movimentacao;
+
+        $this->image = Produto::where('nome' , 'like', "%".$nome."%")->select('imagem')->first();
     }
 
     public function render()

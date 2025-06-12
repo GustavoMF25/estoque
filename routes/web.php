@@ -43,6 +43,6 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
     Route::patch('estoques/{id}/restaurar', [EstoqueController::class, 'restore'])->name('estoques.restore');
 
     Route::resource('produtos', ProdutosController::class)->only(['index', 'create', 'store', 'destroy']);
+    Route::get('/produtos/visualizar', [ProdutosController::class, 'show'])->name('produtos.show');
     Route::post('/produtos/vender', [ProdutosController::class, 'vender'])->name('produtos.vender');
-
 });

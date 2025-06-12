@@ -1,36 +1,20 @@
 <div>
-    <div class="mb-3">
-        <h5 class="mb-1"><strong>Informações do Produto</strong></h5>
+    <div class="row align-items-center mb-4">
+        <div class="col-md-3 text-center mb-3 mb-md-0">
+            <img src="{{ asset('storage/' . $image->imagem) }}" alt="Imagem do Produto" class="img-thumbnail shadow-sm"
+                style="max-height: 200px;">
+        </div>
+        <div class="col-md-9">
+            <h5 class="mb-2"><strong>Nome:</strong> <span class="text-muted">{{ $nome }}</span></h5>
+            <p class="mb-0">
+                <strong>Última Movimentação:</strong>
+                <x-table.status-badge :status="$ultima_movimentacao" />
 
-        <p><strong>Nome:</strong> {{ $nome }}</p>
-
-        <div class="table-responsive mt-3">
-            <table class="table table-striped table-hover table-bordered">
-                <thead class="">
-                    <tr>
-                        <th>Imagem</th>
-                        <th>Nome</th>
-                        <th>Preço</th>
-                        <th>Status</th>
-                        <th>Data</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($produtos as $prod)
-                    <tr>
-                        <td>
-                            <img src="{{ asset('storage/' . $prod->imagem) }}" class="img-circle" style="width: 40px;" alt="{{ $prod->nome }}">
-                        </td>
-                        <td>{{ $prod->nome }}</td>
-                        <td>{{ $prod->preco ?? '—' }}</td>
-                        <td>{{ $prod->ultimaMovimentacao->tipo ?? '—' }}</td>
-                        <td>{{ \Carbon\Carbon::parse($prod->created_at)->format('d/m/Y H:i') }}</td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
+            </p>
         </div>
     </div>
-    <hr>
+
+    <livewire:produto.produtos-visualizar-table :nome="$nome" :estoque_id="$estoque_id" :ultima_movimentacao="$ultima_movimentacao" />
+
 
 </div>

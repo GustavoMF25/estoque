@@ -24,6 +24,12 @@ class ProdutosController extends Controller
         return view('produto.create', compact('estoques'));
     }
 
+    public function show(Request $request)
+    {
+        // dd($request->all());
+        return view('produto.show', $request->all());
+    }
+
     public function store(Request $request)
     {
         try {
@@ -55,6 +61,7 @@ class ProdutosController extends Controller
             return redirect()->route('produtos.index')->with('error', 'Produtos não removido ' . $err->getMessage());
         }
     }
+
     public function vender(Request $request)
     {
         try {

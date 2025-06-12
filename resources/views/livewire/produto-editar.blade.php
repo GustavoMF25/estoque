@@ -1,5 +1,5 @@
 <div>
-    <form wire:submit.prevent="salvar">
+    <form wire:submit.prevent="salvar" id="salvar-editar-produto">
         <div class="form-group">
             <label>Nome</label>
             <input type="text" class="form-control" wire:model.defer="nome">
@@ -41,6 +41,6 @@
             <label for="ativo" class="form-check-label">Ativo</label>
         </div>
 
-        <button type="submit" class="btn btn-primary">Salvar</button>
+        {{-- <button type="submit" class="btn btn-primary">Salvar</button> --}}
     </form>
 </div>

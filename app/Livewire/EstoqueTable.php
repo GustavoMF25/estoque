@@ -45,7 +45,7 @@ class EstoqueTable extends DataTableComponent
             Column::make('Nome', 'nome')->searchable()->sortable(),
             Column::make('Descricao', 'descricao')->searchable(),
             Column::make('Quantidade máxima', 'quantidade_maxima')->searchable(),
-            Column::make('Status', 'status')->searchable(),
+            Column::make('Status', 'status')->searchable()->sortable(),
             Column::make('Criado em', 'created_at')->sortable()->format(fn($value) => $value->format('d/m/Y')),
             Column::make('Ações', 'id')
                 ->format(function ($value, $row) {
@@ -57,7 +57,9 @@ class EstoqueTable extends DataTableComponent
                         'show' => [
                             'title' => 'Estoque → ' . $row->nome,
                             'componente' => 'estoque.estoque-visualizar',
-                            'props' => ['estoqueId' => $value]
+                            'props' => ['estoqueId' => $value],
+                            'modal' => true,
+                            'route' => ''
                         ],
                         'restore' => [
                             'route' => route('estoques.restore', $value)

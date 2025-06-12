@@ -64,10 +64,9 @@ class ProdutoTable extends DataTableComponent
                 ])
                 ->filter(function (Builder $query, $value) {
                     if ($value === 'sem_movimentacao') {
-                        $query->doesntHave('ultimaMovimentacao');
-                    } elseif ($value) {
-                        $query->whereHas('ultimaMovimentacao', fn($q) => $q->where('tipo', $value));
+                        return    $query->doesntHave('ultimaMovimentacao');
                     }
+                    return  $query->where('ultima_movimentacao', $value);
                 })
         ];
     }
@@ -76,50 +75,29 @@ class ProdutoTable extends DataTableComponent
     public function columns(): array
     {
         return [
-            ImageColumn::make('Imagem')
-                ->location(function ($row) {
-                    return asset('storage/' . $row->imagem);
-                })
-                ->attributes(fn($row) => [
-                    'class' => 'img-circle',
-                    'style' => 'width: 40px;',
-                    'alt' => $row->nome . ' Avatar',
-                ]),
-            Column::make('Nome', 'Nome')->sortable()->searchable(),
-
+            Column::make('Nome', 'Nome')
+                ->sortable()
+                ->searchable(),
             Column::make('Quantidade', 'quantidade_produtos')->searchable()
                 ->sortable()
                 ->searchable(),
-            Column::make('Preço', 'preco')
-                ->format(function ($value) {
-                    return FormatHelper::brl($value);
-                })
-                ->searchable(),
-            Column::make('Estoque', 'estoque_nome')->searchable(),
             Column::make('Status', 'ultima_movimentacao')
                 ->format(function ($value, $row) {
-                    return ucfirst(str_replace('_', ' ', $value ?? 'sem movimentação'));
+                    return view('components.table.status-badge', ['status' => $value] );
                 })
                 ->searchable()
                 ->sortable(),
             Column::make('Ações', 'nome')
                 ->format(function ($value, $row) {
-                    // dump($row);
-                    // return '';
                     return view('components.table.btn-table-actions', [
-                        // "remove" => [
-                        //     'route' => route('produtos.destroy', $value),
-                        // ],
-                        'show' => [
+                        "show" => [
+                            'route' => route('produtos.show', ['nome' => $row->nome, 'estoque_id' => $row->estoque_id, 'ultima_movimentacao' => $row->ultima_movimentacao]),
                             'title' => 'Estoque → ' . $row->nome,
-                            'componente' => 'produto.produto-visualizar',
-                            'props' => ['nome' => $row->nome, 'estoque_id' => $row->estoque_id, 'ultima_movimentacao' => $row->ultima_movimentacao]
+                            'componente' => '',
+                            'modal' => false,
+                            'props' => ''
                         ],
-                        // 'edit' => [
-                        //    'title' => 'Editar Estoque → ' . $row->nome,
-                        //     'componente' => 'produto.produto-visualizar',
-                        //     'props' => ['produtoId' => $produto->id]
-                        // ]
+                       
                     ]);
                 }),
         ];

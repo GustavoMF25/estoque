@@ -11,7 +11,7 @@
     @endif
 
     @if (!empty($show))
-        <x-table.btn-ver :title="$show['title']" :componente="$show['componente']" :props="$show['props']" />
+        <x-table.btn-ver :title="$show['title']" :componente="$show['componente']" :props="$show['props']" :modal="$show['modal']" :route="$show['route']"/>
     @endif
 
     @if (!empty($edit))
