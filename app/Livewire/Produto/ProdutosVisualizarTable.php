@@ -1,19 +1,18 @@
 <?php
-
 namespace App\Livewire\Produto;
 
 use App\Helpers\FormatHelper;
-use Rappasoft\LaravelLivewireTables\DataTableComponent;
-use Rappasoft\LaravelLivewireTables\Views\Column;
 use App\Models\Produto;
 use Illuminate\Database\Eloquent\Builder;
-use Rappasoft\LaravelLivewireTables\Views\Columns\ImageColumn;
+use Livewire\Component;
+use Rappasoft\LaravelLivewireTables\DataTableComponent;
+use Rappasoft\LaravelLivewireTables\Views\Column;
 
 class ProdutosVisualizarTable extends DataTableComponent
 {
-    public $nome;
-    public $estoque_id;
-    public $ultima_movimentacao;
+    public string $nome = '';
+    public int $estoqueId = 0;
+    public string $ultimaMovimentacao = '';
 
     protected $listeners = ['refreshTabelaVisualizarProduto' => '$refresh'];
 
@@ -24,34 +23,28 @@ class ProdutosVisualizarTable extends DataTableComponent
                 'class' => 'table table-bordered table-striped table-hover align-middle',
             ])
             ->setPaginationEnabled(true)
-            ->setPerPageAccepted([5, 10, 25, 50])
             ->setDefaultPerPage(5);
     }
 
     public function builder(): Builder
     {
-        $query = Produto::with(['estoque', 'ultimaMovimentacao', 'ultimaMovimentacao.usuario'])->withTrashed();
+        $query = Produto::with([
+                'estoque',
+                'ultimaMovimentacao',
+                'ultimaMovimentacao.usuario'
+            ])
+            ->withTrashed();
 
         if (!empty($this->nome)) {
             $query->where('produtos.nome', 'LIKE', "%{$this->nome}%");
         }
 
-        if (!empty($this->estoque_id)) {
-            $query->where('produtos.estoque_id', $this->estoque_id);
-        }
-        if (!empty($this->ultima_movimentacao)) {
+        if (!empty($this->ultimaMovimentacao)) {
             $query->whereHas('ultimaMovimentacao', function ($q) {
-                $q->where('tipo', $this->ultima_movimentacao);
+                $q->where('tipo', $this->ultimaMovimentacao);
             });
         }
-        $query->select([
-            'produtos.id',
-            'produtos.nome',
-            'produtos.imagem',
-            'produtos.preco',
-            'produtos.estoque_id',
-            'produtos.created_at',
-        ]);
+        $query->distinct();
 
         return $query;
     }
@@ -59,35 +52,37 @@ class ProdutosVisualizarTable extends DataTableComponent
     public function columns(): array
     {
         return [
+            Column::make('ID', 'id')
+                ->sortable(),
+
             Column::make('Nome', 'nome')
                 ->sortable()
                 ->searchable(),
+
             Column::make('Preço', 'preco')
-                ->format(function ($value, $row) {
-                    return FormatHelper::brl($value);
-                })
-                ->searchable(),
-            Column::make('Estoque', 'estoque.nome')
-                ->searchable(),
+                ->format(fn($value) => FormatHelper::brl($value)),
+
+            Column::make('Estoque', 'estoque.nome'),
+
             Column::make('Status', 'ultimaMovimentacao.tipo')
-                ->label(fn($row) => view('components.table.status-badge', ['status' => optional($row->ultimaMovimentacao)->tipo]))
-                ->searchable()
-                ->sortable(),
+                ->label(fn($row) => view('components.table.status-badge', [
+                    'status' => optional($row->ultimaMovimentacao)->tipo,
+                ])),
+
             Column::make('Vendido por', 'ultimaMovimentacao.user_id')
-                // ->label(fn($row) => optional($row->ultimaMovimentacao->usuario)->name ?? '—')
                 ->format(function ($value, $row) {
-                    if ($row->ultimaMovimentacao->tipo == 'saida') {
-                        return optional($row->ultimaMovimentacao->usuario)->name;
-                    }
-                })
-                ->searchable()
-                ->sortable(),
+                    return $row->ultimaMovimentacao->tipo === 'saida'
+                        ? optional($row->ultimaMovimentacao->usuario)->name
+                        : null;
+                }),
+
             Column::make('Criado em', 'created_at')
                 ->sortable()
                 ->format(fn($value) => $value->format('d/m/Y')),
+
             Column::make('Ações', 'id')
                 ->format(function ($value, $row) {
-                    if ($row->ultimaMovimentacao->tipo != 'saida') {
+                    if ($row->ultimaMovimentacao->tipo !== 'saida') {
                         return view('components.table.btn-table-actions', [
                             'remove' => [
                                 'route' => route('produtos.destroy', $value),

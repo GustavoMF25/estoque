@@ -14,5 +14,5 @@
         </div>
     </div>
 
-    <livewire:produto.produtos-visualizar-table :nome="$nome" :estoque_id="$estoque_id" :ultima_movimentacao="$ultima_movimentacao" />
+    <livewire:produto.produtos-visualizar-table :nome="$nome" :ultima_movimentacao="$ultima_movimentacao" :wire:key="'produtos-visualizar'" />
 </div>
