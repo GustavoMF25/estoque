@@ -29,6 +29,7 @@ class CatalogoProduto extends Component
     {
         $products = ProdutosAgrupados::query()
             ->where('nome', 'like', '%' . $this->search . '%')
+            ->where('ultima_movimentacao', 'disponivel')
             // ->withQueryString()
             ->paginate($this->perPage);
 
