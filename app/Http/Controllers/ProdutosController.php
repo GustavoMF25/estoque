@@ -18,6 +18,11 @@ class ProdutosController extends Controller
         return view('produto.index', compact('produtos'));
     }
 
+    public function catalogo()
+    {
+        return view('produto.catalogo');
+    }
+
     public function create()
     {
         $estoques = Estoque::all();

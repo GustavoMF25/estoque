@@ -48,16 +48,15 @@
                         </p>
                     </a>
                 </li>
-                {{-- <li class="nav-item">
-                    <a href="{{ route('lojas.index') }}"
-                        class="nav-link {{ request()->routeIs('lojas.index') ? 'active' : '' }}">
-                        <i class="fas fa-store"></i>
+                <li class="nav-item">
+                    <a href="{{ route('produtos.catalogo') }}"
+                        class="nav-link {{ request()->routeIs('produtos.catalogo') ? 'active' : '' }}">
+                        <i class="fas fa-layer-group"></i>
                         <p>
-                            Lojas 
-                            <span class="right badge badge-danger">New</span>
+                            Catálogo
                         </p>
                     </a>
-                </li> --}}
+                </li>
                 @if (optional(auth()->user())->isAdmin())
                     <li class="nav-item">
                         <a href="#" class="nav-link">
