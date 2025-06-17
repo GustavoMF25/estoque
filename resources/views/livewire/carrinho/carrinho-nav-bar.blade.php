@@ -18,7 +18,7 @@
             <div class="flex-grow-1">
                 <div class="fw-bold">{{ $item['nome'] }}</div>
                 <small>{{ $item['quantidade'] }}x R$
-                    {{ number_format($item['preco_unitario'], 2, ',', '.') }}</small>
+                    {{ App\Helpers\FormatHelper::brl($item['preco_unitario']) }}</small>
             </div>
             <button wire:click="removerItem('{{ $item['nome'] }}')" class="btn btn-sm btn-outline-danger ml-2" title="Remover item">
             <i class="fas fa-trash-alt"></i>
