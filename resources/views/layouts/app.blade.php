@@ -37,16 +37,11 @@
 
         <!-- Content -->
         <div class="content-wrapper">
-            <livewire:components.toast />
             {{ $slot }}
         </div>
 
         <!-- Footer -->
         {{-- @include('layouts.footer') --}}
-
-
-
-
     </div>
     @livewire('modal-dinamico')
 
@@ -63,14 +58,18 @@
     @livewireScripts
     @rappasoftTableScripts
     @rappasoftTableThirdPartyScripts
+
+
+
+    <livewire:components.toast />
     <script>
         document.addEventListener("DOMContentLoaded", function(e) {
-            @if (session('success'))
-                toastr.success(@json(session('success')))
+            @if(session('success'))
+            toastr.success(@json(session('success')))
             @endif
 
-            @if (session('error'))
-                toastr.error(@json(session('error')))
+            @if(session('error'))
+            toastr.error(@json(session('error')))
             @endif
 
             Livewire.on('msgtSuccess', message => {

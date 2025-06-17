@@ -26,10 +26,11 @@ class CatalogoProduto extends Component
     }
 
     public function adicionarCarrinho($produtoNome)
-    {
+    {         
         $agrupado = ProdutosAgrupados::where('nome', $produtoNome)
-         ->where('ultima_movimentacao', 'disponivel')->firstOrFail();
-        $quantidadeSolicitada = $this->quantidades[$produtoNome] ?? 1;
+            ->where('ultima_movimentacao', 'disponivel')
+            ->firstOrFail();
+        $quantidadeSolicitada = !empty($this->quantidades[$produtoNome]) ? $this->quantidades[$produtoNome] : 1;
 
         $carrinho = session('carrinho', []);
 
@@ -47,7 +48,6 @@ class CatalogoProduto extends Component
             return;
         }
 
-        // Atualiza entrada única baseada no nome
         if (isset($carrinho[$produtoNome])) {
             $carrinho[$produtoNome]['quantidade'] += $quantidadeSolicitada;
         } else {
