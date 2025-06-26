@@ -16,6 +16,22 @@ class CarrinhoNavBar extends Component
         $this->itens = session('carrinho', []);
         $this->qtdItemCarrinho = array_sum(array_column($this->itens, 'quantidade'));
     }
+    public function removerItem($nome)
+    {
+        $carrinho = session('carrinho', []);
+
+        if (isset($carrinho[$nome])) {
+            unset($carrinho[$nome]);
+            session(['carrinho' => $carrinho]);
+            $this->itens = $carrinho;
+            $this->qtdItemCarrinho = array_sum(array_column($carrinho, 'quantidade'));
+
+            $this->dispatch('toast', [
+                'type' => 'success',
+                'message' => 'Item removido do carrinho.'
+            ]);
+        }
+    }
 
     public function render()
     {

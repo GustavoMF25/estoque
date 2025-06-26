@@ -8,9 +8,8 @@ use Livewire\Attributes\On;
 class Toast extends Component
 {
     public ?string $message = null;
-    public string $type = 'info'; // success, error, warning, info
-
-    #[On('toast')] // <- escuta o evento global corretamente
+    public string $type = 'info'; 
+    #[On('toast')]
     public function toast($dados)
     {
         $this->type = $dados['type'];
@@ -23,8 +22,6 @@ class Toast extends Component
 
     public function render()
     {
-        // dd($this->message);
-
         return view('livewire.components.toast');
     }
 }
