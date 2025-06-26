@@ -14,9 +14,6 @@ class EstoqueTable extends DataTableComponent
     public function builder(): Builder
     {
         $query =  Estoque::query();
-        if (optional(auth()->user())->isAdmin()) {
-            $query->withTrashed();
-        }
         $query->select([
             'estoques.id',
             'estoques.nome',
@@ -45,7 +42,12 @@ class EstoqueTable extends DataTableComponent
             Column::make('Nome', 'nome')->searchable()->sortable(),
             Column::make('Descricao', 'descricao')->searchable(),
             Column::make('Quantidade máxima', 'quantidade_maxima')->searchable(),
-            Column::make('Status', 'status')->searchable()->sortable(),
+             Column::make('Status', 'status')
+                ->format(function ($value, $row) {
+                    return view('components.table.status-badge', ['status' => $value] );
+                })
+                ->searchable()
+                ->sortable(),
             Column::make('Criado em', 'created_at')->sortable()->format(fn($value) => $value->format('d/m/Y')),
             Column::make('Ações', 'id')
                 ->format(function ($value, $row) {

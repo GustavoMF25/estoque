@@ -48,7 +48,7 @@
                         </p>
                     </a>
                 </li>
-                <li class="nav-item">
+                {{-- <li class="nav-item">
                     <a href="{{ route('produtos.catalogo') }}"
                         class="nav-link {{ request()->routeIs('produtos.catalogo') ? 'active' : '' }}">
                         <i class="fas fa-layer-group"></i>
@@ -56,7 +56,7 @@
                             Catálogo
                         </p>
                     </a>
-                </li>
+                </li> --}}
                 @if (optional(auth()->user())->isAdmin())
                     <li class="nav-item">
                         <a href="#" class="nav-link">

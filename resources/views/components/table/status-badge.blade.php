@@ -12,8 +12,16 @@
         <span class="badge bg-danger">Vendido</span>
         @break
 
+    @case('inativo')
+        <span class="badge bg-danger">Inativo</span>
+        @break
+
     @case('disponivel')
         <span class="badge bg-success">Disponível</span>
+        @break
+
+    @case('ativo')
+        <span class="badge bg-success">Ativo</span>
         @break
 
     @case('ajuste_positivo')

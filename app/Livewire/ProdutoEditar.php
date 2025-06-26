@@ -58,7 +58,6 @@ class ProdutoEditar extends Component
             'ativo' => $this->ativo,
         ]);
 
-        // dd($produto);
 
         $this->dispatch('refreshTabelaVisualizarProduto');
         $this->dispatch('$refresh');

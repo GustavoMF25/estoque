@@ -72,7 +72,8 @@ class EstoqueController extends Controller
                     'observacao' => 'Estoque removido: movimentação automática de cancelamento'
                 ]);
             }
-
+            $estoque->status = 'inativo';
+            $estoque->save();
             $estoque->delete();
 
             return redirect()->route('estoques.index')->with('success', 'Estoque removido com sucesso!');
