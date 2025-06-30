@@ -15,6 +15,7 @@
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
         "livewire/livewire": "^3.6",
+        "mpdf/mpdf": "^8.2",
         "rappasoft/laravel-livewire-tables": "^3.7"
     },
     "require-dev": {

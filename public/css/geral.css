@@ -39,6 +39,7 @@ dialog[open] {
 
 .card-header {
     background-color: #2c3a28 !important;
+    color: #fafafa !important;
 }
 
 .modal.modal-custom-center .modal-dialog {

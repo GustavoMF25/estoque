@@ -32,8 +32,7 @@ class ProdutosVisualizarTable extends DataTableComponent
                 'estoque',
                 'ultimaMovimentacao',
                 'ultimaMovimentacao.usuario'
-            ])
-            ->withTrashed();
+        ]);
 
         if (!empty($this->nome)) {
             $query->where('produtos.nome', 'LIKE', "%{$this->nome}%");
@@ -44,7 +43,6 @@ class ProdutosVisualizarTable extends DataTableComponent
                 $q->where('tipo', $this->ultimaMovimentacao);
             });
         }
-        $query->distinct();
 
         return $query;
     }
@@ -69,7 +67,7 @@ class ProdutosVisualizarTable extends DataTableComponent
                     'status' => optional($row->ultimaMovimentacao)->tipo,
                 ])),
 
-            Column::make('Vendido por', 'ultimaMovimentacao.user_id')
+            Column::make('Vendido por', 'id')
                 ->format(function ($value, $row) {
                     return $row->ultimaMovimentacao->tipo === 'saida'
                         ? optional($row->ultimaMovimentacao->usuario)->name
