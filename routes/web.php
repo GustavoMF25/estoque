@@ -7,7 +7,10 @@ use App\Http\Controllers\FabricanteController;
 use App\Http\Controllers\LojaController;
 use App\Http\Controllers\ProdutosController;
 use App\Http\Controllers\UsuarioController;
+use App\Http\Controllers\VendaController;
+use App\Livewire\Carrinho\ConfirmarVenda;
 use App\Livewire\TesteLivewire;
+use App\Livewire\Vendas\VendasTable;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -45,11 +48,18 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
     Route::patch('estoques/{id}/restaurar', [EstoqueController::class, 'restore'])->name('estoques.restore');
 
     Route::resource('produtos', ProdutosController::class)->only(['index', 'create', 'store', 'destroy']);
-    Route::get('produtos/catalogo', [ProdutosController::class , 'catalogo'])->name('produtos.catalogo');
+    Route::get('produtos/catalogo', [ProdutosController::class, 'catalogo'])->name('produtos.catalogo');
     Route::get('/produtos/visualizar', [ProdutosController::class, 'show'])->name('produtos.show');
     Route::post('/produtos/vender', [ProdutosController::class, 'vender'])->name('produtos.vender');
 
     Route::resource('categorias', CategoriaController::class);
-    Route::resource('fabricantes', FabricanteController::class);
+    Route::resource('   ', FabricanteController::class);
 
+    Route::get('/carrinho/confirmar', ConfirmarVenda::class)->name('carrinho.confirmar');
+
+    Route::get('/vendas', function () {
+        return view('vendas.index');
+    })->name('vendas.index');
+    Route::get('/vendas/{venda}/nota', [VendaController::class, 'gerar'])
+    ->name('vendas.nota');
 });
