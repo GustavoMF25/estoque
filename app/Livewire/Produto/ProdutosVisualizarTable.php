@@ -82,7 +82,7 @@ class ProdutosVisualizarTable extends DataTableComponent
 
             Column::make('Ações', 'id')
                 ->format(function ($value, $row) {
-                    if ($row->ultimaMovimentacao->tipo !== 'saida') {
+                    if ($row->ultimaMovimentacao->tipo !== 'saida' && $row->ultimaMovimentacao->tipo !== 'cancelamento' ) {
                         return view('components.table.btn-table-actions', [
                             'remove' => [
                                 'route' => route('produtos.destroy', $value),
