@@ -47,4 +47,9 @@ class Produto extends Model
     {
         return $this->hasOne(Movimentacao::class)->latestOfMany();
     }
+
+    public function categoria()
+    {
+        return $this->belongsTo(Categoria::class);
+    }
 }

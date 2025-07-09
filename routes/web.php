@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\EstoqueController;
 use App\Http\Controllers\LojaController;
@@ -56,5 +57,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
         return view('vendas.index');
     })->name('vendas.index');
     Route::get('/vendas/{venda}/nota', [VendaController::class, 'gerar'])
-    ->name('vendas.nota');
+        ->name('vendas.nota');
+
+    Route::resource('categorias', CategoriaController::class);
 });

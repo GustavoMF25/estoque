@@ -37,7 +37,11 @@ class ProdutoTable extends DataTableComponent
             'quantidade_produtos',
             'data_criacao',
             'estoque_nome',
-        ])->orderBy('nome', 'asc');
+            'ultima_movimentacao'
+        ])
+        ->orderBy('ultima_movimentacao', 'desc')
+        ->orderBy('nome', 'asc')
+        ->whereNotIn('ultima_movimentacao', ['cancelamento']);
         return $query;
     }
 

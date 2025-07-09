@@ -40,6 +40,15 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a href="{{ route('categorias.index') }}"
+                        class="nav-link {{ request()->routeIs('estoques.index') ? 'active' : '' }}">
+                        <i class="fas fa-warehouse"></i>
+                        <p>
+                            Categorias
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="{{ route('produtos.index') }}"
                         class="nav-link {{ request()->routeIs('produtos.index') ? 'active' : '' }}">
                         <i class="fas fa-layer-group"></i>
