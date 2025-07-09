@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\EstoqueController;
 use App\Http\Controllers\LojaController;
@@ -46,4 +47,14 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
     Route::get('produtos/catalogo', [ProdutosController::class , 'catalogo'])->name('produtos.catalogo');
     Route::get('/produtos/visualizar', [ProdutosController::class, 'show'])->name('produtos.show');
     Route::post('/produtos/vender', [ProdutosController::class, 'vender'])->name('produtos.vender');
+
+    Route::get('/carrinho/confirmar', ConfirmarVenda::class)->name('carrinho.confirmar');
+
+    Route::get('/vendas', function () {
+        return view('vendas.index');
+    })->name('vendas.index');
+    Route::get('/vendas/{venda}/nota', [VendaController::class, 'gerar'])
+        ->name('vendas.nota');
+
+    Route::resource('categorias', CategoriaController::class);
 });

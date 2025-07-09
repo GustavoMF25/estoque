@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Produto;
 
+use App\Models\Categoria;
 use App\Models\Produto;
 use Livewire\Component;
 
@@ -9,6 +10,7 @@ class ModalCadastrarVenda extends Component
 {
     public int $quantidade;
     public $produtos;
+    public $categorias;
     public $formId;
     public $props;
 
@@ -26,6 +28,8 @@ class ModalCadastrarVenda extends Component
             ->selectRaw('COUNT(*) as total')
             ->groupBy('nome')
             ->get();
+
+        $this->categorias = Categoria::where('ativo', true)->orderBy('nome')->get();
     }
 
     public function render()
