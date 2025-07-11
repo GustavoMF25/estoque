@@ -40,7 +40,7 @@
                 onclick="
                     window.dispatchEvent(new CustomEvent('abrirModal', {
                         detail: {
-                            titulo: 'Atualizar produto',
+                            titulo: 'Adicionar produto',
                             formId: 'cadastrarProduto',
                             componente: 'produto.modal-cadastrar-produto'
                         }
@@ -54,7 +54,7 @@
                 onclick="
                     window.dispatchEvent(new CustomEvent('abrirModal', {
                         detail: {
-                            titulo: 'Atualizar produto',
+                            titulo: 'Remover produto',
                             formId: 'cadastrarProduto',
                             componente: 'produto.modal-cadastrar-produto'
                         }

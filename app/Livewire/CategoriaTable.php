@@ -35,27 +35,30 @@ class CategoriaTable extends DataTableComponent
             Column::make('Descricao', 'descricao')->searchable(),
             Column::make('Status', 'ativo')
                 ->format(function ($value, $row) {
-                    return view('components.table.status-badge', ['status' => $value]);
+                    if($value){
+                        return 'Ativo';
+                    }
+                    return 'Inativo';
                 })
                 ->searchable()
                 ->sortable(),
             Column::make('Ações', 'id')
                 ->format(function ($value, $row) {
                     return view('components.table.btn-table-actions', [
-                        "remove" => [
-                            'route' => route('estoques.destroy', $value),
-                        ],
+                        // "remove" => [
+                        //     'route' => route('estoques.destroy', $value),
+                        // ],
 
-                        'show' => [
-                            'title' => 'Estoque → ' . $row->nome,
-                            'componente' => 'estoque.estoque-visualizar',
-                            'props' => ['estoqueId' => $value],
-                            'modal' => true,
-                            'route' => ''
-                        ],
-                        'restore' => [
-                            'route' => route('estoques.restore', $value)
-                        ]
+                        // 'show' => [
+                        //     'title' => 'Estoque → ' . $row->nome,
+                        //     'componente' => 'estoque.estoque-visualizar',
+                        //     'props' => ['estoqueId' => $value],
+                        //     'modal' => true,
+                        //     'route' => ''
+                        // ],
+                        // 'restore' => [
+                        //     'route' => route('estoques.restore', $value)
+                        // ]
                     ]);
                 }),
         ];
