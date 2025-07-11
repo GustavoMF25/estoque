@@ -3,6 +3,7 @@
 namespace App\Livewire\Produto;
 
 use App\Models\Produto;
+use App\Models\ProdutosAgrupados;
 use Livewire\Component;
 
 class ProdutoVisualizar extends Component
@@ -11,14 +12,17 @@ class ProdutoVisualizar extends Component
     public $estoque_id;
     public $ultima_movimentacao;
     public $image;
+    public $produto;
 
     public function mount($nome = null, $estoque_id = null, $ultima_movimentacao = null)
     {
         $this->nome = $nome;
         $this->estoque_id = $estoque_id;
         $this->ultima_movimentacao = $ultima_movimentacao;
-
-        $this->image = Produto::where('nome' , 'like', "%".$nome."%")->select('imagem')->first();
+        $this->produto = ProdutosAgrupados::where('nome', 'like', "%" . $nome . "%")
+        ->where('ultima_movimentacao', $ultima_movimentacao)        
+        ->first();
+        $this->image = Produto::where('nome', 'like', "%" . $nome . "%")->select('imagem')->first();
     }
 
     public function render()

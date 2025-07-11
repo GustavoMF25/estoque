@@ -11,8 +11,15 @@
                 <x-table.status-badge :status="$ultima_movimentacao" />
 
             </p>
+            <p class="mb-0">
+                <strong>Preço:</strong>
+                {{\App\Helpers\FormatHelper::brl($produto->preco)}}
+            </p>
+            <p class="mb-0">
+                <strong>Quantidade:</strong>
+                {{$produto->quantidade_produtos}}
+            </p>
+
         </div>
     </div>
-
-    <livewire:produto.produtos-visualizar-table :nome="$nome" :ultima_movimentacao="$ultima_movimentacao" :wire:key="'produtos-visualizar'" />
 </div>
