@@ -27,42 +27,18 @@
                     window.dispatchEvent(new CustomEvent('abrirModal', {
                         detail: {
                             titulo: 'Atualizar produto',
-                            formId: 'cadastrarProduto',
-                            componente: 'produto.modal-cadastrar-produto'
+                            formId: 'atualizarProduto',
+                            componente: 'produto.modal-atualizar-produto',
+                            props: { 
+                                nome: '{{ $nome }}',
+                                ultimaMovimentacao: '{{ $ultima_movimentacao }}'
+                            }
                         }
                     }));
                     $('#modal-sm').modal('show');
                 "
                 class="btn btn-outline-warning btn-block btn-sm"><i class="fa fa-book"></i>
                 Atualizar Produto {{ $nome }}
-            </button>
-            <button type="button"
-                onclick="
-                    window.dispatchEvent(new CustomEvent('abrirModal', {
-                        detail: {
-                            titulo: 'Adicionar produto',
-                            formId: 'cadastrarProduto',
-                            componente: 'produto.modal-cadastrar-produto'
-                        }
-                    }));
-                    $('#modal-sm').modal('show');
-                "
-                class="btn btn-outline-primary btn-block btn-sm"><i class="fa fa-book"></i>
-                Adicionar Produto {{ $nome }}
-            </button>
-            <button type="button"
-                onclick="
-                    window.dispatchEvent(new CustomEvent('abrirModal', {
-                        detail: {
-                            titulo: 'Remover produto',
-                            formId: 'cadastrarProduto',
-                            componente: 'produto.modal-cadastrar-produto'
-                        }
-                    }));
-                    $('#modal-sm').modal('show');
-                "
-                class="btn btn-outline-danger btn-block btn-sm"><i class="fa fa-book"></i>
-                Remover Produto {{ $nome }}
             </button>
         </div>
     </div>

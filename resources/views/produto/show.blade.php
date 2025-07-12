@@ -1,5 +1,10 @@
 <x-app-layout>
     <x-basic.content-page :title="__('Produto')" :class="'card-secondary'">
-        <livewire:produto.produto-visualizar :key="now().'produto-visualizar'" :nome="$nome" :estoque_id="$estoque_id" :ultima_movimentacao="$ultima_movimentacao" />
+        <livewire:produto.produto-visualizar
+            :key="now().'produto-visualizar'"
+            :nome="$nome"
+            :estoque_id="$estoque_id"
+            :ultima_movimentacao="$ultima_movimentacao"
+            wire:key="produto-visualizar-{{$nome}}" />
     </x-basic.content-page>
 </x-app-layout>

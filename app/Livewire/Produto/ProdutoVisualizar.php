@@ -14,6 +14,8 @@ class ProdutoVisualizar extends Component
     public $image;
     public $produto;
 
+    protected $listeners = ['refreshProdutoVisualizar' => '$refresh'];
+
     public function mount($nome = null, $estoque_id = null, $ultima_movimentacao = null)
     {
         $this->nome = $nome;

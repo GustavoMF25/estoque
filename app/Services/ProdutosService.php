@@ -67,4 +67,71 @@ class ProdutosService
             return $err->getMessage();
         }
     }
+
+    public static function handleCadastroProduto(array $data)
+    {
+        $estoque = Estoque::withCount('produtos')->findOrFail($data['estoque_id']);
+        $totalAtual = $estoque->produtos_count;
+        $quantidadeMaxima = $estoque->quantidade_maxima;
+
+        if ($quantidadeMaxima > 0 && ($totalAtual + $data['quantidade']) > $quantidadeMaxima) {
+            return redirect()->route('produtos.index')->with('error', 'Não é possível cadastrar: o estoque excederia o limite máximo de ' . $quantidadeMaxima . ' itens.');
+        }
+
+        $imagem = $data['imagem'] ?? null;
+
+        if ($imagem instanceof \Illuminate\Http\UploadedFile) {
+            $imagem = $imagem->store('produtos', 'public');
+        }
+
+        for ($i = 0; $i < $data['quantidade']; $i++) {
+            $produto = Produto::create([
+                'nome' => $data['nome'],
+                'codigo_barras' => Produto::gerarCodigoBarrasUnico(),
+                'unidade' => $data['unidade'] ?? 'un',
+                'preco' => $data['preco'],
+                'estoque_id' => $data['estoque_id'],
+                'ativo' => $data['ativo'] ?? true,
+                'imagem' => $imagem,
+            ]);
+
+            MovimentacaoService::registrar([
+                'produto_id' => $produto->id,
+                'tipo' => 'entrada',
+                'quantidade' => 1,
+                'observacao' => 'Cadastro inicial do produto',
+            ]);
+
+            MovimentacaoService::registrar([
+                'produto_id' => $produto->id,
+                'tipo' => 'disponivel',
+                'quantidade' => 1,
+                'observacao' => 'Disponível para venda',
+            ]);
+        }
+
+        return true;
+    }
+
+    public static function cadProdutoRequest($request)
+    {
+        try {
+            $validated = $request->validate([
+                'nome' => 'required|string|max:255',
+                'codigo_barras' => 'nullable|string|max:50',
+                'unidade' => 'nullable|string|max:10',
+                'preco' => 'required|numeric|min:0',
+                'estoque_id' => 'required|exists:estoques,id',
+                'quantidade' => 'required|integer|min:1',
+                'ativo' => 'boolean',
+                'imagem' => 'nullable|image|max:2048',
+            ]);
+
+            $validated['imagem'] = $request->file('imagem') ?? null;
+
+            return self::handleCadastroProduto($validated);
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
 }
