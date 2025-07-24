@@ -28,6 +28,7 @@
                         detail: {
                             titulo: 'Atualizar produto',
                             formId: 'atualizarProduto',
+                            paramsBtn: `wire:click='atualizar'`,
                             componente: 'produto.modal-atualizar-produto',
                             props: { 
                                 nome: '{{ $nome }}',

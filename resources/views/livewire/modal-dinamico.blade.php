@@ -13,6 +13,9 @@
                     @if (!empty($formId))
                         <button id="btnSalvar" class="btn btn-success" form="{{ $formId }}">Salvar</button>
                     @endif
+                    @if(!empty($paramsBtn))
+                        <button id="btnSalvar" class="btn btn-success" {{$paramsBtn}}>Salvar</button>
+                    @endif
                     <button class="btn btn-secondary" data-dismiss="modal">Fechar</button>
                 </div>
             </div>

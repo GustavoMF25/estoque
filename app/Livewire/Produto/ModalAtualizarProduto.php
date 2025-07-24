@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Produto;
 
+use App\Models\Categoria;
 use App\Models\Estoque;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -19,8 +20,11 @@ class ModalAtualizarProduto extends Component
     public $quantidade = 1;
     public $imagem;
     public $estoque_id;
+    public $categoria;
     public $estoques;
     public $ultimaMovimentacao;
+    public $mensagem = 'Atualizado com sucesso';
+    public $categorias;
 
     protected $rules = [
         'nome' => 'required|string|max:255',
@@ -33,7 +37,7 @@ class ModalAtualizarProduto extends Component
     public function mount($nome, $ultimaMovimentacao)
     {
         $this->estoques = Estoque::all();
-
+        $this->categorias = Categoria::all();
         $this->nome = $nome;
         $this->ultimaMovimentacao = $ultimaMovimentacao;
 
@@ -43,6 +47,7 @@ class ModalAtualizarProduto extends Component
             $this->preco = $produto->preco;
             $this->quantidade = $produto->quantidade;
             $this->estoque_id = $produto->estoque_id;
+            $this->categoria = $produto->categoria_id;
         } else {
             session()->flash('error', 'Produto não encontrado.');
         }
@@ -69,6 +74,7 @@ class ModalAtualizarProduto extends Component
                 'preco' => $this->preco ?? 0,
                 'estoque_id' => $this->estoque_id,
                 'quantidade' => $diferenca,
+                'categoria_id' => $this->categoria,
             ];
 
             if ($this->imagem) {
@@ -77,7 +83,7 @@ class ModalAtualizarProduto extends Component
             }
 
             ProdutosService::handleCadastroProduto($data);
-            session()->flash('success', "{$diferenca} produtos foram criados para completar a quantidade informada.");
+            $this->mensagem = "{$diferenca} produtos foram criados para completar a quantidade informada.";
         }
 
         if ($quantidadeInformada < $countAtual) {
@@ -100,13 +106,13 @@ class ModalAtualizarProduto extends Component
 
                 $produto->delete();
             }
-
-            session()->flash('success', "{$diferenca} produtos foram removidos para ajustar à quantidade informada.");
+            $this->mensagem = "{$diferenca} produtos foram removidos para ajustar à quantidade informada.";
         }
 
         Produto::where('nome', $this->nome)->update([
             'preco' => $this->preco ?? 0,
             'estoque_id' => $this->estoque_id,
+            'categoria_id' => $this->categoria,
         ]);
 
         if ($this->imagem) {
@@ -122,13 +128,7 @@ class ModalAtualizarProduto extends Component
                 }
             });
         }
-
-        // $this->dispatch('refreshProdutoVisualizar');
-        // $this->dispatch('refreshProdutoVisualizar')->to('produto.produto-visualizar');
-
-        $this->dispatch('refreshProdutoVisualizar')->to('produto.produto-visualizar', ['key' => 'produto-visualizar-' . $this->nome]);
-
-        $this->reset(['nome', 'preco', 'quantidade', 'imagem', 'estoque_id']);
+        $this->dispatch('msgtSuccess', $this->mensagem);
     }
 
     public function render()

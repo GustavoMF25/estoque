@@ -14,7 +14,9 @@ class ProdutoVisualizar extends Component
     public $image;
     public $produto;
 
-    protected $listeners = ['refreshProdutoVisualizar' => '$refresh'];
+    protected $listeners = [
+        'refreshProdutoVisualizar' => 'carregarProduto',
+    ];
 
     public function mount($nome = null, $estoque_id = null, $ultima_movimentacao = null)
     {
@@ -22,9 +24,20 @@ class ProdutoVisualizar extends Component
         $this->estoque_id = $estoque_id;
         $this->ultima_movimentacao = $ultima_movimentacao;
         $this->produto = ProdutosAgrupados::where('nome', 'like', "%" . $nome . "%")
-        ->where('ultima_movimentacao', $ultima_movimentacao)        
-        ->first();
+            ->where('ultima_movimentacao', $ultima_movimentacao)
+            ->first();
         $this->image = Produto::where('nome', 'like', "%" . $nome . "%")->select('imagem')->first();
+    }
+
+    public function carregarProduto()
+    {
+        $this->produto = ProdutosAgrupados::where('nome', 'like', "%" . $this->nome . "%")
+            ->where('ultima_movimentacao', $this->ultima_movimentacao)
+            ->first();
+
+        $this->image = Produto::where('nome', 'like', "%" . $this->nome . "%")
+            ->select('imagem')
+            ->first();
     }
 
     public function render()

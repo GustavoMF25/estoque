@@ -1,10 +1,4 @@
 <div>
-    @if (session()->has('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @elseif (session()->has('error'))
-        <div class="alert alert-danger">{{ session('error') }}</div>
-    @endif
-
     @if ($nome)
     <form wire:submit.prevent="atualizar" id="atualizarProduto" enctype="multipart/form-data">
         <div class="row">
@@ -36,10 +30,20 @@
                 <select wire:model.defer="estoque_id" class="form-control">
                     <option value="">Selecione...</option>
                     @foreach ($estoques as $estoque)
-                        <option value="{{ $estoque->id }}">{{ $estoque->nome }}</option>
+                    <option value="{{ $estoque->id }}">{{ $estoque->nome }}</option>
                     @endforeach
                 </select>
                 @error('estoque_id') <span class="text-danger">{{ $message }}</span> @enderror
+            </div>
+            <div class="col-md-4 mb-3">
+                <label>Categoria</label>
+                <select wire:model.defer="categoria" class="form-control">
+                    <option value="">Selecione...</option>
+                    @foreach ($categorias as $categoriaItem)
+                    <option value="{{ $categoriaItem->id }}">{{ $categoriaItem->nome }}</option>
+                    @endforeach
+                </select>
+                @error('categoria') <span class="text-danger">{{ $message }}</span> @enderror
             </div>
 
         </div>

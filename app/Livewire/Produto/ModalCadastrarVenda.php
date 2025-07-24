@@ -2,34 +2,50 @@
 
 namespace App\Livewire\Produto;
 
+use Livewire\Component;
 use App\Models\Categoria;
 use App\Models\Produto;
-use Livewire\Component;
 
 class ModalCadastrarVenda extends Component
 {
-    public int $quantidade;
-    public $produtos;
-    public $categorias;
-    public $formId;
-    public $props;
+    public $quantidade = 1;
+    public $categoriaId;
+    public $produtoSelecionado;
+    public $categorias = [];
+    public $produtos = [];
 
-
-    public function mount($formId)
+    public function mount()
     {
-        $this->quantidade = Produto::whereHas('ultimaMovimentacao', function ($query) {
-            $query->where('tipo', 'saida');
-        })->count();
+        $this->categorias = Categoria::where('ativo', true)->orderBy('nome')->get();
+        $this->carregarProdutos();
+    }
 
-        $this->produtos =  Produto::select('nome')
-            ->whereHas('ultimaMovimentacao', function ($query) {
-                $query->where('tipo', 'disponivel');
-            })
+    public function categoriaSelecionada()
+    {
+        $this->carregarProdutos();
+    }
+
+    private function carregarProdutos()
+    {
+        $query = Produto::query()
+            ->select('nome')
+            ->whereHas('ultimaMovimentacao', function ($q) {
+                $q->where('tipo', 'disponivel');
+            });
+
+        if (!empty($this->categoriaId)) {
+            $query->where('categoria_id', $this->categoriaId);
+        }
+
+        $this->produtos = $query
             ->selectRaw('COUNT(*) as total')
             ->groupBy('nome')
             ->get();
+    }
 
-        $this->categorias = Categoria::where('ativo', true)->orderBy('nome')->get();
+    public function venderProduto()
+    {
+        session()->flash('success', 'Venda registrada com sucesso!');
     }
 
     public function render()
