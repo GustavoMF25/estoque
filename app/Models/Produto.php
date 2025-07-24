@@ -21,6 +21,7 @@ class Produto extends Model
         'preco',
         'estoque_minimo',
         'estoque_id',
+        'categoria_id',
         'ativo'
     ];
 

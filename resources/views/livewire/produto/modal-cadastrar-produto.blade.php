@@ -30,6 +30,17 @@
                     @endforeach
                 </select>
             </div>
+            <!-- Select de Categoria -->
+            <div class="form-group col-md-4 mb-3">
+                <label for="categoria">Categoria</label>
+                <select name="categoria_id" class="form-control select2">
+                    <option value="">Sem categoria</option>
+                    @forelse ($categorias as $categoria)
+                    <option value="{{ $categoria->id }}">{{ $categoria->nome }}</option>
+                    @empty
+                    @endforelse
+                </select>
+            </div>
 
         </div>
     </form>

@@ -27,8 +27,18 @@
                     <select name="estoque_id" class="form-control" required>
                         <option value="">Selecione...</option>
                         @foreach ($estoques as $estoque)
-                            <option value="{{ $estoque->id }}">{{ $estoque->nome }}</option>
+                        <option value="{{ $estoque->id }}">{{ $estoque->nome }}</option>
                         @endforeach
+                    </select>
+                </div>
+                <div class="form-group col-md-4 mb-3">
+                    <label for="categoria">Categoria</label>
+                    <select name="categoria_id" class="form-control select2">
+                        <option value="">Sem categoria</option>
+                        @forelse ($categorias as $categoria)
+                        <option value="{{ $categoria->id }}">{{ $categoria->nome }}</option>
+                        @empty
+                        @endforelse
                     </select>
                 </div>
 

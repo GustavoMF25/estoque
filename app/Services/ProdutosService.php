@@ -20,6 +20,7 @@ class ProdutosService
                 'unidade' => 'nullable|string|max:10',
                 'preco' => 'required|numeric|min:0',
                 'estoque_id' => 'required|exists:estoques,id',
+                'categoria_id' => 'required|exists:categoria,id',
                 'quantidade' => 'required|integer|min:1',
                 'ativo' => 'boolean',
             ]);
@@ -45,6 +46,7 @@ class ProdutosService
                     'unidade' => $request->unidade ?? 'un',
                     'preco' => $request->preco,
                     'estoque_id' => $request->estoque_id,
+                    'categoria_id' => $request->categoria_id,
                     'ativo' => $request->ativo ?? true,
                     'imagem' => $imagem,
                 ]);
@@ -91,6 +93,7 @@ class ProdutosService
                 'unidade' => $data['unidade'] ?? 'un',
                 'preco' => $data['preco'],
                 'estoque_id' => $data['estoque_id'],
+                'categoria_id' => $data['categoria_id'],
                 'ativo' => $data['ativo'] ?? true,
                 'imagem' => $imagem,
             ]);
@@ -123,6 +126,7 @@ class ProdutosService
                 'preco' => 'required|numeric|min:0',
                 'estoque_id' => 'required|exists:estoques,id',
                 'quantidade' => 'required|integer|min:1',
+                'categoria_id' => 'required|exists:categorias,id',
                 'ativo' => 'boolean',
                 'imagem' => 'nullable|image|max:2048',
             ]);

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Categoria;
 use App\Models\Estoque;
 use App\Models\Produto;
 use App\Services\MovimentacaoService;
@@ -26,12 +27,12 @@ class ProdutosController extends Controller
     public function create()
     {
         $estoques = Estoque::all();
-        return view('produto.create', compact('estoques'));
+        $categorias = Categoria::where('ativo', true)->orderBy('nome')->get();
+        return view('produto.create', compact(['estoques', 'categorias']));
     }
 
     public function show(Request $request)
     {
-        // dd($request->all());
         return view('produto.show', $request->all());
     }
 
