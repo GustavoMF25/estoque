@@ -45,10 +45,9 @@ class CategoriaTable extends DataTableComponent
             Column::make('Ações', 'id')
                 ->format(function ($value, $row) {
                     return view('components.table.btn-table-actions', [
-                        // "remove" => [
-                        //     'route' => route('estoques.destroy', $value),
-                        // ],
-
+                        "remove" => [
+                            'route' => route('categorias.destroy', $value),
+                        ],
                         // 'show' => [
                         //     'title' => 'Estoque → ' . $row->nome,
                         //     'componente' => 'estoque.estoque-visualizar',

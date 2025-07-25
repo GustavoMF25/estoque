@@ -1,4 +1,4 @@
-<form wire:submit.prevent="venderProduto" id="formVenda">
+<form action="{{ route('produtos.vender') }}" method="POST" id="formVenda">
     @csrf
 
     <!-- Select de Categoria -->
@@ -15,7 +15,7 @@
     <!-- Select de Produto -->
     <div class="form-group">
         <label for="produto">Produto</label>
-        <select class="form-control" wire:model="produtoSelecionado">
+        <select name="nome" class="form-control" wire:model="produtoSelecionado">
             <option value="">Selecione um produto</option>
             @foreach ($produtos as $produto)
                 <option value="{{ $produto->nome }}">
@@ -28,6 +28,6 @@
     <!-- Campo de Quantidade -->
     <div class="form-group">
         <label for="quantidade">Quantidade Total a Vender</label>
-        <input type="number" class="form-control" wire:model="quantidade" min="1" required>
+        <input type="number" name="quantidade" class="form-control" wire:model="quantidade" min="1" required>
     </div>
 </form>

@@ -38,10 +38,10 @@
                             Estoque
                         </p>
                     </a>
-                </li>
+                </li>    
                 <li class="nav-item">
                     <a href="{{ route('categorias.index') }}"
-                        class="nav-link {{ request()->routeIs('estoques.index') ? 'active' : '' }}">
+                        class="nav-link {{ request()->routeIs('categorias.index') ? 'active' : '' }}">
                         <i class="fas fa-warehouse"></i>
                         <p>
                             Categorias

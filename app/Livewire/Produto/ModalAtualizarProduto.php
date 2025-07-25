@@ -40,12 +40,11 @@ class ModalAtualizarProduto extends Component
         $this->categorias = Categoria::all();
         $this->nome = $nome;
         $this->ultimaMovimentacao = $ultimaMovimentacao;
-
         $produto = Produto::where('nome', $nome)->first();
 
         if ($produto) {
             $this->preco = $produto->preco;
-            $this->quantidade = $produto->quantidade;
+            $this->quantidade = Produto::where('nome', $nome)->count();
             $this->estoque_id = $produto->estoque_id;
             $this->categoria = $produto->categoria_id;
         } else {

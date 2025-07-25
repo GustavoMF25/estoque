@@ -27,7 +27,7 @@ class UsuarioController extends Controller
             'password' => 'required|string|min:8|confirmed',
             'cpf' => 'nullable|string|max:14',
             'status' => 'required|string|in:ativo,inativo',
-            'perfil' => 'required|string|in:admin,gerente,operador',
+            'perfil' => 'required|string|in:admin,gerente,operador,vendedor',
         ]);
         $user = User::create([
             'name' => $validated['name'],

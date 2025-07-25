@@ -21,6 +21,7 @@
             </p>
 
         </div>
+        @if(Auth::user()->isAdmin())
         <div class="col-md-4">
             <button type="button"
                 onclick="
@@ -42,5 +43,6 @@
                 Atualizar Produto {{ $nome }}
             </button>
         </div>
+        @endif
     </div>
 </div>
