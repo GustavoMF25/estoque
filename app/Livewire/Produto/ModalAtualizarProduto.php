@@ -16,6 +16,7 @@ class ModalAtualizarProduto extends Component
     use WithFileUploads;
 
     public $nome;
+    public $nome_atual;
     public $preco;
     public $quantidade = 1;
     public $imagem;
@@ -39,6 +40,7 @@ class ModalAtualizarProduto extends Component
         $this->estoques = Estoque::all();
         $this->categorias = Categoria::all();
         $this->nome = $nome;
+        $this->nome_atual = $nome;
         $this->ultimaMovimentacao = $ultimaMovimentacao;
         $produto = Produto::where('nome', $nome)->first();
 
@@ -56,7 +58,7 @@ class ModalAtualizarProduto extends Component
     {
         $this->validate();
 
-        $produtos = Produto::where('nome', $this->nome)
+        $produtos = Produto::where('nome', $this->nome_atual)
             ->whereHas('ultimaMovimentacao', function ($q) {
                 $q->where('tipo', $this->ultimaMovimentacao);
             })
@@ -86,7 +88,6 @@ class ModalAtualizarProduto extends Component
         }
 
         if ($quantidadeInformada < $countAtual) {
-            // Calcula quantos precisam ser removidos
             $diferenca = $countAtual - $quantidadeInformada;
 
             $produtosParaRemover = Produto::where('nome', $this->nome)
@@ -108,8 +109,9 @@ class ModalAtualizarProduto extends Component
             $this->mensagem = "{$diferenca} produtos foram removidos para ajustar à quantidade informada.";
         }
 
-        Produto::where('nome', $this->nome)->update([
+        Produto::where('nome', $this->nome_atual)->update([
             'preco' => $this->preco ?? 0,
+            'nome' => $this->nome ?? $this->nome_atual,
             'estoque_id' => $this->estoque_id,
             'categoria_id' => $this->categoria,
         ]);
@@ -127,7 +129,7 @@ class ModalAtualizarProduto extends Component
                 }
             });
         }
-        $this->dispatch('msgtSuccess', $this->mensagem);
+        return redirect()->route('produtos.index')->with('success', $this->mensagem);
     }
 
     public function render()

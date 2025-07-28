@@ -2,9 +2,11 @@
     @if ($nome)
     <form wire:submit.prevent="atualizar" id="atualizarProduto" enctype="multipart/form-data">
         <div class="row">
+            <input type="text" class="form-control" value="{{ $nome }}" hidden wire:model.defer="nome_atual">
+
             <div class="col-md-4 mb-3">
                 <label>Nome do Produto</label>
-                <input type="text" class="form-control" value="{{ $nome }}" readonly>
+                <input type="text" class="form-control" value="{{ $nome }}" wire:model.defer="nome">
             </div>
 
             <div class="col-md-4 mb-3">
