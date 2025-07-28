@@ -41,7 +41,7 @@ class AtualizarUsuario extends Component
             'email' => 'required|email|unique:users,email,' . $this->userId,
             'password' => 'nullable|min:8|confirmed',
             'profile_photo' => 'nullable|image|max:2048',
-            'perfil' => 'required|in:admin,operador,gerente',
+            'perfil' => 'required|in:admin,operador,gerente,vendedor',
         ];
     }
 

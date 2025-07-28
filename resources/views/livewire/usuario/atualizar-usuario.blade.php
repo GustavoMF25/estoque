@@ -22,6 +22,7 @@
                 <option value="">Selecione</option>
                 <option value="admin">Administrador</option>
                 <option value="operador">Operador</option>
+                <option value="vendedor">Vendedor</option>
             </select>
             @error('perfil')
                 <small class="text-danger">{{ $message }}</small>
