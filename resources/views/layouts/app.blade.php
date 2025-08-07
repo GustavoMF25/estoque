@@ -85,6 +85,7 @@
             });
         })
 
+
         window.addEventListener('toastr:success', event => {
             const detail = event.detail?.[0] ?? {};
             toastr.success(detail.success || 'Sucesso!');
