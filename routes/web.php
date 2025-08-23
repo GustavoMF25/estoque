@@ -53,7 +53,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
     Route::post('/produtos/vender', [ProdutosController::class, 'vender'])->name('produtos.vender');
 
     Route::resource('categorias', CategoriaController::class);
-    Route::resource('   ', FabricanteController::class);
+    Route::resource('fabricantes', FabricanteController::class);
 
     Route::get('/carrinho/confirmar', ConfirmarVenda::class)->name('carrinho.confirmar');
 

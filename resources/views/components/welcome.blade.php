@@ -4,7 +4,7 @@
         <livewire:produto.cadastrar-produto-card />
     </div>
     @endif
-    <div class="col-lg-3 col-6">
+    <!-- <div class="col-lg-3 col-6">
         <livewire:produto.vender-produto-card />
-    </div>
+    </div> -->
 </div>

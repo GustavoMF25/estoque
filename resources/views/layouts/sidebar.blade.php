@@ -69,16 +69,16 @@
                 <li class="nav-item">
                     <a href="{{ route('produtos.catalogo') }}"
                         class="nav-link {{ request()->routeIs('produtos.catalogo') ? 'active' : '' }}">
-                        <i class="fas fa-layer-group"></i>
+                        <i class="fa fa-book"></i>
                         <p>
-                            Catálogo
+                            Catálogo de Produtos
                         </p>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{{ route('vendas.index') }}"
                         class="nav-link {{ request()->routeIs('vendas.index') ? 'active' : '' }}">
-                        <i class="fas fa-layer-group"></i>
+                        <i class="fa fa-shopping-cart"></i>
                         <p>
                             Vendas
                         </p>
