@@ -49,6 +49,15 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a href="{{ route('fabricantes.index') }}"
+                        class="nav-link {{ request()->routeIs('fabricantes.index') ? 'active' : '' }}">
+                        <i class="fa fa-industry"></i>
+                        <p>
+                            Fabricante
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="{{ route('produtos.index') }}"
                         class="nav-link {{ request()->routeIs('produtos.index') ? 'active' : '' }}">
                         <i class="fas fa-layer-group"></i>

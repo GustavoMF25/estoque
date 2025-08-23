@@ -3,6 +3,7 @@
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\EstoqueController;
+use App\Http\Controllers\FabricanteController;
 use App\Http\Controllers\LojaController;
 use App\Http\Controllers\ProdutosController;
 use App\Http\Controllers\UsuarioController;
@@ -49,4 +50,6 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
     Route::post('/produtos/vender', [ProdutosController::class, 'vender'])->name('produtos.vender');
 
     Route::resource('categorias', CategoriaController::class);
+    Route::resource('fabricantes', FabricanteController::class);
+
 });

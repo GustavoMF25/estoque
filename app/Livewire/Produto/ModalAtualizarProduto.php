@@ -4,6 +4,7 @@ namespace App\Livewire\Produto;
 
 use App\Models\Categoria;
 use App\Models\Estoque;
+use App\Models\Fabricante;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use App\Models\Produto;
@@ -21,8 +22,10 @@ class ModalAtualizarProduto extends Component
     public $quantidade = 1;
     public $imagem;
     public $estoque_id;
+    public $fabricante_id;
     public $categoria;
     public $estoques;
+    public $fabricantes;
     public $ultimaMovimentacao;
     public $mensagem = 'Atualizado com sucesso';
     public $categorias;
@@ -39,6 +42,7 @@ class ModalAtualizarProduto extends Component
     {
         $this->estoques = Estoque::all();
         $this->categorias = Categoria::all();
+        $this->fabricantes = Fabricante::all();
         $this->nome = $nome;
         $this->nome_atual = $nome;
         $this->ultimaMovimentacao = $ultimaMovimentacao;
@@ -48,6 +52,7 @@ class ModalAtualizarProduto extends Component
             $this->preco = $produto->preco;
             $this->quantidade = Produto::where('nome', $nome)->count();
             $this->estoque_id = $produto->estoque_id;
+            $this->fabricante_id = $produto->fabricante_id;
             $this->categoria = $produto->categoria_id;
         } else {
             session()->flash('error', 'Produto não encontrado.');
@@ -76,6 +81,7 @@ class ModalAtualizarProduto extends Component
                 'estoque_id' => $this->estoque_id,
                 'quantidade' => $diferenca,
                 'categoria_id' => $this->categoria,
+                'fabricante_id' => $this->fabricante_id,
             ];
 
             if ($this->imagem) {
@@ -114,6 +120,7 @@ class ModalAtualizarProduto extends Component
             'nome' => $this->nome ?? $this->nome_atual,
             'estoque_id' => $this->estoque_id,
             'categoria_id' => $this->categoria,
+            'fabricante_id' => $this->fabricante_id,
         ]);
 
         if ($this->imagem) {

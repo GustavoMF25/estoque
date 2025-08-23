@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Categoria;
 use App\Models\Estoque;
+use App\Models\Fabricante;
 use App\Models\Produto;
 use App\Services\MovimentacaoService;
 use App\Services\ProdutosService;
@@ -28,7 +29,8 @@ class ProdutosController extends Controller
     {
         $estoques = Estoque::all();
         $categorias = Categoria::where('ativo', true)->orderBy('nome')->get();
-        return view('produto.create', compact(['estoques', 'categorias']));
+        $fabricantes = Fabricante::orderBy('nome')->get();
+        return view('produto.create', compact(['estoques', 'categorias', 'fabricantes']));
     }
 
     public function show(Request $request)
@@ -40,7 +42,7 @@ class ProdutosController extends Controller
     {
         try {
             ProdutosService::cadProdutoRequest($request);
-            return redirect()->route('produtos.index')->with('success', 'Produtos cadastrados com sucesso!');
+            return redirect()->route('produtos.index')->with('success', 'Produtos cadastrados com sucesso!');    
         } catch (Exception $err) {
             return redirect()->route('produtos.index')->with('error', 'Produtos não cadastrados: ' . $err->getMessage());
         }

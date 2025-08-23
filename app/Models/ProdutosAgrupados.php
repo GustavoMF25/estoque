@@ -11,5 +11,5 @@ class ProdutosAgrupados extends Model
 
     protected $table = 'produtos_agrupados_view'; 
     public $timestamps = false;
-    protected $fillable = ['imagem', 'nome', 'quantidade_produtos', 'preco', 'estoque_nome', 'ultima_movimentacao'];
+    protected $fillable = ['imagem', 'nome', 'quantidade_produtos', 'preco', 'estoque_nome', 'ultima_movimentacao', 'fabricante'];
 }

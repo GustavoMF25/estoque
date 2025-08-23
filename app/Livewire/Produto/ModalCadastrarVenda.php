@@ -29,47 +29,47 @@ class ModalCadastrarVenda extends Component
 
     private function carregarProdutos()
     {
-        $query = Produto::query()
-            ->select('nome')
-            ->whereHas('ultimaMovimentacao', function ($q) {
-                $q->where('tipo', 'disponivel');
-            });
+        $q = Produto::query()
+            ->whereHas('ultimaMovimentacao', fn($x) => $x->where('tipo', 'disponivel'))
+            ->when($this->categoriaId, fn($x) => $x->where('categoria_id', $this->categoriaId));
 
-        if (!empty($this->categoriaId)) {
-            $query->where('categoria_id', $this->categoriaId);
+        if (strlen((string)$this->buscaProduto) > 1) {
+            $q->where('nome', 'like', '%' . $this->buscaProduto . '%');
         }
 
-        $this->produtos = $query
-            ->selectRaw('COUNT(*) as total')
+        $lista = $q->selectRaw('nome, COUNT(*) as total')
             ->groupBy('nome')
+            ->orderBy('nome')
             ->get();
+
+        $this->produtos = $lista;
     }
 
-    public function BuscaProduto()
+    public function ProdutoSelecionado()
     {
-        if (strlen($this->buscaProduto) > 1) {
-            $this->produtos = Produto::whereHas('ultimaMovimentacao', function ($q) {
-                $q->where('tipo', 'disponivel');
-            })
-                ->when($this->categoriaId, fn($q) => $q->where('categoria_id', $this->categoriaId))
-                ->where('nome', 'like', '%' . $this->buscaProduto . '%')
-                ->select('nome')
-                ->selectRaw('COUNT(*) as total')
-                ->groupBy('nome')
-                ->limit(10)
-                ->get();
-        } else {
-            $this->carregarProdutos();
+        if (!$this->produtoSelecionado) {
+            $this->qtdMax = 0;
+            $this->quantidade = 1;
+            return;
         }
+
+        $this->qtdMax = Produto::query()
+            ->whereHas('ultimaMovimentacao', fn($q) => $q->where('tipo', 'disponivel'))
+            ->when($this->categoriaId, fn($q) => $q->where('categoria_id', $this->categoriaId))
+            ->where('nome', $this->produtoSelecionado)
+            ->count(); // evita acessar índice [0]
+
+        $this->quantidade = 1;
+        $this->resetErrorBag('quantidade');
+
+        // $this->carregarProdutos();
     }
 
+    // wire:change="carregarQuantidade"
     public function carregarQuantidade()
     {
         $query = Produto::query()
-            ->select('nome')
-            ->whereHas('ultimaMovimentacao', function ($q) {
-                $q->where('tipo', 'disponivel');
-            });
+            ->whereHas('ultimaMovimentacao', fn($q) => $q->where('tipo', 'disponivel'));
 
         if (!empty($this->categoriaId)) {
             $query->where('categoria_id', $this->categoriaId);
@@ -78,14 +78,14 @@ class ModalCadastrarVenda extends Component
             $query->where('nome', $this->produtoSelecionado);
         }
 
-        $query = $query
-            ->selectRaw('COUNT(*) as total')
+        $row = $query
+            ->selectRaw('nome, COUNT(*) as total')
             ->groupBy('nome')
-            ->get()
-            ->toArray();
+            ->first();
 
-        $this->qtdMax = $query[0]['total'];
-        $this->carregarProdutos();
+        $this->qtdMax = $row->total ?? 0;
+
+        // NÃO recarrega a lista aqui — mantém o selected estável
         $this->quantidade = 1;
         $this->resetErrorBag();
     }

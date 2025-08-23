@@ -16,12 +16,12 @@
                 <label for="quantidade">Quantidade a Cadastrar</label>
                 <input type="number" name="quantidade" class="form-control" required min="1" value="1">
             </div>
-            <div class="col-md-4 mb-3">
+            <div class="col-md-3 mb-3">
                 <label for="imagem">Imagem do Produto</label>
                 <input type="file" name="imagem" class="form-control" accept="image/*">
             </div>
 
-            <div class="col-md-4 mb-3">
+            <div class="col-md-3 mb-3">
                 <label for="estoque_id">Estoque</label>
                 <select name="estoque_id" class="form-control" required>
                     <option value="">Selecione...</option>
@@ -31,12 +31,22 @@
                 </select>
             </div>
             <!-- Select de Categoria -->
-            <div class="form-group col-md-4 mb-3">
+            <div class="form-group col-md-3 mb-3">
                 <label for="categoria">Categoria</label>
                 <select name="categoria_id" class="form-control select2">
                     <option value="">Sem categoria</option>
                     @forelse ($categorias as $categoria)
                     <option value="{{ $categoria->id }}">{{ $categoria->nome }}</option>
+                    @empty
+                    @endforelse
+                </select>
+            </div>
+            <div class="form-group col-md-3 mb-3">
+                <label for="fabrricante">Fabricante</label>
+                <select name="fabrricante_id" class="form-control select2">
+                    <option value="">Sem fabricantes</option>
+                    @forelse ($fabricantes as $fabricante)
+                    <option value="{{ $fabricante->id }}">{{ $fabricante->nome }}</option>
                     @empty
                     @endforelse
                 </select>

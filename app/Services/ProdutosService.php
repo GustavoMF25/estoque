@@ -86,6 +86,7 @@ class ProdutosService
             $imagem = $imagem->store('produtos', 'public');
         }
 
+
         for ($i = 0; $i < $data['quantidade']; $i++) {
             $produto = Produto::create([
                 'nome' => $data['nome'],
@@ -94,6 +95,7 @@ class ProdutosService
                 'preco' => $data['preco'],
                 'estoque_id' => $data['estoque_id'],
                 'categoria_id' => $data['categoria_id'],
+                'fabricante_id' => $data['fabricante_id'],
                 'ativo' => $data['ativo'] ?? true,
                 'imagem' => $imagem,
             ]);
@@ -127,6 +129,7 @@ class ProdutosService
                 'estoque_id' => 'required|exists:estoques,id',
                 'quantidade' => 'required|integer|min:1',
                 'categoria_id' => 'required|exists:categorias,id',
+                'fabricante_id' => 'nullable|exists:fabricantes,id',
                 'ativo' => 'boolean',
                 'imagem' => 'nullable|image|max:2048',
             ]);

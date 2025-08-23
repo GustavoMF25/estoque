@@ -26,7 +26,8 @@ class ModalDinamico extends Component
 
         $this->conteudo = Livewire::mount($componente, $props);
         $this->dispatch('refreshTabelaMovimentacoes');
-        
+
+        $this->dispatch('initSelect2');
     }
 
     public function render()

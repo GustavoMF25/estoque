@@ -20,6 +20,21 @@ function abrirModal(id, conteudo = '', textoConfirmar = '', formId = '') {
     }
 }
 
+function abrirModalDinamico(dados) {
+    window.dispatchEvent(new CustomEvent('abrirModal', {
+        detail: dados
+
+    }));
+    $('#modal-sm').modal('show');
+    $(document).ready(function () {
+        $('#categoriaSelect').select2();
+        $('.select2').on('change', function (e) {
+            var data = $(this).select2("val");
+            console.log(data)
+        });
+    });
+}
+
 document.addEventListener('click', function (event) {
     const openDialogs = document.querySelectorAll('dialog[open]');
     openDialogs.forEach(dialog => {

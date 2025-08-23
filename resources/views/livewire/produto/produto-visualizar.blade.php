@@ -19,6 +19,12 @@
                 <strong>Quantidade:</strong>
                 {{ $produto->quantidade_produtos }}
             </p>
+            @if(!empty($produto->fabricante_nome))
+            <p class="mb-0">
+                <strong>Fabricante:</strong>
+                {{ $produto->fabricante_nome }}
+            </p>
+            @endif
 
         </div>
         @if(Auth::user()->isAdmin())

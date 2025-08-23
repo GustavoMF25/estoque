@@ -4,6 +4,7 @@ namespace App\Livewire\Produto;
 
 use App\Models\Categoria;
 use App\Models\Estoque;
+use App\Models\Fabricante;
 use App\Models\Produto;
 use Livewire\Component;
 
@@ -13,6 +14,7 @@ class ModalCadastrarProduto extends Component
     public int $quantidade;
     public $categorias;
     public $estoques;
+    public $fabricantes;
 
     public function mount()
     {
@@ -22,6 +24,7 @@ class ModalCadastrarProduto extends Component
         
         $this->estoques = Estoque::all();
         $this->categorias = Categoria::where('ativo', true)->orderBy('nome')->get();
+        $this->fabricantes = Fabricante::orderBy('nome')->get();
     }
     public function render()
     {

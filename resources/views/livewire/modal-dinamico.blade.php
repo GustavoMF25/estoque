@@ -11,10 +11,10 @@
                 </div>
                 <div class="modal-footer">
                     @if (!empty($formId))
-                        <button id="btnSalvar" class="btn btn-success" form="{{ $formId }}">Salvar</button>
+                    <button id="btnSalvar" class="btn btn-success" form="{{ $formId }}">Salvar</button>
                     @endif
                     @if(!empty($paramsBtn))
-                        <button id="btnSalvar" class="btn btn-success" {{$paramsBtn}}>Salvar</button>
+                    <button id="btnSalvar" class="btn btn-success" {{$paramsBtn}}>Salvar</button>
                     @endif
                     <button class="btn btn-secondary" data-dismiss="modal">Fechar</button>
                 </div>
@@ -22,3 +22,20 @@
         </div>
     </div>
 </div>
+
+@push('scripts')
+<script>
+    document.addEventListener('livewire:init', () => {
+        Livewire.on('initSelect2', () => {
+            setTimeout(() => {
+                if ($('.modal-content').find('select.select2').length > 0) {
+                    $('.modal-content').find('select.select2').select2({
+                        width: 'resolve',
+                        // theme: "classic"
+                    });
+                }
+            }, 50); // espera 50ms
+        });
+    });
+</script>
+@endpush

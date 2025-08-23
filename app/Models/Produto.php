@@ -22,6 +22,7 @@ class Produto extends Model
         'estoque_minimo',
         'estoque_id',
         'categoria_id',
+        'fabricante_id',
         'ativo'
     ];
 
@@ -52,5 +53,10 @@ class Produto extends Model
     public function categoria()
     {
         return $this->belongsTo(Categoria::class);
+    }
+
+    public function fabricante()
+    {
+        return $this->belongsTo(Fabricante::class, 'fabricante_id');
     }
 }
