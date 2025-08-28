@@ -6,6 +6,7 @@ use App\Helpers\FormatHelper;
 use App\Models\User;
 use App\Models\Venda;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 
@@ -66,13 +67,14 @@ class VendasTable extends DataTableComponent
                 ->format(fn($value) => \Carbon\Carbon::parse($value)->format('d/m/Y H:i')),
             Column::make('Ações', 'id')
                 ->format(function ($value, $row) {
+                    $venda = Venda::findOrFail($value);
                     return view('components.table.btn-table-actions', [
                        'edit' => [
                             'title' => 'Editar protocolo',
                             'componente' => 'vendas.atualizar-venda',
                             'props' => ['id' => $value , 'formId' => 'formUpdateVenda'],
                             'formId' => 'formUpdateVenda',
-                            'permitir' => true
+                            'permitir' =>  Auth::id() == $venda->user_id
                        ],
                         "remove" => '',
                         'show' => '',
