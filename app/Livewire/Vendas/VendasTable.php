@@ -13,6 +13,8 @@ class VendasTable extends DataTableComponent
 {
     protected $model = Venda::class;
 
+    protected $listeners = ['refreshTabelaVendas' => '$refresh'];
+
     public function configure(): void
     {
         $this->setPrimaryKey('id')
@@ -65,6 +67,13 @@ class VendasTable extends DataTableComponent
             Column::make('Ações', 'id')
                 ->format(function ($value, $row) {
                     return view('components.table.btn-table-actions', [
+                       'edit' => [
+                            'title' => 'Editar protocolo',
+                            'componente' => 'vendas.atualizar-venda',
+                            'props' => ['id' => $value , 'formId' => 'formUpdateVenda'],
+                            'formId' => 'formUpdateVenda',
+                            'permitir' => true
+                       ],
                         "remove" => '',
                         'show' => '',
                         'restore' => '',
