@@ -74,7 +74,7 @@ class VendasTable extends DataTableComponent
                             'componente' => 'vendas.atualizar-venda',
                             'props' => ['id' => $value , 'formId' => 'formUpdateVenda'],
                             'formId' => 'formUpdateVenda',
-                            'permitir' =>  Auth::id() == $venda->user_id
+                            'permitir' =>  Auth::id() == $venda->user_id || optional(auth()->user())->isAdmin()
                        ],
                         "remove" => '',
                         'show' => '',
