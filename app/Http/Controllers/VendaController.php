@@ -10,7 +10,7 @@ class VendaController extends Controller
 {
     public function gerar($vendaId)
     {
-        $venda = Venda::with(['itens.produto', 'usuario', 'loja'])->findOrFail($vendaId);
+        $venda = Venda::with(['itens.produto', 'usuario', 'loja','cliente.enderecoPadrao'])->findOrFail($vendaId);
 
         $html = view('vendas.nota.pdf', compact('venda'))->render();
 

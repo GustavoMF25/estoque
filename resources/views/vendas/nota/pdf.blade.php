@@ -10,69 +10,18 @@
             font-size: 12px;
             color: #333;
         }
-
-        .header,
-        .footer {
-            text-align: center;
-        }
-
-        .logo {
-            margin-bottom: 10px;
-        }
-
-        .title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .subtitle {
-            font-size: 14px;
-            margin-bottom: 15px;
-        }
-
-        .info,
-        .total {
-            width: 100%;
-            margin-bottom: 15px;
-        }
-
-        .info td {
-            padding: 5px;
-        }
-
-        .items-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .items-table th,
-        .items-table td {
-            border: 1px solid #ddd;
-            padding: 6px;
-        }
-
-        .items-table th {
-            background-color: #f8f8f8;
-            text-align: left;
-        }
-
-        .right {
-            text-align: right;
-        }
-
-        .signature {
-            margin-top: 40px;
-            text-align: center;
-            font-size: 11px;
-        }
-
-        .signature div {
-            border-top: 1px solid #333;
-            width: 200px;
-            margin: 0 auto;
-            padding-top: 5px;
-        }
+        .header, .footer { text-align: center; }
+        .logo { margin-bottom: 10px; }
+        .title { font-size: 18px; font-weight: bold; margin-bottom: 5px; }
+        .subtitle { font-size: 14px; margin-bottom: 15px; }
+        .info, .total { width: 100%; margin-bottom: 15px; }
+        .info td { padding: 5px; vertical-align: top; }
+        .items-table { width: 100%; border-collapse: collapse; }
+        .items-table th, .items-table td { border: 1px solid #ddd; padding: 6px; }
+        .items-table th { background-color: #f8f8f8; text-align: left; }
+        .right { text-align: right; }
+        .signature { margin-top: 40px; text-align: center; font-size: 11px; }
+        .signature div { border-top: 1px solid #333; width: 200px; margin: 0 auto; padding-top: 5px; }
     </style>
 </head>
 
@@ -88,7 +37,9 @@
     {{-- Título --}}
     <div class="header">
         <div class="title">Nota de Venda</div>
-        <div class="subtitle">Protocolo: {{ $venda->protocolo }} | Data: {{ $venda->created_at->format('d/m/Y H:i') }}
+        <div class="subtitle">
+            Protocolo: {{ $venda->protocolo }} |
+            Data: {{ $venda->created_at->format('d/m/Y H:i') }}
         </div>
     </div>
 
@@ -103,6 +54,32 @@
             <td><strong>Endereço:</strong> {{ $empresa->endereco ?? '-' }}</td>
         </tr>
     </table>
+
+    {{-- Dados do Cliente --}}
+    @if ($venda->cliente)
+        <table class="info">
+            <tr>
+                <td><strong>Cliente:</strong> {{ $venda->cliente->nome }}</td>
+                <td><strong>Documento:</strong> {{ $venda->cliente->documento ?? '-' }}</td>
+            </tr>
+            <tr>
+                <td><strong>Email:</strong> {{ $venda->cliente->email ?? '-' }}</td>
+                <td><strong>Telefone:</strong> {{ $venda->cliente->telefone ?? '-' }}</td>
+            </tr>
+            @if($venda->cliente->enderecoPadrao)
+                <tr>
+                    <td colspan="2">
+                        <strong>Endereço:</strong>
+                        {{ $venda->cliente->enderecoPadrao->rua ?? '' }},
+                        {{ $venda->cliente->enderecoPadrao->numero ?? '' }}
+                        {{ $venda->cliente->enderecoPadrao->bairro ? '- '.$venda->cliente->enderecoPadrao->bairro : '' }},
+                        {{ $venda->cliente->enderecoPadrao->cidade ?? '' }}/{{ $venda->cliente->enderecoPadrao->estado ?? '' }}
+                        {{ $venda->cliente->enderecoPadrao->cep ? '- CEP '.$venda->cliente->enderecoPadrao->cep : '' }}
+                    </td>
+                </tr>
+            @endif
+        </table>
+    @endif
 
     {{-- Dados da Venda --}}
     <table class="info">
@@ -140,12 +117,14 @@
     {{-- Total --}}
     <table class="total">
         <tr>
-            <td class="right"><strong>Total da Venda:</strong> R$
-                {{ number_format($venda->valor_total, 2, ',', '.') }}</td>
+            <td class="right">
+                <strong>Total da Venda:</strong>
+                R$ {{ number_format($venda->valor_total, 2, ',', '.') }}
+            </td>
         </tr>
     </table>
 
-    {{-- Mensagem de agradecimento --}}
+    {{-- Rodapé --}}
     <div class="footer">
         <p>Obrigado pela sua compra!</p>
     </div>
@@ -156,5 +135,4 @@
     </div>
 
 </body>
-
 </html>

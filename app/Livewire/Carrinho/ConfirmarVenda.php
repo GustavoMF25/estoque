@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Carrinho;
 
+use App\Models\Cliente;
 use App\Models\Venda;
 use App\Models\VendaItem;
 use App\Models\Produto;
@@ -13,9 +14,12 @@ use Livewire\Component;
 class ConfirmarVenda extends Component
 {
     public $protocolo = '';
+    public $cliente_id = '';
+    public $enderecoSelecionado = '';
 
     protected $rules = [
         'protocolo' => 'required|string|max:255',
+        'cliente_id' => 'required|exists:clientes,id',
     ];
 
     public function aumentarQuantidade($produtoNome)
@@ -93,6 +97,7 @@ class ConfirmarVenda extends Component
                 'empresa_id' => 1,
                 'loja_id' => null,
                 'user_id' => auth()->id(),
+                'cliente_id' => $this->cliente_id,
                 'protocolo' => $this->protocolo,
                 'valor_total' => collect($carrinho)->sum(function ($item) {
                     return $item['quantidade'] * $item['preco_unitario'];
@@ -137,9 +142,19 @@ class ConfirmarVenda extends Component
         }
     }
 
+
+    public function updatedClienteId($value)
+    {
+        $cliente = \App\Models\Cliente::with('enderecoPadrao')->find($value);
+        $this->enderecoSelecionado = $cliente?->enderecoPadrao
+            ? "{$cliente->enderecoPadrao->rua}, {$cliente->enderecoPadrao->numero} - {$cliente->enderecoPadrao->cidade}/{$cliente->enderecoPadrao->estado}"
+            : '';
+    }
+
     public function render()
     {
         $carrinho = session('carrinho', []);
+        $clientes = Cliente::orderBy('nome')->get(); // 👈 lista de clientes
         $disponiveis = [];
 
         foreach ($carrinho as $item) {
@@ -152,6 +167,7 @@ class ConfirmarVenda extends Component
 
         return view('livewire.carrinho.confirmar-venda', [
             'itens' => $carrinho,
+            'clientes' => $clientes,
             'total' => collect($carrinho)->sum(fn($item) => $item['quantidade'] * $item['preco_unitario']),
             'disponiveis' => $disponiveis,
         ]);

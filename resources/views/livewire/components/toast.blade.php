@@ -15,10 +15,15 @@
                 {{ ucfirst($type) }}
             </h5>
             {{ $message }}
-            <button type="button" class="close" wire:click="dismiss" aria-label="Fechar">
-                <span aria-hidden="true">&times;</span>
-            </button>
+
+            <div class="mt-2">
+                <button type="button" class="btn btn-sm btn-primary" onclick="location.reload()">
+                    <i class="fas fa-sync-alt"></i> Atualizar
+                </button>
+                <button type="button" class="close" wire:click="dismiss" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
         </div>
     @endif
-
 </div>

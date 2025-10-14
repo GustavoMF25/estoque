@@ -66,6 +66,24 @@
                             @enderror
                         </div>
 
+                        <div class="form-group">
+                            <label for="cliente_id">Cliente</label>
+                            <select wire:model.change="cliente_id" id="cliente_id" class="form-control">
+                                <option value="">-- Selecione o Cliente --</option>
+                                @foreach ($clientes as $cliente)
+                                    <option value="{{ $cliente->id }}">{{ $cliente->nome }}</option>
+                                @endforeach
+                            </select>
+                            @error('cliente_id')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        @if ($enderecoSelecionado)
+                            <div class="alert alert-info mt-2">
+                                <strong>Endereço:</strong> {{ $enderecoSelecionado }}
+                            </div>
+                        @endif
                         <div class="mt-3">
                             <strong>Total:</strong> R$ {{ App\Helpers\FormatHelper::brl($total) }}
                         </div>

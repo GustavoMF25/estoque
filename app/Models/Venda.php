@@ -18,6 +18,7 @@ class Venda extends Model
         'protocolo',
         'valor_total',
         'status',
+        'cliente_id',
     ];
 
     public function itens()
@@ -38,5 +39,10 @@ class Venda extends Model
     public function usuario()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function cliente()
+    {
+        return $this->belongsTo(\App\Models\Cliente::class, 'cliente_id');
     }
 }

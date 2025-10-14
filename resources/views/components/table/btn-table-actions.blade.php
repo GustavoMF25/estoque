@@ -19,6 +19,11 @@
             <x-table.btn-edit :title="$edit['title']" :componente="$edit['componente']" :props="$edit['props']" :formId="$edit['formId']" />
         @endif
     @endif
+    @if (!empty($custonComponent))
+        @if ((!empty($custonComponent) && auth()->user()->perfil === 'admin') || $custonComponent['permitir'])
+            <x-table.btn-custon-component :icon="$custonComponent['icon']" :title="$custonComponent['title']" :componente="$custonComponent['componente']" :props="$custonComponent['props']" :formId="$custonComponent['formId']" />
+        @endif
+    @endif
 
 
 

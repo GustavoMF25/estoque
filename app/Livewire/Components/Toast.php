@@ -23,8 +23,6 @@ class Toast extends Component
 
     public function render()
     {
-        // dd($this->message);
-
         return view('livewire.components.toast');
     }
 }

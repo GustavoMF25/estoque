@@ -46,11 +46,17 @@ class ModalAtualizarProduto extends Component
         $this->nome = $nome;
         $this->nome_atual = $nome;
         $this->ultimaMovimentacao = $ultimaMovimentacao;
-        $produto = Produto::where('nome', $nome)->first();
+        $produto = Produto::where('nome', $nome)
+            ->whereHas('ultimaMovimentacao', function ($q) {
+                $q->where('tipo', $this->ultimaMovimentacao);
+            })->first();
+
 
         if ($produto) {
             $this->preco = $produto->preco;
-            $this->quantidade = Produto::where('nome', $nome)->count();
+            $this->quantidade = Produto::where('nome', $nome)->whereHas('ultimaMovimentacao', function ($q) {
+                $q->where('tipo', $this->ultimaMovimentacao);
+            })->count();
             $this->estoque_id = $produto->estoque_id;
             $this->fabricante_id = $produto->fabricante_id;
             $this->categoria = $produto->categoria_id;

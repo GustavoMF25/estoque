@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CategoriaController;
+use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\EstoqueController;
 use App\Http\Controllers\FabricanteController;
@@ -54,6 +55,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
 
     Route::resource('categorias', CategoriaController::class);
     Route::resource('fabricantes', FabricanteController::class);
+    Route::resource('clientes', ClienteController::class);
 
     Route::get('/carrinho/confirmar', ConfirmarVenda::class)->name('carrinho.confirmar');
 
