@@ -8,6 +8,7 @@ use Livewire\WithPagination;
 use App\Models\Product;
 use App\Models\Produto;
 use App\Models\ProdutosAgrupados;
+use App\Models\ProdutosUnidades;
 
 class CatalogoProduto extends Component
 {
@@ -25,45 +26,48 @@ class CatalogoProduto extends Component
         $this->resetPage();
     }
 
-    public function adicionarCarrinho($produtoNome)
+    public function adicionarCarrinho($produtoId)
     {
-        $agrupado = ProdutosAgrupados::where('nome', $produtoNome)
-         ->where('ultima_movimentacao', 'disponivel')->firstOrFail();
-        $quantidadeSolicitada = $this->quantidades[$produtoNome] ?? 1;
+        // 🔍 Busca o produto base
+        $produto = Produto::findOrFail($produtoId);
+
+        $quantidadeDisponivel = ProdutosUnidades::where('produto_id', $produto->id)
+            ->where('status', 'disponivel')
+            ->count();
+        $quantidadeSolicitada = $this->quantidades[$produto->id] ?? 1;
 
         $carrinho = session('carrinho', []);
 
-        $quantidadeNoCarrinho = $carrinho[$produtoNome]['quantidade'] ?? 0;
+        $quantidadeNoCarrinho = $carrinho[$produto->id]['quantidade'] ?? 0;
 
-        $quantidadeDisponivel = $agrupado->quantidade_produtos;
         $quantidadeRestante = $quantidadeDisponivel - $quantidadeNoCarrinho;
 
         if ($quantidadeSolicitada > $quantidadeRestante) {
             $this->dispatch('toast', [
                 'type' => 'error',
-                'message' => "Já existem {$quantidadeNoCarrinho}x '{$produtoNome}' no carrinho. Máximo permitido: {$quantidadeDisponivel}."
+                'message' => "Já existem {$quantidadeNoCarrinho}x '{$produto->nome}' no carrinho. Máximo permitido: {$quantidadeDisponivel}."
             ]);
-            session()->flash('error',);
             return;
         }
 
-        // Atualiza entrada única baseada no nome
-        if (isset($carrinho[$produtoNome])) {
-            $carrinho[$produtoNome]['quantidade'] += $quantidadeSolicitada;
+        if (isset($carrinho[$produto->id])) {
+            $carrinho[$produto->id]['quantidade'] += $quantidadeSolicitada;
         } else {
-            $carrinho[$produtoNome] = [
-                'nome' => $produtoNome,
+            $carrinho[$produto->id] = [
+                'produto_id' => $produto->id,
+                'nome' => $produto->nome,
                 'quantidade' => $quantidadeSolicitada,
-                'preco_unitario' => $agrupado->preco ?? 0,
-                'imagem' => $agrupado->imagem ?? null,
-                'codigo_barras' => $agrupado->codigo_barras ?? null,
+                'preco_unitario' => $produto->preco ?? 0,
+                'imagem' => $produto->imagem ?? null,
+                'codigo_barras' => $produto->codigo_barras ?? null,
             ];
         }
 
-        session()->put('carrinho', $carrinho);
+        session(['carrinho' => $carrinho]);
+
         $this->dispatch('toast', [
             'type' => 'success',
-            'message' => "{$quantidadeSolicitada}x {$produtoNome} adicionados ao carrinho."
+            'message' => "{$quantidadeSolicitada}x '{$produto->nome}' adicionados ao carrinho."
         ]);
 
         $this->dispatch('atualizarCarrinho');
@@ -72,10 +76,12 @@ class CatalogoProduto extends Component
 
     public function render()
     {
-        $products = ProdutosAgrupados::query()
+        $products = Produto::query()
+            ->withCount([
+                'unidades as disponiveis_count' => fn($q) => $q->where('status', 'disponivel'),
+            ])
             ->where('nome', 'like', '%' . $this->search . '%')
-            ->where('ultima_movimentacao', 'disponivel')
-            // ->withQueryString()
+            ->whereHas('unidades', fn($q) => $q->where('status', 'disponivel'))
             ->paginate($this->perPage);
 
         return view('livewire.produto.catalogo-produto', [

@@ -16,6 +16,8 @@ class ModalAtualizarProduto extends Component
 {
     use WithFileUploads;
 
+    public $id;
+    public $produto;
     public $nome;
     public $nome_atual;
     public $preco;
@@ -26,7 +28,6 @@ class ModalAtualizarProduto extends Component
     public $categoria;
     public $estoques;
     public $fabricantes;
-    public $ultimaMovimentacao;
     public $mensagem = 'Atualizado com sucesso';
     public $categorias;
 
@@ -38,28 +39,21 @@ class ModalAtualizarProduto extends Component
         'estoque_id' => 'required|exists:estoques,id',
     ];
 
-    public function mount($nome, $ultimaMovimentacao)
+    public function mount($id)
     {
         $this->estoques = Estoque::all();
         $this->categorias = Categoria::all();
         $this->fabricantes = Fabricante::all();
-        $this->nome = $nome;
-        $this->nome_atual = $nome;
-        $this->ultimaMovimentacao = $ultimaMovimentacao;
-        $produto = Produto::where('nome', $nome)
-            ->whereHas('ultimaMovimentacao', function ($q) {
-                $q->where('tipo', $this->ultimaMovimentacao);
-            })->first();
+        $this->id = $id;
+        $this->produto = Produto::find($this->id);
 
-
-        if ($produto) {
-            $this->preco = $produto->preco;
-            $this->quantidade = Produto::where('nome', $nome)->whereHas('ultimaMovimentacao', function ($q) {
-                $q->where('tipo', $this->ultimaMovimentacao);
-            })->count();
-            $this->estoque_id = $produto->estoque_id;
-            $this->fabricante_id = $produto->fabricante_id;
-            $this->categoria = $produto->categoria_id;
+        if ($this->produto) {
+            $this->nome_atual = $this->produto->nome;
+            $this->preco = $this->produto->preco;
+            $this->quantidade = $this->produto->disponiveis;
+            $this->estoque_id = $this->produto->estoque_id;
+            $this->fabricante_id = $this->produto->fabricante_id;
+            $this->categoria = $this->produto->categoria_id;
         } else {
             session()->flash('error', 'Produto não encontrado.');
         }
@@ -67,82 +61,42 @@ class ModalAtualizarProduto extends Component
 
     public function atualizar()
     {
-        $this->validate();
-
-        $produtos = Produto::where('nome', $this->nome_atual)
-            ->whereHas('ultimaMovimentacao', function ($q) {
-                $q->where('tipo', $this->ultimaMovimentacao);
-            })
-            ->get();
-
-        $countAtual = $produtos->count();
-        $quantidadeInformada = $this->quantidade;
-
-        if ($quantidadeInformada > $countAtual) {
-            $diferenca = $quantidadeInformada - $countAtual;
-
-            $data = [
-                'nome' => $this->nome,
-                'preco' => $this->preco ?? 0,
-                'estoque_id' => $this->estoque_id,
-                'quantidade' => $diferenca,
-                'categoria_id' => $this->categoria,
-                'fabricante_id' => $this->fabricante_id,
-            ];
-
-            if ($this->imagem) {
-                $path = $this->imagem->store('produtos', 'public');
-                $data['imagem'] = $path;
-            }
-
-            ProdutosService::handleCadastroProduto($data);
-            $this->mensagem = "{$diferenca} produtos foram criados para completar a quantidade informada.";
-        }
-
-        if ($quantidadeInformada < $countAtual) {
-            $diferenca = $countAtual - $quantidadeInformada;
-
-            $produtosParaRemover = Produto::where('nome', $this->nome)
-                ->latest()
-                ->take($diferenca)
-                ->get();
-
-            foreach ($produtosParaRemover as $produto) {
-
-                MovimentacaoService::registrar([
-                    'produto_id' => $produto->id,
-                    'tipo' => 'cancelamento',
-                    'quantidade' => 1,
-                    'observacao' => 'Remoção lógica via exclusão de produto',
-                ]);
-
-                $produto->delete();
-            }
-            $this->mensagem = "{$diferenca} produtos foram removidos para ajustar à quantidade informada.";
-        }
-
-        Produto::where('nome', $this->nome_atual)->update([
-            'preco' => $this->preco ?? 0,
-            'nome' => $this->nome ?? $this->nome_atual,
-            'estoque_id' => $this->estoque_id,
-            'categoria_id' => $this->categoria,
-            'fabricante_id' => $this->fabricante_id,
+        $this->validate([
+            'preco' => 'required|numeric|min:0',
+            'nome' => 'required|string|max:255',
+            'estoque_id' => 'required|exists:estoques,id',
+            'categoria' => 'nullable|exists:categorias,id',
+            'fabricante_id' => 'nullable|exists:fabricantes,id',
+            'imagem' => 'nullable|image|max:2048', // até 2MB
         ]);
+        try {
+            if ($this->imagem instanceof \Illuminate\Http\UploadedFile) {
+                $path = $this->imagem->store('produtos', 'public');
 
-        if ($this->imagem) {
-            $path = $this->imagem->store('produtos', 'public');
-
-            Produto::where('nome', $this->nome)->chunkById(50, function ($produtos) use ($path) {
-                foreach ($produtos as $produto) {
-                    if ($produto->imagem && Storage::disk('public')->exists($produto->imagem)) {
-                        Storage::disk('public')->delete($produto->imagem);
-                    }
-                    $produto->imagem = $path;
-                    $produto->save();
+                if ($this->produto->imagem && Storage::disk('public')->exists($this->produto->imagem)) {
+                    Storage::disk('public')->delete($this->produto->imagem);
                 }
-            });
+                $this->produto->imagem = $path;
+                $this->produto->save();
+            }
+
+            $this->produto->update([
+                'preco' => $this->preco ?? $this->produto->preco,
+                'nome' => $this->nome ?? $this->produto->nome,
+                'estoque_id' => $this->estoque_id ?? $this->produto->estoque_id,
+                'categoria_id' => $this->categoria ?? $this->produto->categoria_id,
+                'fabricante_id' => $this->fabricante_id ?? $this->produto->fabricante_id,
+                'imagem' => $this->produto->imagem,
+            ]);
+
+            return redirect()
+                ->route('produtos.index')
+                ->with('success', $this->mensagem ?? 'Produto atualizado com sucesso!');
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Erro ao atualizar o produto: ' . $e->getMessage());
         }
-        return redirect()->route('produtos.index')->with('success', $this->mensagem);
     }
 
     public function render()

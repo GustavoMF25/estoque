@@ -3,13 +3,17 @@
 namespace App\Livewire\Produto;
 
 use App\Models\Produto;
+use App\Models\ProdutosUnidades;
+use App\Services\MovimentacaoService;
 use App\Services\ProdutosService;
+use App\Services\ProdutoUnidadeService;
 use Livewire\Component;
 
 class ModalAdicionarProduto extends Component
 {
 
     public $nome;
+    public $id;
     public $quantidade = 1;
     public $produto;
     public $mensagem;
@@ -17,37 +21,73 @@ class ModalAdicionarProduto extends Component
     protected $rules = [
         'quantidade' => 'required|integer|min:1',
     ];
-    public function mount($nome)
+
+    public function mount($nome, $id)
     {
         $this->nome = $nome;
-        // $this->quantidade = Produto::where('nome', $nome)
-        //     ->whereHas('ultimaMovimentacao', function ($q) {
-        //         $q->where('tipo', 'disponivel');
-        //     })->count();
+        $this->id = $id;
     }
 
     public function adicionar()
     {
-        $this->produto = Produto::where('nome', $this->nome)->first();
+        try {
+            // 🔍 Busca o produto base pelo nome
+            $this->produto = Produto::where('nome', $this->nome)->firstOrFail();
 
-        $dados = [
-            'nome' => $this->produto->nome,
-            'preco' => $this->produto->preco ?? 0,
-            'estoque_id' => $this->produto->estoque_id,
-            'quantidade' => $this->quantidade,
-            'categoria_id' => $this->produto->categoria_id,
-            'fabricante_id' => $this->produto->fabricante_id,
-        ];
+            // 🔢 Quantidade de unidades que serão adicionadas
+            $quantidade = (int) $this->quantidade;
 
-        ProdutosService::handleCadastroProduto($dados);
+            if ($quantidade <= 0) {
+                return $this->dispatch('toast', [
+                    'type' => 'error',
+                    'message' => 'Informe uma quantidade válida.'
+                ]);
+            }
 
-        $this->mensagem = "{$this->quantidade} produtos foram criados.";
-        $this->dispatch('fecharModal');
-        
-        return $this->dispatch('toast', [
-            'type' => 'success',
-            'message' => $this->mensagem
-        ]);
+            // ⚙️ Cria novas unidades físicas (produtos_unidades)
+            $ultimaUnidade = $this->produto->unidades()->orderByDesc('id')->first();
+            $indiceBase = $ultimaUnidade ? $ultimaUnidade->id + 1 : 1;
+
+            for ($i = 0; $i < $quantidade; $i++) {
+                $codigo = ProdutoUnidadeService::gerarCodigo(
+                    $this->produto,
+                    $indiceBase + $i
+                );
+
+                ProdutosUnidades::create([
+                    'produto_id' => $this->produto->id,
+                    'codigo_unico' => $codigo,
+                    'status' => 'disponivel',
+                ]);
+            }
+
+            MovimentacaoService::registrar([
+                'produto_id' => $this->produto->id,
+                'tipo' => 'entrada',
+                'quantidade' => $quantidade,
+                'observacao' => "Adição de {$quantidade} unidades ao produto {$this->produto->nome}",
+            ]);
+
+            MovimentacaoService::registrar([
+                'produto_id' => $this->produto->id,
+                'tipo' => 'disponivel',
+                'quantidade' => $quantidade,
+                'observacao' => "Novas unidades disponíveis ({$quantidade}) adicionadas manualmente",
+            ]);
+
+            $this->mensagem = "{$quantidade} novas unidades adicionadas ao produto '{$this->produto->nome}'.";
+            $this->dispatch('fecharModal');
+
+            return $this->dispatch('toast', [
+                'type' => 'success',
+                'message' => $this->mensagem,
+            ]);
+        } catch (\Exception $e) {
+            return $this->dispatch('toast', [
+                'type' => 'error',
+                'message' => 'Erro ao adicionar unidades: ' . $e->getMessage(),
+            ]);
+        }
     }
 
     public function render()

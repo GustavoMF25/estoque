@@ -11,7 +11,7 @@
                             componente: 'produto.modal-atualizar-produto',
                             props: { 
                                 nome: '$nome',
-                                ultimaMovimentacao: '$ultima_movimentacao'
+                                id: '$id',
                             }
                         }
                     }));
@@ -32,7 +32,8 @@
                             paramsBtn: 'wire:click=\\'adicionar\\'',
                             componente: 'produto.modal-adicionar-produto',
                             props: { 
-                                nome: '$nome'
+                                nome: '$nome',
+                                id: '$id'
                             }
                         }
                     }));
@@ -52,7 +53,7 @@
         <div class="row">
             <div class="col-md-4"> --}}
                 <x-basic.content-page :title="__('Produto')" :class="'card-secondary'" :btnAcoes="$btnAcoes" :size="'sm'">
-                    <livewire:produto.produto-visualizar :nome="$nome" :estoque_id="$estoque_id" :ultima_movimentacao="$ultima_movimentacao"
+                    <livewire:produto.produto-visualizar :nome="$nome" :estoque_id="$estoque_id" :id="$id"
                         wire:key="produto-visualizar" />
                 </x-basic.content-page>
             {{-- </div>

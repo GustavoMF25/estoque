@@ -28,4 +28,19 @@ class VendaItem extends Model
     {
         return $this->belongsTo(Produto::class);
     }
+
+    public function unidades()
+    {
+        return $this->belongsToMany(
+            \App\Models\ProdutosUnidades::class, // model relacionada
+            'venda_item_unidades',               // nome exato da tabela pivô
+            'venda_item_id',                     // FK que representa este model
+            'produto_unidade_id'                 // FK da model relacionada
+        );
+    }
+
+    public function getQuantidadeAttribute()
+    {
+        return $this->unidades()->count();
+    }
 }

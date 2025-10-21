@@ -14,6 +14,8 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([EmpresaSeeder::class]);
         $this->call(DefaultUserSeeder::class);
+        // $this->call(MigrarProdutosParaUnidadesSeeder::class);
+        // $this->call(ReprocessarVendasAntigasSeeder::class);
         // \App\Models\User::factory(10)->create();
 
         // \App\Models\User::factory()->create([
