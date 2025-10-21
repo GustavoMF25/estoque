@@ -30,6 +30,7 @@ class ProdutoTable extends DataTableComponent
     {
         $query = Produto::query()
             ->withCount([
+                'movimentacoes',
                 'unidades as disponiveis_count' => function ($q) {
                     $q->where('status', 'disponivel');
                 },
@@ -38,6 +39,7 @@ class ProdutoTable extends DataTableComponent
                 },
             ])
             ->Ativo()
+            ->with([ 'estoque'])
             ->orderBy('nome', 'asc');
 
         return $query;

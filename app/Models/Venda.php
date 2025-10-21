@@ -19,6 +19,8 @@ class Venda extends Model
         'valor_total',
         'status',
         'cliente_id',
+        'desconto',
+        'valor_final'
     ];
 
     public function itens()

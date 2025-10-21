@@ -3,136 +3,269 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Nota de Venda - {{ $venda->protocolo }}</title>
+    <title>DAFEN - Documento Auxiliar de Fatura Eletrônica Nacional</title>
     <style>
         body {
-            font-family: sans-serif;
-            font-size: 12px;
-            color: #333;
+            font-family: DejaVu Sans, sans-serif;
+            font-size: 11px;
+            color: #000;
+            margin: 15px;
         }
-        .header, .footer { text-align: center; }
-        .logo { margin-bottom: 10px; }
-        .title { font-size: 18px; font-weight: bold; margin-bottom: 5px; }
-        .subtitle { font-size: 14px; margin-bottom: 15px; }
-        .info, .total { width: 100%; margin-bottom: 15px; }
-        .info td { padding: 5px; vertical-align: top; }
-        .items-table { width: 100%; border-collapse: collapse; }
-        .items-table th, .items-table td { border: 1px solid #ddd; padding: 6px; }
-        .items-table th { background-color: #f8f8f8; text-align: left; }
-        .right { text-align: right; }
-        .signature { margin-top: 40px; text-align: center; font-size: 11px; }
-        .signature div { border-top: 1px solid #333; width: 200px; margin: 0 auto; padding-top: 5px; }
+
+        .container {
+            border: 1px solid #000;
+            padding: 10px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            padding-bottom: 8px;
+            margin-bottom: 5px;
+        }
+
+        .div-logo {
+            width: 100%;
+            text-align: center;
+        }
+
+        .logo {
+            width: 20%;
+        }
+
+        .logo img {
+            height: 70px;
+        }
+
+        .empresa {
+            width: 100%;
+            text-align: center;
+            font-size: 12px;
+        }
+
+        .empresa strong {
+            font-size: 14px;
+        }
+
+        .documento {
+            text-align: center;
+            border: 1px solid #000;
+            padding: 4px;
+            background: #f2f2f2;
+            font-weight: bold;
+        }
+
+        .secao {
+            border: 1px solid #000;
+            margin-top: 5px;
+        }
+
+        .secao-titulo {
+            background: #f2f2f2;
+            font-weight: bold;
+            padding: 2px 5px;
+            border-bottom: 1px solid #000;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        td,
+        th {
+            padding: 3px 5px;
+            border: 1px solid #000;
+        }
+
+        th {
+            background: #f8f8f8;
+            text-align: left;
+        }
+
+        .right {
+            text-align: right;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .no-border td {
+            border: none;
+        }
+
+        .total {
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .assinatura {
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .assinatura div {
+            border-top: 1px solid #000;
+            width: 220px;
+            margin: 0 auto;
+            padding-top: 5px;
+            font-size: 10px;
+        }
+
+        .footer {
+            font-size: 9px;
+            text-align: center;
+            margin-top: 10px;
+        }
     </style>
 </head>
 
 <body>
+    <div class="container">
 
-    {{-- Logo da Empresa --}}
-    @if (isset($empresa->logo) && file_exists(public_path('storage/' . $empresa->logo)))
-        <div class="logo">
-            <img src="{{ public_path('storage/' . $empresa->logo) }}" alt="Logo da Empresa" style="height: 60px;">
-        </div>
-    @endif
-
-    {{-- Título --}}
-    <div class="header">
-        <div class="title">Nota de Venda</div>
-        <div class="subtitle">
-            Protocolo: {{ $venda->protocolo }} |
-            Data: {{ $venda->created_at->format('d/m/Y H:i') }}
-        </div>
-    </div>
-
-    {{-- Dados da Empresa --}}
-    <table class="info">
-        <tr>
-            <td><strong>Empresa:</strong> {{ $empresa->nome ?? '-' }}</td>
-            <td><strong>CNPJ:</strong> {{ $empresa->cnpj ?? '-' }}</td>
-        </tr>
-        <tr>
-            <td><strong>Telefone:</strong> {{ $empresa->telefone ?? '-' }}</td>
-            <td><strong>Endereço:</strong> {{ $empresa->endereco ?? '-' }}</td>
-        </tr>
-    </table>
-
-    {{-- Dados do Cliente --}}
-    @if ($venda->cliente)
-        <table class="info">
-            <tr>
-                <td><strong>Cliente:</strong> {{ $venda->cliente->nome }}</td>
-                <td><strong>Documento:</strong> {{ $venda->cliente->documento ?? '-' }}</td>
-            </tr>
-            <tr>
-                <td><strong>Email:</strong> {{ $venda->cliente->email ?? '-' }}</td>
-                <td><strong>Telefone:</strong> {{ $venda->cliente->telefone ?? '-' }}</td>
-            </tr>
-            @if($venda->cliente->enderecoPadrao)
+        {{-- Cabeçalho --}}
+        <div class="header">
+            <table style="width: 100%; border-bottom: 1px solid #000; margin-bottom: 5px;">
                 <tr>
-                    <td colspan="2">
-                        <strong>Endereço:</strong>
-                        {{ $venda->cliente->enderecoPadrao->rua ?? '' }},
-                        {{ $venda->cliente->enderecoPadrao->numero ?? '' }}
-                        {{ $venda->cliente->enderecoPadrao->bairro ? '- '.$venda->cliente->enderecoPadrao->bairro : '' }},
-                        {{ $venda->cliente->enderecoPadrao->cidade ?? '' }}/{{ $venda->cliente->enderecoPadrao->estado ?? '' }}
-                        {{ $venda->cliente->enderecoPadrao->cep ? '- CEP '.$venda->cliente->enderecoPadrao->cep : '' }}
+                    <td style="width: 20%; text-align: left;">
+                        @if (isset($empresa->logo) && file_exists(public_path('storage/' . $empresa->logo)))
+                            <img src="{{ public_path('storage/' . $empresa->logo) }}" style="height: 80px;">
+                        @endif
+                    </td>
+                    <td style="width: 80%; text-align: right; font-size: 12px;">
+                        <strong
+                            style="font-size: 14px;">{{ strtoupper($empresa->nome ?? 'EMPRESA NÃO INFORMADA') }}</strong><br>
+                        CNPJ: {{ $empresa->cnpj ?? '-' }}<br>
+                        {{ $empresa->endereco ?? '-' }}<br>
+                        Tel: {{ $empresa->telefone ?? '-' }}
                     </td>
                 </tr>
-            @endif
-        </table>
-    @endif
+            </table>
+        </div>
 
-    {{-- Dados da Venda --}}
-    <table class="info">
-        <tr>
-            <td><strong>Usuário:</strong> {{ $venda->usuario->name ?? '-' }}</td>
-            <td><strong>Loja:</strong> {{ $venda->loja->nome ?? '-' }}</td>
-        </tr>
-        <tr>
-            <td colspan="2"><strong>Status:</strong> {{ ucfirst($venda->status) }}</td>
-        </tr>
-    </table>
+        <div class="documento">
+            <small>Protocolo: {{ $venda->protocolo }} | Data: {{ $venda->created_at->format('d/m/Y H:i') }}</small>
+        </div>
 
-    {{-- Itens da Venda --}}
-    <table class="items-table">
-        <thead>
-            <tr>
-                <th>Produto</th>
-                <th>Preço Unitário</th>
-                <th>Quantidade</th>
-                <th class="right">Subtotal</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($venda->itens as $item)
+        {{-- Destinatário --}}
+        <div class="secao">
+            <div class="secao-titulo">DESTINATÁRIO</div>
+            <table>
                 <tr>
-                    <td>{{ $item->produto->nome ?? '-' }}</td>
-                    <td>R$ {{ number_format($item->valor_unitario, 2, ',', '.') }}</td>
-                    <td>1</td>
-                    <td class="right">R$ {{ number_format($item->valor_total, 2, ',', '.') }}</td>
+                    <td><strong>Nome/Razão Social:</strong> {{ $venda->cliente->nome ?? '-' }}</td>
+                    <td><strong>CPF/CNPJ:</strong> {{ $venda->cliente->documento ?? '-' }}</td>
                 </tr>
-            @endforeach
-        </tbody>
-    </table>
+                <tr>
+                    <td colspan="2"><strong>Endereço:</strong>
+                        {{ optional(optional($venda->cliente)->enderecoPadrao)->rua ?? '' }},
+                        {{ optional(optional($venda->cliente)->enderecoPadrao)->numero ?? '' }}
+                        {{ optional(optional($venda->cliente)->enderecoPadrao)->bairro ? '- ' . optional(optional($venda->cliente)->enderecoPadrao)->bairro : '' }},
+                        {{ optional(optional($venda->cliente)->enderecoPadrao)->cidade ?? '' }}/{{ optional(optional($venda->cliente)->enderecoPadrao)->estado ?? '' }}
+                        {{ optional(optional($venda->cliente)->enderecoPadrao)->cep ? '- CEP ' . optional(optional($venda->cliente)->enderecoPadrao)->cep : '' }}
+                    </td>
+                </tr>
 
-    {{-- Total --}}
-    <table class="total">
-        <tr>
-            <td class="right">
-                <strong>Total da Venda:</strong>
-                R$ {{ number_format($venda->valor_total, 2, ',', '.') }}
-            </td>
-        </tr>
-    </table>
+                <tr>
+                    <td><strong>Telefone:</strong> {{ $venda->cliente->telefone ?? '-' }}</td>
+                    <td><strong>Email:</strong> {{ $venda->cliente->email ?? '-' }}</td>
+                </tr>
+            </table>
+        </div>
 
-    {{-- Rodapé --}}
-    <div class="footer">
-        <p>Obrigado pela sua compra!</p>
+        {{-- Identificação da Venda --}}
+        <div class="secao">
+            <div class="secao-titulo">IDENTIFICAÇÃO DA VENDA</div>
+            <table>
+                <tr>
+                    <td><strong>Usuário:</strong> {{ $venda->usuario->name ?? '-' }}</td>
+                    <td><strong>Loja:</strong> {{ $venda->loja->nome ?? '-' }}</td>
+                    <td><strong>Status:</strong> {{ ucfirst($venda->status) }}</td>
+                </tr>
+            </table>
+        </div>
+
+        {{-- Produtos --}}
+        <div class="secao">
+            <div class="secao-titulo">ITENS DA VENDA</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Descrição do Produto</th>
+                        <th class="center">Qtde</th>
+                        <th class="right">Vlr. Unitário</th>
+                        <th class="right">Vlr. Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($venda->itens as $item)
+                        <tr>
+                            <td>{{ $item->produto->id ?? '-' }}</td>
+                            <td>{{ $item->produto->nome ?? '-' }}</td>
+                            <td class="center">{{ $item->quantidade }}</td>
+                            <td class="right">R$ {{ number_format($item->valor_unitario, 2, ',', '.') }}</td>
+                            <td class="right">R$ {{ number_format($item->valor_total, 2, ',', '.') }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+
+        {{-- Totais --}}
+        <div class="secao">
+            <div class="secao-titulo">TOTAIS</div>
+            <table>
+                <tr>
+                    <td><strong>Valor Bruto:</strong></td>
+                    <td class="right">R$ {{ number_format($venda->valor_total, 2, ',', '.') }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Descontos:</strong></td>
+                    <td class="right">R$ {{ number_format($venda->desconto ?? 0, 2, ',', '.') }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Valor Líquido:</strong></td>
+                    <td class="right total">R$
+                        {{ number_format($venda->valor_total - ($venda->desconto ?? 0), 2, ',', '.') }}</td>
+                </tr>
+            </table>
+        </div>
+
+        {{-- Transporte --}}
+        <div class="secao">
+            <div class="secao-titulo">TRANSPORTE</div>
+            <table>
+                <tr>
+                    <td><strong>Modalidade do Frete:</strong> {{ $venda->frete_modalidade ?? 'Sem frete' }}</td>
+                    <td><strong>Transportadora:</strong> {{ $venda->transportadora ?? '-' }}</td>
+                </tr>
+            </table>
+        </div>
+
+        {{-- Pagamento --}}
+        <div class="secao">
+            <div class="secao-titulo">INFORMAÇÕES DE PAGAMENTO</div>
+            <table>
+                <tr>
+                    <td><strong>Forma de Pagamento:</strong> {{ ucfirst($venda->forma_pagamento ?? 'Não informada') }}
+                    </td>
+                    <td><strong>Situação:</strong> {{ ucfirst($venda->status_pagamento ?? 'Pendente') }}</td>
+                </tr>
+            </table>
+        </div>
+
+        {{-- Assinatura --}}
+        <div class="assinatura">
+            <div>Assinatura do Cliente</div>
+        </div>
+
+        {{-- Rodapé --}}
+        <div class="footer">
+            Emitido por {{ $empresa->nome ?? 'Sistema de Estoque' }} em {{ now()->format('d/m/Y H:i') }}</p>
+        </div>
+
     </div>
-
-    {{-- Assinatura --}}
-    <div class="signature">
-        <div>Assinatura do Cliente</div>
-    </div>
-
 </body>
+
 </html>

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Cliente extends Model
 {
-    use BelongsToEmpresa;
+    // use BelongsToEmpresa;
     
     protected $table = 'clientes';
 

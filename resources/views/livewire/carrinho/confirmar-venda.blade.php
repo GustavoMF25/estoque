@@ -25,13 +25,13 @@
                         </div>
 
                         <div class="d-flex align-items-center">
-                            <button type="button" wire:click="diminuirQuantidade('{{ $item['nome'] }}')"
+                            <button type="button" wire:click="diminuirQuantidade('{{ $item['produto_id'] }}', '{{$item['nome']}}')"
                                 class="btn btn-sm btn-light border">
                                 <i class="fas fa-minus"></i>
                             </button>
                             <input type="text" readonly class="form-control form-control-sm mx-1 text-center"
                                 style="width: 50px;" value="{{ $item['quantidade'] }}">
-                            <button type="button" wire:click="aumentarQuantidade('{{ $item['nome'] }}')"
+                            <button type="button" wire:click="aumentarQuantidade('{{ $item['produto_id'] }}', '{{$item['nome']}}')"
                                 class="btn btn-sm btn-light border">
                                 <i class="fas fa-plus"></i>
                             </button>

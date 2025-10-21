@@ -76,30 +76,34 @@ class ProdutosService
         $totalAtual = $estoque->produtos_count;
         $quantidadeMaxima = $estoque->quantidade_maxima;
 
-        if ($quantidadeMaxima > 0 && ($totalAtual + $data['quantidade']) > $quantidadeMaxima) {
-            return redirect()->route('produtos.index')->with('error', 'Não é possível cadastrar: o estoque excederia o limite máximo de ' . $quantidadeMaxima . ' itens.');
+        if ($quantidadeMaxima > 0 && ($totalAtual + 1) > $quantidadeMaxima) {
+            return redirect()->route('produtos.index')
+                ->with('error', 'Não é possível cadastrar: o estoque excederia o limite máximo de ' . $quantidadeMaxima . ' itens.');
         }
 
+        // Trata imagem
         $imagem = $data['imagem'] ?? null;
-
         if ($imagem instanceof \Illuminate\Http\UploadedFile) {
             $imagem = $imagem->store('produtos', 'public');
         }
 
+        // ✅ Cria apenas um produto
+        $produto = Produto::create([
+            'nome' => $data['nome'],
+            'codigo_barras' => Produto::gerarCodigoBarrasUnico(),
+            'unidade' => $data['unidade'] ?? 'un',
+            'preco' => $data['preco'],
+            'estoque_id' => $data['estoque_id'],
+            'categoria_id' => $data['categoria_id'],
+            'fabricante_id' => $data['fabricante_id'],
+            'ativo' => $data['ativo'] ?? true,
+            'imagem' => $imagem,
+        ]);
+
+        // ✅ Cria movimentações referentes à quantidade informada
+        $quantidade = (int) $data['quantidade'];
 
         for ($i = 0; $i < $data['quantidade']; $i++) {
-            $produto = Produto::create([
-                'nome' => $data['nome'],
-                'codigo_barras' => Produto::gerarCodigoBarrasUnico(),
-                'unidade' => $data['unidade'] ?? 'un',
-                'preco' => $data['preco'],
-                'estoque_id' => $data['estoque_id'],
-                'categoria_id' => $data['categoria_id'],
-                'fabricante_id' => $data['fabricante_id'],
-                'ativo' => $data['ativo'] ?? true,
-                'imagem' => $imagem,
-            ]);
-
             MovimentacaoService::registrar([
                 'produto_id' => $produto->id,
                 'tipo' => 'entrada',
@@ -111,9 +115,10 @@ class ProdutosService
                 'produto_id' => $produto->id,
                 'tipo' => 'disponivel',
                 'quantidade' => 1,
-                'observacao' => 'Disponível para venda',
+                'observacao' => 'Unidade disponível para venda',
             ]);
         }
+
 
         return true;
     }
@@ -121,6 +126,7 @@ class ProdutosService
     public static function cadProdutoRequest($request)
     {
         try {
+            // dd($request->all());
             $validated = $request->validate([
                 'nome' => 'required|string|max:255',
                 'codigo_barras' => 'nullable|string|max:50',
@@ -128,11 +134,12 @@ class ProdutosService
                 'preco' => 'required|numeric|min:0',
                 'estoque_id' => 'required|exists:estoques,id',
                 'quantidade' => 'required|integer|min:1',
-                'categoria_id' => 'required|exists:categorias,id',
+                'categoria_id' => 'nullable|exists:categorias,id',
                 'fabricante_id' => 'nullable|exists:fabricantes,id',
                 'ativo' => 'boolean',
                 'imagem' => 'nullable|image|max:2048',
             ]);
+            // dd($validated);
 
             $validated['imagem'] = $request->file('imagem') ?? null;
 

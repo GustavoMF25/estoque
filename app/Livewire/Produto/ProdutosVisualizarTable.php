@@ -11,6 +11,7 @@ use Rappasoft\LaravelLivewireTables\Views\Column;
 class ProdutosVisualizarTable extends DataTableComponent
 {
     public string $nome = '';
+    public string $id = '';
     public int $estoqueId = 0;
     public string $ultimaMovimentacao = '';
 
