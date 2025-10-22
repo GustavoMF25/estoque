@@ -44,8 +44,8 @@
                 </div>
             </div>
 
-            <div class="col-md-4 text-center">
-                <img src="{{  asset('storage/' . $image) ?? '/imagens/no-image.png' }}" alt="Imagem do Produto"
+            <div class4="col-md-4 text-center">
+                <img src="{{  $image ? asset('storage/' . $image) : '/imagens/no-image.png' }}" alt="Imagem do Produto"
                     class="img-fluid rounded shadow-sm border" style="max-height: 180px; object-fit: contain;">
             </div>
         </div>
