@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Traits\BelongsToEmpresa;
 use Illuminate\Database\Eloquent\Model;
 
 class Movimentacao extends Model
 {
+    use BelongsToEmpresa;
+    
     protected $table = 'movimentacoes';
 
     protected $fillable = ['produto_id', 'tipo', 'quantidade', 'observacao', 'user_id'];

@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Traits\BelongsToEmpresa;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Produto extends Model
 {
     use SoftDeletes;
+    use BelongsToEmpresa;
 
     protected $table = 'produtos';
 

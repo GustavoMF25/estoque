@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
-use App\Traits\BelongsToEmpresa;
+use App\Models\Traits\BelongsToEmpresa;
 use Illuminate\Database\Eloquent\Model;
 
 class Cliente extends Model
 {
-    // use BelongsToEmpresa;
+    use BelongsToEmpresa;
     
     protected $table = 'clientes';
 

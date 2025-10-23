@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Empresa;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
@@ -25,8 +26,9 @@ class AppServiceProvider extends ServiceProvider
         if (app()->runningInConsole()) {
             return;
         }
-        if (Schema::hasTable('empresas')) {
-            View::share('empresa', Empresa::first());
+
+        if (!Schema::hasTable('empresas')) {
+            return;
         }
     }
 }

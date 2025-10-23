@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use App\Models\Traits\BelongsToEmpresa;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class EnderecoCliente extends Model
 {
-    use HasFactory;
+    use HasFactory, BelongsToEmpresa;
+    
+
     protected $table = 'enderecos_clientes';
 
     protected $fillable = [

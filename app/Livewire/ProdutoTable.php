@@ -84,6 +84,8 @@ class ProdutoTable extends DataTableComponent
                 ->format(fn($value, $row) => $row->disponiveis_count)
                 ->searchable()
                 ->sortable(),
+            Column::make('Empresa', 'empresa_id')->searchable()
+                ->sortable(),
             Column::make('Vendidos', 'id')
                 ->format(fn($value, $row) => $row->vendidos_count)
                 ->searchable()
