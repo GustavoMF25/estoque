@@ -424,15 +424,17 @@
             <div class="stats">
                 <div class="stat glass-effect">
                     <div class="stat-number">99,9%</div>
-                    <div class="stat-label">Disponibilidade</div>
+                    <div class="stat-label">Disponibilidade do Sistema</div>
                 </div>
+
                 <div class="stat glass-effect">
-                    <div class="stat-number">12/7</div>
-                    <div class="stat-label">Suporte</div>
+                    <div class="stat-number">12h/dia</div>
+                    <div class="stat-label">Suporte Rápido e Humanizado</div>
                 </div>
+
                 <div class="stat glass-effect">
-                    <div class="stat-number">1000+</div>
-                    <div class="stat-label">Empresas Confiando</div>
+                    <div class="stat-number">120+</div>
+                    <div class="stat-label">Empresas Ativas</div>
                 </div>
             </div>
         </div>
@@ -453,17 +455,25 @@
                     <p>Cadastre e gerencie seu catálogo completo com fotos, descrições e variações de produtos.</p>
                 </article>
 
-                <article class="card hover-elevate">
+                <article class="card hover-elevate" style="position: relative;">
                     <div class="icon-badge"><i data-lucide="store"></i></div>
                     <h3>Múltiplas Lojas</h3>
                     <p>Controle o estoque de diferentes unidades e filiais em uma única plataforma centralizada.</p>
+
+                    <div class="badge-dev">
+                        EM DESENVOLVIMENTO
+                    </div>
                 </article>
 
-                <article class="card hover-elevate">
+                <article class="card hover-elevate" style="position: relative;">
                     <div class="icon-badge"><i data-lucide="bar-chart-3"></i></div>
                     <h3>Relatórios em Tempo Real</h3>
                     <p>Análises detalhadas sobre movimentações, vendas e níveis de estoque com dashboards interativos.
                     </p>
+
+                    <div class="badge-dev">
+                        EM DESENVOLVIMENTO
+                    </div>
                 </article>
 
                 <article class="card hover-elevate">
@@ -472,16 +482,28 @@
                     <p>Registre entradas, saídas, transferências entre lojas e mantenha histórico completo.</p>
                 </article>
 
-                <article class="card hover-elevate">
-                    <div class="icon-badge"><i data-lucide="shield"></i></div>
-                    <h3>Segurança Avançada</h3>
-                    <p>Seus dados protegidos com criptografia e backup automático em nuvem.</p>
+                <article class="card hover-elevate" style="position: relative;">
+                    <div class="icon-badge"><i data-lucide="shopping-cart"></i></div>
+                    <h3>Vendas e Notas Fiscais</h3>
+                    <p>
+                        Gerencie todo o processo de venda de forma prática — adicione produtos ao carrinho,
+                        registre as transações e gere automaticamente notas fiscais <strong>DAFs</strong> com integração
+                        direta ao sistema.
+                    </p>
+
+                    <div class="badge-dev">
+                        EM DESENVOLVIMENTO
+                    </div>
                 </article>
 
-                <article class="card hover-elevate">
+                <article class="card hover-elevate" style="position: relative;">
                     <div class="icon-badge"><i data-lucide="zap"></i></div>
                     <h3>Alertas Inteligentes</h3>
                     <p>Notificações automáticas sobre estoque baixo, vencimentos e movimentações importantes.</p>
+
+                    <div class="badge-dev">
+                        EM DESENVOLVIMENTO
+                    </div>
                 </article>
             </div>
         </div>
@@ -500,17 +522,20 @@
                 <article class="price-card">
                     <div class="price-head">
                         <h3>Básico</h3>
-                        <p>Ideal para pequenos negócios</p>
+                        <p>Perfeito para quem está começando</p>
                         <div class="price-line"><span>R$ 99</span><small>/mês</small></div>
                     </div>
                     <ul class="price-list">
-                        <li><i data-lucide="check"></i> Até 1.000 produtos</li>
-                        <li><i data-lucide="check"></i> 1 loja</li>
-                        <li><i data-lucide="check"></i> Relatórios básicos</li>
+                        <li><i data-lucide="check"></i> Cadastro completo de produtos</li>
+                        <li><i data-lucide="check"></i> Gestão de estoque integrada</li>
+                        <li><i data-lucide="check"></i> Relatórios essenciais</li>
                         <li><i data-lucide="check"></i> Suporte por e-mail</li>
-                        <li><i data-lucide="check"></i> 5GB de armazenamento</li>
+                        <li><i data-lucide="check"></i> Backup automático em nuvem</li>
                     </ul>
-                    <a href="#contato" class="btn btn-outline w-100">Começar Agora</a>
+                    <a href="https://wa.me/5521974332531?text=Olá!%20Gostaria%20de%20saber%20mais%20sobre%20o%20Plano%20Básico%20do%20Sistema%20de%20Gestão%20de%20Estoques."
+                        target="_blank" class="btn btn-outline w-100">
+                        Conversar no WhatsApp
+                    </a>
                 </article>
 
                 <!-- Profissional (Destaque) -->
@@ -522,36 +547,41 @@
                         <div class="price-line"><span>R$ 249</span><small>/mês</small></div>
                     </div>
                     <ul class="price-list">
-                        <li><i data-lucide="check"></i> Produtos ilimitados</li>
-                        <li><i data-lucide="check"></i> Até 5 lojas</li>
-                        <li><i data-lucide="check"></i> Relatórios avançados</li>
+                        <li><i data-lucide="check"></i> Todos os recursos do plano Básico</li>
+                        <li><i data-lucide="check"></i> Suporte a múltiplas lojas</li>
+                        <li><i data-lucide="check"></i> Vários usuários simultâneos</li>
+                        <li><i data-lucide="check"></i> Relatórios avançados e exportações</li>
                         <li><i data-lucide="check"></i> Suporte prioritário</li>
-                        <li><i data-lucide="check"></i> 50GB de armazenamento</li>
-                        <li><i data-lucide="check"></i> Alertas personalizados</li>
-                        <li><i data-lucide="check"></i> API de integração</li>
+                        <li><i data-lucide="check"></i> Integração com notas fiscais DAFs</li>
                     </ul>
-                    <a href="#contato" class="btn btn-primary w-100 shadow-elegant">Começar Agora</a>
+                    <a href="https://wa.me/5521974332531?text=Olá!%20Tenho%20interesse%20no%20Plano%20Profissional%20do%20Sistema%20de%20Gestão%20de%20Estoques."
+                        target="_blank" class="btn btn-primary w-100 shadow-elegant">
+                        Conversar no WhatsApp
+                    </a>
                 </article>
 
                 <!-- Enterprise -->
                 <article class="price-card">
                     <div class="price-head">
                         <h3>Enterprise</h3>
-                        <p>Para grandes operações</p>
+                        <p>Para grandes operações e franquias</p>
                         <div class="price-line"><span>Personalizado</span></div>
                     </div>
                     <ul class="price-list">
-                        <li><i data-lucide="check"></i> Tudo do Profissional</li>
-                        <li><i data-lucide="check"></i> Lojas ilimitadas</li>
-                        <li><i data-lucide="check"></i> Gerente de conta dedicado</li>
+                        <li><i data-lucide="check"></i> Tudo do plano Profissional</li>
+                        <li><i data-lucide="check"></i> Suporte a redes e filiais</li>
                         <li><i data-lucide="check"></i> Treinamento personalizado</li>
+                        <li><i data-lucide="check"></i> Integrações sob demanda</li>
+                        <li><i data-lucide="check"></i> Gerente de conta dedicado</li>
                         <li><i data-lucide="check"></i> Armazenamento ilimitado</li>
-                        <li><i data-lucide="check"></i> SLA garantido</li>
-                        <li><i data-lucide="check"></i> Integração personalizada</li>
                     </ul>
-                    <a href="#contato" class="btn btn-outline w-100">Falar com Vendas</a>
+                    <a href="https://wa.me/5521974332531?text=Olá!%20Gostaria%20de%20falar%20sobre%20o%20Plano%20Enterprise%20do%20Sistema%20de%20Gestão%20de%20Estoques."
+                        target="_blank" class="btn btn-outline w-100">
+                        Conversar no WhatsApp
+                    </a>
                 </article>
             </div>
+
         </div>
     </section>
 
@@ -561,8 +591,9 @@
             <div class="footer-grid flex justify-around">
                 <div class="footer-brand">
                     <div class="brand">
-                        <div class="brand-icon">
-                            <i data-lucide="package"></i>
+                        <div class="">
+                            <img src="{{ asset('imagens/icon.png') }}" width="100" alt="Logo"
+                                class="brand-image" style="opacity:.8">
                         </div>
                         <span class="brand-title">Gestão de Estoques</span>
                     </div>

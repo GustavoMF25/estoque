@@ -191,3 +191,16 @@ body{
     transform: translateY(-7px) rotate(-45deg);
   }
 }
+
+.badge-dev {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #ff9800;
+    color: #1b2417;
+    font-weight: 700;
+    font-size: .75rem;
+    padding: .25rem .6rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,.25);
+}
