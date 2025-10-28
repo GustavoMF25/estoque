@@ -517,66 +517,24 @@
                 <p>Escolha o plano ideal para o tamanho do seu negócio</p>
             </div>
 
-            <div class="grid grid-3 pricing">
-                <!-- Básico -->
-                <article class="price-card">
-                    <div class="price-head">
-                        <h3>Básico</h3>
-                        <p>Perfeito para quem está começando</p>
-                        <div class="price-line"><span>R$ 99</span><small>/mês</small></div>
-                    </div>
-                    <ul class="price-list">
-                        <li><i data-lucide="check"></i> Cadastro completo de produtos</li>
-                        <li><i data-lucide="check"></i> Gestão de estoque integrada</li>
-                        <li><i data-lucide="check"></i> Relatórios essenciais</li>
-                        <li><i data-lucide="check"></i> Suporte por e-mail</li>
-                        <li><i data-lucide="check"></i> Backup automático em nuvem</li>
-                    </ul>
-                    <a href="https://wa.me/5521974332531?text=Olá!%20Gostaria%20de%20saber%20mais%20sobre%20o%20Plano%20Básico%20do%20Sistema%20de%20Gestão%20de%20Estoques."
-                        target="_blank" class="btn btn-outline w-100">
-                        Conversar no WhatsApp
-                    </a>
-                </article>
-
-                <!-- Profissional (Destaque) -->
+            <div class="grid grid-1 pricing" style="max-width:700px; margin:0 auto;">
                 <article class="price-card featured">
-                    <div class="ribbon">Mais Popular</div>
+                    <div class="ribbon">Acesso Completo</div>
                     <div class="price-head">
-                        <h3>Profissional</h3>
-                        <p>Para empresas em crescimento</p>
-                        <div class="price-line"><span>R$ 249</span><small>/mês</small></div>
+                        <h3>Plano Profissional</h3>
+                        <p>Experimente todos os recursos na versão Beta</p>
+                        <div class="price-line"><span>R$ 200</span><small>/mês</small></div>
                     </div>
                     <ul class="price-list">
-                        <li><i data-lucide="check"></i> Todos os recursos do plano Básico</li>
-                        <li><i data-lucide="check"></i> Suporte a múltiplas lojas</li>
-                        <li><i data-lucide="check"></i> Vários usuários simultâneos</li>
-                        <li><i data-lucide="check"></i> Relatórios avançados e exportações</li>
-                        <li><i data-lucide="check"></i> Suporte prioritário</li>
-                        <li><i data-lucide="check"></i> Integração com notas fiscais DAFs</li>
+                        <li><i data-lucide="check"></i> Cadastro e controle de produtos</li>
+                        <li><i data-lucide="check"></i> Gestão de estoque e movimentações</li>
+                        <li><i data-lucide="check"></i> Registro de vendas e notas DAFs</li>
+                        <li><i data-lucide="check"></i> Relatórios e histórico de transações</li>
+                        <li><i data-lucide="check"></i> Múltiplas lojas e usuários</li>
+                        <li><i data-lucide="check"></i> Suporte via WhatsApp e e-mail</li>
                     </ul>
-                    <a href="https://wa.me/5521974332531?text=Olá!%20Tenho%20interesse%20no%20Plano%20Profissional%20do%20Sistema%20de%20Gestão%20de%20Estoques."
+                    <a href="https://wa.me/5521974332531?text=Olá!%20Gostaria%20de%20testar%20o%20Plano%20Profissional%20(Beta)%20do%20Sistema%20de%20Gestão%20de%20Estoques."
                         target="_blank" class="btn btn-primary w-100 shadow-elegant">
-                        Conversar no WhatsApp
-                    </a>
-                </article>
-
-                <!-- Enterprise -->
-                <article class="price-card">
-                    <div class="price-head">
-                        <h3>Enterprise</h3>
-                        <p>Para grandes operações e franquias</p>
-                        <div class="price-line"><span>Personalizado</span></div>
-                    </div>
-                    <ul class="price-list">
-                        <li><i data-lucide="check"></i> Tudo do plano Profissional</li>
-                        <li><i data-lucide="check"></i> Suporte a redes e filiais</li>
-                        <li><i data-lucide="check"></i> Treinamento personalizado</li>
-                        <li><i data-lucide="check"></i> Integrações sob demanda</li>
-                        <li><i data-lucide="check"></i> Gerente de conta dedicado</li>
-                        <li><i data-lucide="check"></i> Armazenamento ilimitado</li>
-                    </ul>
-                    <a href="https://wa.me/5521974332531?text=Olá!%20Gostaria%20de%20falar%20sobre%20o%20Plano%20Enterprise%20do%20Sistema%20de%20Gestão%20de%20Estoques."
-                        target="_blank" class="btn btn-outline w-100">
                         Conversar no WhatsApp
                     </a>
                 </article>
