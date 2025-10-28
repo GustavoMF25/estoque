@@ -23,16 +23,16 @@ class ModuloSeed extends Seeder
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         $modulos = [
-            ['nome' => 'Perfil', 'slug' => 'perfil.show', 'icone' => 'fa fa-user'],
-            ['nome' => 'Estoque', 'slug' => 'estoque.index', 'icone' => 'fa fa-boxes'],
+            ['nome' => 'Perfil', 'slug' => 'profile.show', 'icone' => 'fa fa-user'],
+            ['nome' => 'Estoque', 'slug' => 'estoques.index', 'icone' => 'fa fa-boxes'],
             ['nome' => 'Categorias', 'slug' => 'categorias.index', 'icone' => 'fa fa-tags'],
             ['nome' => 'Fabricante', 'slug' => 'fabricantes.index', 'icone' => 'fa fa-industry'],
             ['nome' => 'Clientes', 'slug' => 'clientes.index', 'icone' => 'fa fa-users'],
             ['nome' => 'Produto', 'slug' => 'produtos.index', 'icone' => 'fa fa-cube'],
             ['nome' => 'Vendas', 'slug' => 'vendas.index', 'icone' => 'fa fa-shopping-cart'],
-            // ['nome' => 'Configurações', 'slug' => 'configuracoes', 'icone' => 'fa fa-cogs'],
-            ['nome' => 'Usuários', 'slug' => 'usuarios.index', 'icone' => 'fa fa-user-shield'],
-            ['nome' => 'Empresa', 'slug' => 'empresa.index', 'icone' => 'fa fa-building'],
+            ['nome' => 'Configurações', 'slug' => 'configurar.index', 'icone' => 'fa fa-cogs'],
+            // ['nome' => 'Usuários', 'slug' => 'usuarios.index', 'icone' => 'fa fa-user-shield'],
+            // ['nome' => 'Empresa', 'slug' => 'empresa.index', 'icone' => 'fa fa-building'],
         ];
 
         $moduloIds = [];
@@ -46,11 +46,12 @@ class ModuloSeed extends Seeder
 
         // Submódulos (simplificado)
         $submodulos = [
-            ['modulo' => 'estoque.index', 'nome' => 'Movimentações', 'rota' => 'estoque.movimentacoes.index', 'icone' => 'fa fa-exchange-alt'],
+            // ['modulo' => 'estoques.index', 'nome' => 'Movimentações', 'rota' => 'estoque.movimentacoes.index', 'icone' => 'fa fa-exchange-alt'],
             ['modulo' => 'produtos.index', 'nome' => 'Listagem', 'rota' => 'produtos.index', 'icone' => 'fa fa-cube'],
             ['modulo' => 'produtos.index', 'nome' => 'Catálogo', 'rota' => 'produtos.catalogo', 'icone' => 'fa fa-box-open'],
             ['modulo' => 'vendas.index', 'nome' => 'Listagem', 'rota' => 'vendas.index', 'icone' => 'fa fa-file-invoice-dollar'],
-            // ['modulo' => 'configuracoes', 'nome' => 'Usuarios', 'rota' => 'usuarios.index', 'icone' => 'fa fa-user-shield'],
+            ['modulo' => 'configurar.index', 'nome' => 'Usuarios', 'rota' => 'usuarios.index', 'icone' => 'fa fa-user-shield'],
+            ['modulo' => 'configurar.index', 'nome' => 'Empresa', 'rota' => 'empresa.edit', 'icone' => 'fa fa-building'],
         ];
 
         foreach ($submodulos as $sub) {

@@ -37,17 +37,25 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
         Route::get('/usuarios/create', [UsuarioController::class, 'create'])->name('usuarios.create');
         Route::post('/usuarios', [UsuarioController::class, 'store'])->name('usuarios.store');
         Route::resource('usuarios', UsuarioController::class);
-
         Route::get('/empresa', [EmpresaController::class, 'edit'])->name('empresa.edit');
         Route::put('/empresa', [EmpresaController::class, 'update'])->name('empresa.update');
+
+        Route::middleware(['modulo:estoques'])->group(function () {
+            Route::resource('estoques', EstoqueController::class);
+        });
+
+        Route::middleware(['modulo:categorias'])->group(function () {
+            Route::resource('categorias', CategoriaController::class);
+        });
+        Route::middleware(['modulo:fabricantes'])->group(function () {
+            Route::resource('fabricantes', FabricanteController::class);
+        });
     });
 
     Route::middleware(['modulo:lojas'])->group(function () {
         Route::resource('lojas', LojaController::class);
     });
-    Route::middleware(['modulo:estoques'])->group(function () {
-        Route::resource('estoques', EstoqueController::class);
-    });
+
 
     Route::patch('estoques/{id}/restaurar', [EstoqueController::class, 'restore'])->name('estoques.restore');
 
@@ -67,13 +75,8 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
         Route::get('/vendas/{venda}/nota', [VendaController::class, 'gerar'])
             ->name('vendas.nota');
     });
-    
-    Route::middleware(['modulo:categorias'])->group(function () {
-        Route::resource('categorias', CategoriaController::class);
-    });
-    Route::middleware(['modulo:fabricantes'])->group(function () {
-        Route::resource('fabricantes', FabricanteController::class);
-    });
+
+
     Route::middleware(['modulo:clientes'])->group(function () {
         Route::resource('clientes', ClienteController::class);
     });

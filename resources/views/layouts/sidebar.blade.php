@@ -149,7 +149,7 @@
                     </a>
                 </li> --}}
 
-                @if (optional(auth()->user())->isAdmin())
+                {{-- @if (optional(auth()->user())->isAdmin())
                     <li class="nav-item">
                         <a href="#" class="nav-link">
                             <i class="nav-icon fas fa-cogs"></i>
@@ -177,7 +177,7 @@
 
                         </ul>
                     </li>
-                @endif
+                @endif --}}
 
             </ul>
         </nav>

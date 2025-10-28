@@ -25,15 +25,6 @@
                 <strong>Upgrade necessário:</strong>
                 Para desbloquear este módulo, adquira um plano compatível ou entre em contato com o administrador.
             </div>
-
-            {{-- <div class="mt-4">
-            <a href="{{ route('planos.index') }}" class="btn btn-success btn-lg">
-                <i class="fa fa-credit-card"></i> Fazer Upgrade Agora
-            </a>
-            <a href="{{ url()->previous() }}" class="btn btn-outline-secondary btn-lg ms-2">
-                <i class="fa fa-arrow-left"></i> Voltar
-            </a>
-        </div> --}}
         </div>
     </div>
 </x-app-layout>
