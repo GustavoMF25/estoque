@@ -5,7 +5,7 @@ dialog::backdrop {
 
 dialog[open] {
     display: flex !important;
-    position: fixed !important;
+    position: fixed !important; 
     /* FORÇA ficar fixo na tela toda */
     top: 0;
     left: 0;
