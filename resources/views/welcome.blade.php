@@ -359,26 +359,31 @@
     <nav class="nav glass-effect">
         <div class="container">
             <div class="nav-row">
+                <!-- Marca -->
                 <div class="brand">
-                    <div class="">
-                        <img src="{{ asset('imagens/icon.png') }}" width="100" alt="Logo"
-                            class="brand-image "style="opacity: .8">
-                    </div>
+                    <img src="{{ asset('imagens/icon.png') }}" width="100" alt="Logo" class="brand-image"
+                        style="opacity:.8">
                 </div>
 
-                <button class="nav-toggle" id="navToggle" aria-label="Abrir menu">
-                    <span></span><span></span><span></span>
-                </button>
 
+
+                <!-- Links principais -->
                 <div class="nav-links" id="navLinks">
                     <a href="#recursos" class="link">Recursos</a>
                     <a href="#planos" class="link">Planos</a>
                     <a href="#contato" class="link">Contato</a>
                 </div>
 
-                <div class="nav-cta">
-                    <a href="{{ route('login') }}" class="btn btn-ghost">Entrar</a>
-                    <a href="#planos" class="btn btn-primary shadow-elegant">Começar Grátis</a>
+                <div class="nav-row">
+                    <!-- Botões de ação -->
+                    <div class="nav-cta">
+                        <a href="{{ route('login') }}" class="btn btn-ghost">Entrar</a>
+                        <a href="#planos" class="btn btn-primary shadow-elegant">Começar Grátis</a>
+                    </div>
+                    <!-- Botão de menu (hambúrguer) -->
+                    <button class="nav-toggle" id="navToggle" aria-label="Abrir menu">
+                        <span></span><span></span><span></span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -595,6 +600,18 @@
 
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
     <script src="{{ asset('js/landing.js') }}"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const toggle = document.getElementById('navToggle');
+            const links = document.getElementById('navLinks');
+
+            toggle.addEventListener('click', () => {
+                links.classList.toggle('open');
+                toggle.classList.toggle('active');
+            });
+        });
+    </script>
 </body>
 
 </html>
