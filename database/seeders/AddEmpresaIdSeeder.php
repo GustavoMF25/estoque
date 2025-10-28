@@ -29,6 +29,7 @@ class AddEmpresaIdSeeder extends Seeder
             'produtos_unidades',
             'venda_item_unidades',
             'users',
+            'venda_itens',
         ];
 
         foreach ($tabelas as $tabela) {

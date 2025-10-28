@@ -10,8 +10,6 @@ use App\Http\Controllers\ProdutosController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\VendaController;
 use App\Livewire\Carrinho\ConfirmarVenda;
-use App\Livewire\TesteLivewire;
-use App\Livewire\Vendas\VendasTable;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -44,24 +42,39 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
         Route::put('/empresa', [EmpresaController::class, 'update'])->name('empresa.update');
     });
 
-    Route::resource('lojas', LojaController::class);
-    Route::resource('estoques', EstoqueController::class);
+    Route::middleware(['modulo:lojas'])->group(function () {
+        Route::resource('lojas', LojaController::class);
+    });
+    Route::middleware(['modulo:estoques'])->group(function () {
+        Route::resource('estoques', EstoqueController::class);
+    });
+
     Route::patch('estoques/{id}/restaurar', [EstoqueController::class, 'restore'])->name('estoques.restore');
 
-    Route::resource('produtos', ProdutosController::class)->only(['index', 'create', 'store', 'destroy']);
-    Route::get('produtos/catalogo', [ProdutosController::class, 'catalogo'])->name('produtos.catalogo');
-    Route::get('/produtos/visualizar', [ProdutosController::class, 'show'])->name('produtos.show');
-    Route::post('/produtos/vender', [ProdutosController::class, 'vender'])->name('produtos.vender');
+    Route::middleware(['modulo:produtos'])->group(function () {
+        Route::resource('produtos', ProdutosController::class)->only(['index', 'create', 'store', 'destroy']);
+        Route::get('produtos/catalogo', [ProdutosController::class, 'catalogo'])->name('produtos.catalogo');
+        Route::get('/produtos/visualizar', [ProdutosController::class, 'show'])->name('produtos.show');
+    });
 
-    Route::resource('categorias', CategoriaController::class);
-    Route::resource('fabricantes', FabricanteController::class);
-    Route::resource('clientes', ClienteController::class);
+    Route::middleware(['modulo:vendas'])->group(function () {
+        Route::post('/produtos/vender', [ProdutosController::class, 'vender'])->name('produtos.vender');
+        Route::get('/carrinho/confirmar', ConfirmarVenda::class)->name('carrinho.confirmar');
 
-    Route::get('/carrinho/confirmar', ConfirmarVenda::class)->name('carrinho.confirmar');
-
-    Route::get('/vendas', function () {
-        return view('vendas.index');
-    })->name('vendas.index');
-    Route::get('/vendas/{venda}/nota', [VendaController::class, 'gerar'])
-    ->name('vendas.nota');
+        Route::get('/vendas', function () {
+            return view('vendas.index');
+        })->name('vendas.index');
+        Route::get('/vendas/{venda}/nota', [VendaController::class, 'gerar'])
+            ->name('vendas.nota');
+    });
+    
+    Route::middleware(['modulo:categorias'])->group(function () {
+        Route::resource('categorias', CategoriaController::class);
+    });
+    Route::middleware(['modulo:fabricantes'])->group(function () {
+        Route::resource('fabricantes', FabricanteController::class);
+    });
+    Route::middleware(['modulo:clientes'])->group(function () {
+        Route::resource('clientes', ClienteController::class);
+    });
 });

@@ -55,14 +55,17 @@ class ClienteTable extends DataTableComponent
                             'title' => 'Editar Cliente',
                             'componente' => 'clientes.cliente-editar',
                             'props' => ['id' => $value],
-                            'formId' => 'salvar-editar-cliente'
+                            'formId' => 'salvar-editar-cliente',
+                            'permitir' => ''
                         ],
                         'custonComponent' => [
                             'title' => 'Editar Cliente',
                             'componente' => 'clientes.endereco-editar',
                             'props' => ['id' => $cliente->enderecoPadrao->id],
                             'formId' => 'salvar-editar-endereco',
-                            'icon' => 'fas fa-truck-moving'
+                            'icon' => 'fas fa-truck-moving',
+                            'permitir' => ''
+
                         ]
 
                     ]);

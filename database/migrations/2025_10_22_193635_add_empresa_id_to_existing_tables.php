@@ -22,6 +22,7 @@ return new class extends Migration
             'produto_vinculos',
             'produtos_unidades',
             'venda_item_unidades',
+            'venda_itens',
         ];
 
         foreach ($tabelas as $tabela) {
@@ -70,6 +71,7 @@ return new class extends Migration
             'produtos_unidades',
             'venda_item_unidades',
             'users',
+            'venda_itens',
         ];
 
         foreach ($tabelas as $tabela) {

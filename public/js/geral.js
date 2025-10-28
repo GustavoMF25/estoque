@@ -49,3 +49,11 @@ document.addEventListener('click', function (event) {
         }
     });
 });
+
+
+$(function () {
+    $('[data-toggle="tooltip"]').tooltip({
+        trigger: 'hover',
+        delay: { "show": 300, "hide": 100 }
+    });
+});

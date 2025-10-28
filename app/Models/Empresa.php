@@ -23,4 +23,11 @@ class Empresa extends Model
     protected $casts = [
         'configuracoes' => 'array',
     ];
+
+    public function modulos()
+    {
+        return $this->belongsToMany(Modulo::class, 'empresa_modulos')
+            ->withPivot(['ativo', 'status', 'expira_em']) // ✅ importante
+            ->withTimestamps();
+    }
 }

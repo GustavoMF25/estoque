@@ -5,6 +5,19 @@
         <span class="brand-text font-weight-light">{{ $empresa->nome }} - <small>Sistema </small></span>
     </a>
 
+    @php
+        $empresa = auth()->user()->empresa;
+        $modulos = $empresa
+            ->modulos()
+            ->with([
+                'submodulos' => function ($q) {
+                    $q->where('ativo', true);
+                },
+            ])
+            ->where('modulos.ativo', true)
+            ->get();
+    @endphp
+
     <!-- Sidebar -->
     <div class="sidebar">
         <!-- Sidebar user panel (optional) -->
@@ -16,12 +29,54 @@
                 <a href="{{ route('profile.show') }}" class="d-block">{{ Auth::user()->name }}</a>
             </div>
         </div>
-
         <!-- Sidebar Menu -->
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                 data-accordion="false">
-                <li class="nav-item">
+
+                @foreach ($modulos as $modulo)
+                    @php
+                        $bloqueado = $modulo->pivot->status === 'bloqueado';
+                    @endphp
+                    <li class="nav-item  {{ $modulo->submodulos->isNotEmpty() ? 'dropdown' : '' }}">
+
+                        <a href="{{ $modulo->submodulos->isEmpty() ? route($modulo->slug) : '#' }}"
+                            @if($bloqueado)
+                                data-toggle="tooltip" 
+                                data-placement="top" 
+                                title="Módulo bloqueado — disponível apenas em planos pagos"
+                            @endif
+                            class="nav-link {{ $bloqueado ? 'modulo-bloqueado' : '' }} {{ request()->routeIs($modulo->slug) ? 'active' : '' }} {{ $modulo->submodulos->isNotEmpty() ? '' : '' }}">
+                            <i class="{{ $modulo->icone }}"></i>
+
+                            <p>
+                                {{ $modulo->nome }}
+                                @if ($modulo->submodulos->isNotEmpty())
+                                    <i class="right fas fa-angle-left"></i>
+                                @endif
+
+                                @if ($bloqueado)
+                                    <i class="fa fa-lock text-warning ms-2"></i>
+                                @endif
+                            </p>
+                        </a>
+
+                        @if ($modulo->submodulos->isNotEmpty())
+                            <ul class="nav nav-treeview">
+                                @foreach ($modulo->submodulos as $sub)
+                                    <li class="nav-item">
+                                        <a href="{{ route($sub->rota) }}"
+                                            class="nav-link {{ request()->routeIs($sub->rota) ? 'active' : '' }}">
+                                            <i class="{{ $sub->icone ?? 'fa fa-circle' }}"></i> {{ $sub->nome }}
+                                        </a>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        @endif
+                    </li>
+                @endforeach
+
+                {{-- <li class="nav-item">
                     <a href="{{ route('profile.show') }}"
                         class="nav-link {{ request()->routeIs('profile.show') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-solid fa-user"></i>
@@ -38,7 +93,7 @@
                             Estoque
                         </p>
                     </a>
-                </li>    
+                </li>
                 <li class="nav-item">
                     <a href="{{ route('categorias.index') }}"
                         class="nav-link {{ request()->routeIs('categorias.index') ? 'active' : '' }}">
@@ -92,12 +147,13 @@
                             Vendas
                         </p>
                     </a>
-                </li>
+                </li> --}}
+
                 @if (optional(auth()->user())->isAdmin())
                     <li class="nav-item">
                         <a href="#" class="nav-link">
                             <i class="nav-icon fas fa-cogs"></i>
-                            
+
                             <p>
                                 Configurações
                                 <i class="right fas fa-angle-left"></i>

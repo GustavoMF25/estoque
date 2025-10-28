@@ -44,6 +44,28 @@
                 Adicionar
             </button>
         </div>
+        <div class='ml-2'>
+            <button type='button'
+                onclick=\"
+                    window.dispatchEvent(new CustomEvent('abrirModal', {
+                        detail: {
+                            titulo: 'Retirar produto',
+                            formId: 'removerProduto',
+                            paramsBtn: 'wire:click=\\'remover\\'',
+                            componente: 'produto.remover-produto',
+                            props: { 
+                                nome: '$nome',
+                                id: '$id'
+                            }
+                        }
+                    }));
+                    $('#modal-sm').modal('show');
+                \"
+                class='btn btn-primary btn-block btn-sm'>
+                <i class='fa fa-minus'></i>
+                Retirar
+            </button>
+        </div>
 ";
 
 @endphp
