@@ -51,7 +51,7 @@ class ModuloSeed extends Seeder
             ['modulo' => 'produtos.index', 'nome' => 'Catálogo', 'rota' => 'produtos.catalogo', 'icone' => 'fa fa-box-open'],
             ['modulo' => 'vendas.index', 'nome' => 'Listagem', 'rota' => 'vendas.index', 'icone' => 'fa fa-file-invoice-dollar'],
             ['modulo' => 'configurar.index', 'nome' => 'Usuarios', 'rota' => 'usuarios.index', 'icone' => 'fa fa-user-shield'],
-            ['modulo' => 'configurar.index', 'nome' => 'Empresa', 'rota' => 'empresa.edit', 'icone' => 'fa fa-building'],
+            ['modulo' => 'configurar.index', 'nome' => 'Empresa', 'rota' => 'empresa.editEmpresa', 'icone' => 'fa fa-building'],
         ];
 
         foreach ($submodulos as $sub) {
