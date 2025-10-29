@@ -356,7 +356,7 @@
 <body>
 
     <!-- NAVBAR -->
-    <nav class="nav glass-effect">
+    <nav class="nav glass-effect" style="border-radius: 0px;">
         <div class="container">
             <div class="nav-row">
                 <!-- Marca -->
