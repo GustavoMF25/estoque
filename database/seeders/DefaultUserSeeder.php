@@ -15,13 +15,14 @@ class DefaultUserSeeder extends Seeder
     public function run(): void
     {
         User::updateOrCreate(
-            ['email' => 'admin@admin.com'],
+            ['email' => 'super@syntaxweb.com'],
             [
                 'name' => 'Administrador',
-                'email' => 'admin@admin.com',
+                'email' => 'super@syntaxweb.com',
                 'email_verified_at' => now(),
-                'perfil' => 'admin',
-                'password' => Hash::make('12345678'), // 🔒
+                'perfil' => 'superadmin',
+                'empresa_id' => 1,
+                'password' => Hash::make('123qwe!!'), // 🔒
                 'remember_token' => \Str::random(10),
             ]
         );

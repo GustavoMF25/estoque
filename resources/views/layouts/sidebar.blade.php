@@ -41,11 +41,9 @@
                     <li class="nav-item  {{ $modulo->submodulos->isNotEmpty() ? 'dropdown' : '' }}">
 
                         <a href="{{ $modulo->submodulos->isEmpty() ? route($modulo->slug) : '#' }}"
-                            @if($bloqueado)
-                                data-toggle="tooltip" 
+                            @if ($bloqueado) data-toggle="tooltip" 
                                 data-placement="top" 
-                                title="Módulo bloqueado — disponível apenas em planos pagos"
-                            @endif
+                                title="Módulo bloqueado — disponível apenas em planos pagos" @endif
                             class="nav-link {{ $bloqueado ? 'modulo-bloqueado' : '' }} {{ request()->routeIs($modulo->slug) ? 'active' : '' }} {{ $modulo->submodulos->isNotEmpty() ? '' : '' }}">
                             <i class="{{ $modulo->icone }}"></i>
 
@@ -149,35 +147,35 @@
                     </a>
                 </li> --}}
 
-                {{-- @if (optional(auth()->user())->isAdmin())
+                @if (optional(auth()->user())->isSuperAdmin())
                     <li class="nav-item">
                         <a href="#" class="nav-link">
-                            <i class="nav-icon fas fa-cogs"></i>
+                            <i class="nav-icon fab fa-teamspeak"></i>
 
                             <p>
-                                Configurações
+                                SuperUsuario
                                 <i class="right fas fa-angle-left"></i>
                             </p>
                         </a>
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <a href="{{ route('usuarios.index') }}"
-                                    class="nav-link {{ request()->routeIs('usuarios.index') ? 'active' : '' }}">
-                                    <i class="fas fa-user nav-icon"></i>
-                                    <p>Usuarios</p>
+                                <a href="{{ route('assinaturas.index') }}"
+                                    class="nav-link {{ request()->routeIs('assinaturas.index') ? 'active' : '' }}">
+                                    <i class="fas fa-dollar-sign"></i>
+                                    <p>Assinaturas</p>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{ route('empresa.edit') }}"
-                                    class="nav-link {{ request()->routeIs('empresa.edit') ? 'active' : '' }}">
+                                <a href="{{ route('empresas.index') }}"
+                                    class="nav-link {{ request()->routeIs('empresas.index') ? 'active' : '' }}">
                                     <i class="fas fa-building"></i>
-                                    <p>Empresa</p>
+                                    <p>Empresas</p>
                                 </a>
                             </li>
 
                         </ul>
                     </li>
-                @endif --}}
+                @endif
 
             </ul>
         </nav>

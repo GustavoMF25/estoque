@@ -5,24 +5,21 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Support\Facades\Auth;
 
-
-class VerificaPerfil
+class SuperAdminMiddleware
 {
     /**
      * Handle an incoming request.
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next, ...$perfis): Response
+    public function handle(Request $request, Closure $next): Response
     {
-        $user = auth()->user();
 
-
-        if (!$user || !in_array($user->perfil, $perfis)) {
-            abort(403, 'Acesso negado');
+        if (!auth()->check() || auth()->user()->role !== 'superadmin') {
+            abort(403, 'Acesso restrito ao superadministrador.');
         }
+
         return $next($request);
     }
 }

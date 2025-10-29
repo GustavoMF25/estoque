@@ -70,6 +70,10 @@ class User extends Authenticatable
     {
         return $this->perfil === 'admin';
     }
+    public function isSuperAdmin()
+    {
+        return $this->perfil === 'superadmin';
+    }
 
     public function isOperador()
     {

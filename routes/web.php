@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AssinaturasController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\EmpresaController;
@@ -27,17 +28,36 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->group(function () {
+Route::get('/assinatura-expirada', function () {
+    return view('assinaturas.expirada');
+})->name('assinaturas.expirada');
+
+Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified', 'assinatura.ativa'])->group(function () {
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
 
+    Route::middleware(['auth', 'perfil:superadmin'])->group(function () {
+        Route::resource('assinaturas', AssinaturasController::class);
+
+        // Rota rápida para renovação manual
+        Route::post('assinaturas/{id}/renovar', [AssinaturasController::class, 'renovar'])
+            ->name('assinaturas.renovar');
+
+        // Rota para execução manual (ou via cron)
+        Route::get('assinaturas/verificar', [AssinaturasController::class, 'verificarVencidas'])
+            ->name('assinaturas.verificar');
+    });
+
+    Route::middleware(['auth', 'perfil:superadmin,admin'])->group(function () {
+        Route::resource('empresas', EmpresaController::class);
+    });
     Route::middleware(['auth', 'perfil:admin'])->group(function () {
         Route::get('/usuarios', [UsuarioController::class, 'index'])->name('usuarios.index');
         Route::get('/usuarios/create', [UsuarioController::class, 'create'])->name('usuarios.create');
         Route::post('/usuarios', [UsuarioController::class, 'store'])->name('usuarios.store');
         Route::resource('usuarios', UsuarioController::class);
-        Route::get('/empresa', [EmpresaController::class, 'edit'])->name('empresa.edit');
+        Route::get('/empresa', [EmpresaController::class, 'editEmpresa'])->name('empresa.editEmpresa');
         Route::put('/empresa', [EmpresaController::class, 'update'])->name('empresa.update');
 
         Route::middleware(['modulo:estoques'])->group(function () {
