@@ -7,8 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Gestão de Estoques</title>
     <link rel="stylesheet" href="{{ asset('css/landing.css') }}">
-
-
+    <link rel="icon" href="{{ asset('imagens/no-image.png') }}" type="image/png">
     <style>
         :root {
             --bg: #1b2417;
@@ -378,7 +377,7 @@
                     <!-- Botões de ação -->
                     <div class="nav-cta">
                         <a href="{{ route('login') }}" class="btn btn-ghost">Entrar</a>
-                        <a href="#planos" class="btn btn-primary shadow-elegant">Começar Grátis</a>
+                        <a href="#planos" class="btn btn-primary shadow-elegant">Começar Agora</a>
                     </div>
                     <!-- Botão de menu (hambúrguer) -->
                     <button class="nav-toggle" id="navToggle" aria-label="Abrir menu">
