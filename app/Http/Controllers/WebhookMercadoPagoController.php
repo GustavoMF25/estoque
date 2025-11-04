@@ -39,7 +39,7 @@ class WebhookMercadoPagoController extends Controller
                     $assinatura = $fatura->assinatura;
                     if ($assinatura) {
                         $assinatura->update([
-                            'status' => 'ativa',
+                            'status' => 'ativo',
                             'data_expiracao' => now()->addMonth(),
                         ]);
                     }
