@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-basic.content-page :title="__('Assinaturas')" :class="'card-secondary'" :btnCadastrar="['route' => route('assinaturas.create'), 'title' => 'Cadastrar Assinante']">
+    <x-basic.content-page :title="__('Assinaturas')" :class="'card-secondary'">
         <div class="text-center py-5">
             <h2>🚫 Assinatura Expirada</h2>
             <p>Sua assinatura está inativa. Entre em contato com o suporte para renovação.</p>

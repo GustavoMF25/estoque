@@ -10,10 +10,10 @@ class EmpresaModuloController extends Controller
 {
     public function edit($empresaId)
     {
-        $empresa = Empresa::with('modulos')->findOrFail($empresaId);
+        $empresas = Empresa::with('modulos')->findOrFail($empresaId);
         $modulos = Modulo::all();
 
-        return view('empresa.modulos', compact('empresa', 'modulos'));
+        return view('empresa.modulos', compact('empresas', 'modulos'));
     }
 
     public function update(Request $request, $empresaId)

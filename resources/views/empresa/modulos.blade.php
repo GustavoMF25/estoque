@@ -5,7 +5,7 @@
             <div class="alert alert-success">{{ session('success') }}</div>
         @endif
 
-        <form action="{{ route('empresas.modulos.update', $empresa->id) }}" method="POST">
+        <form action="{{ route('empresas.modulos.update', $empresas->id) }}" method="POST">
             @csrf
             @method('PUT')
 
@@ -14,7 +14,7 @@
                     @foreach ($modulos as $modulo)
                         @php
                             // Verifica se o módulo está associado à empresa
-                            $checked = $empresa->modulos->contains($modulo->id);
+                            $checked = $empresas->modulos->contains($modulo->id);
                         @endphp
 
                         <div class="col-md-4 mb-3">
