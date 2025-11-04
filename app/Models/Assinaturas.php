@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Fatura;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -79,6 +80,11 @@ class Assinaturas extends Model
         }
 
         $this->save();
+    }
+
+    public function faturas()
+    {
+        return $this->hasMany(Fatura::class, 'assinatura_id', 'id');
     }
 
     /**

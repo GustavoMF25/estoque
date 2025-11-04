@@ -15,49 +15,66 @@ class AssinaturasController extends Controller
      */
     public function index()
     {
-        $assinaturas = Assinaturas::with('empresa')
-            ->orderByDesc('data_vencimento')
-            ->paginate(15);
+        // $assinaturas = Assinaturas::with('empresa')
+        //     ->orderByDesc('data_vencimento')
+        //     ->paginate(15);
+        // 🔹 Superusuário visualiza todas as empresas com ou sem assinatura
+        $empresas = Empresa::with('assinatura')->orderBy('nome')->paginate(15);
 
-        return view('assinaturas.index', compact('assinaturas'));
+        return view('assinaturas.index', compact('empresas'));
+
+        // return view('assinaturas.index', compact('assinaturas'));
     }
 
-    /**
-     * ➕ Exibe o formulário de criação
-     */
-    public function create()
+    public function create($empresaId)
     {
-        $empresas = Empresa::all();
+        $empresas = Empresa::findOrFail($empresaId);
         return view('assinaturas.create', compact('empresas'));
     }
 
-    /**
-     * 💾 Cadastra nova assinatura
-     */
-    public function store(Request $request)
+    public function store(Request $request, $empresaId)
     {
-        $request->validate([
-            'empresa_id' => 'required|exists:empresas,id',
-            'plano' => 'required|string|max:60',
-            'valor_mensal' => 'required|numeric|min:0',
-            'data_inicio' => 'required|date',
-            'data_vencimento' => 'required|date|after_or_equal:data_inicio',
-            'status' => 'required|in:pendente,ativo,atrasado,cancelado',
-            'metodo_pagamento' => 'required|in:manual,pix,asaas,pagseguro',
+        $empresa = Empresa::findOrFail($empresaId);
+
+        $meses = 1;
+
+        switch ($request->periodicidade) {
+            case 'anual':
+                $meses = 12;
+                break;
+            case 'trimestral':
+                $meses = 3;
+                break;
+            default:
+                $meses = 1;
+                break;
+        }
+
+        $status = strtolower($request->status);
+
+        if (!in_array($status, ['ativo', 'atrasado', 'pendente'])) {
+            $status = 'pendente';
+        }
+
+        Assinaturas::create([
+            'empresa_id' => $empresa->id,
+            'plano' => $request->plano_nome,
+            'valor_mensal' => $request->valor,
+            'data_inicio' => now(),
+            'periodicidade' => $request->periodicidade,
+            'data_vencimento' => now()->addMonths($meses),
+            'status' => $status,
         ]);
 
-        DB::beginTransaction();
-        try {
-            Assinaturas::create($request->all());
-            DB::commit();
+        return redirect()
+            ->route('assinaturas.index')
+            ->with('success', 'Assinatura criada com sucesso para ' . $empresa->nome . '!');
+    }
 
-            return redirect()
-                ->route('assinaturas.index')
-                ->with('success', 'Assinatura criada com sucesso!');
-        } catch (\Throwable $e) {
-            DB::rollBack();
-            return back()->with('error', 'Erro ao salvar assinatura: ' . $e->getMessage());
-        }
+    public function show($id)
+    {
+        $assinatura = Assinaturas::with('empresa', 'faturas')->findOrFail($id);
+        return view('assinaturas.show', compact('assinatura'));
     }
 
     /**

@@ -31,26 +31,16 @@ class EmpresaSeeder extends Seeder
         }
 
         Empresa::updateOrCreate(
-            ['nome' => 'Sofá Store Ltda'],
+            ['nome' => 'Estoque SyntaxWeb'],
             [
-                'nome' => 'Sofá Store Ltda',
-                'razao_social' => 'Sofá Store Comércio de Estofados LTDA',
+                'nome' => 'Estoque SyntaxWeb',
+                'razao_social' => 'Estoque SyntaxWeb',
                 'cnpj' => '12.345.678/0001-99',
                 'telefone' => '(21) 98765-4321',
-                'email' => 'contato@sofastore.com.br',
-                'endereco' => 'Av. Principal, 123 - Centro, Rio de Janeiro - RJ',
+                'email' => 'contato@syntaxweb.com.br',
+                'endereco' => '',
                 'logo' => $logoPath,
             ]
         );
-
-        // Empresa::create([
-        //     'nome' => 'Sofá Store Ltda',
-        //     'razao_social' => 'Sofá Store Comércio de Estofados LTDA',
-        //     'cnpj' => '12.345.678/0001-99',
-        //     'telefone' => '(21) 98765-4321',
-        //     'email' => 'contato@sofastore.com.br',
-        //     'endereco' => 'Av. Principal, 123 - Centro, Rio de Janeiro - RJ',
-        //     'logo' => $logoPath,
-        // ]);
     }
 }

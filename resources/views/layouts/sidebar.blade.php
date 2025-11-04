@@ -13,9 +13,7 @@
                 'submodulos' => function ($q) {
                     $q->where('ativo', true);
                 },
-            ])
-            ->where('modulos.ativo', true)
-            ->get();
+            ])->get();
     @endphp
 
     <!-- Sidebar -->

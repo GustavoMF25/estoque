@@ -55,7 +55,7 @@ class EmpresaController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('empresas.index')->with('success', 'Empresa cadastrada com sucesso!');
+            return redirect()->route('assinaturas.index')->with('success', 'Empresa cadastrada com sucesso!');
         } catch (\Throwable $e) {
             DB::rollBack();
             return back()->with('error', 'Erro ao cadastrar empresa: ' . $e->getMessage());

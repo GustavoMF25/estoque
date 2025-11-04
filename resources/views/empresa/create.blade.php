@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-basic.content-page :title="__('Assinaturas')" :class="'card-secondary'" :btnCadastrar="['route' => route('clientes.create'), 'title' => 'Cadastrar Cliente']">
+    <x-basic.content-page :title="__('Cadastrar Cliente')" :class="'card-secondary'">
         <form action="{{ route('empresas.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
 

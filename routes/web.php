@@ -4,12 +4,15 @@ use App\Http\Controllers\AssinaturasController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\EmpresaController;
+use App\Http\Controllers\EmpresaModuloController;
 use App\Http\Controllers\EstoqueController;
 use App\Http\Controllers\FabricanteController;
+use App\Http\Controllers\FaturaController;
 use App\Http\Controllers\LojaController;
 use App\Http\Controllers\ProdutosController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\VendaController;
+use App\Http\Controllers\WebhookMercadoPagoController;
 use App\Livewire\Carrinho\ConfirmarVenda;
 use Illuminate\Support\Facades\Route;
 
@@ -32,21 +35,33 @@ Route::get('/assinatura-expirada', function () {
     return view('assinaturas.expirada');
 })->name('assinaturas.expirada');
 
+Route::post('/api/mercadopago/webhook', [WebhookMercadoPagoController::class, 'handle']);
+Route::get('faturas/{fatura}/pagamento/sucesso', [FaturaController::class, 'sucesso'])->name('faturas.pagamento.sucesso');
+Route::get('faturas/{fatura}/pagamento/erro', [FaturaController::class, 'erro'])->name('faturas.pagamento.erro');
+
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified', 'assinatura.ativa'])->group(function () {
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
 
     Route::middleware(['auth', 'perfil:superadmin'])->group(function () {
-        Route::resource('assinaturas', AssinaturasController::class);
+        // Route::resource('assinaturas', AssinaturasController::class);
+        Route::post('assinaturas/{id}/renovar', [AssinaturasController::class, 'renovar'])->name('assinaturas.renovar');
+        Route::get('assinaturas/verificar', [AssinaturasController::class, 'verificarVencidas'])->name('assinaturas.verificar');
 
-        // Rota rápida para renovação manual
-        Route::post('assinaturas/{id}/renovar', [AssinaturasController::class, 'renovar'])
-            ->name('assinaturas.renovar');
+        Route::get('assinaturas', [AssinaturasController::class, 'index'])->name('assinaturas.index');
+        Route::get('assinaturas/create/{empresa}', [AssinaturasController::class, 'create'])->name('assinaturas.create');
+        Route::post('assinaturas/store/{empresa}', [AssinaturasController::class, 'store'])->name('assinaturas.store');
+        Route::get('assinaturas/{assinatura}', [AssinaturasController::class, 'show'])->name('assinaturas.show');
 
-        // Rota para execução manual (ou via cron)
-        Route::get('assinaturas/verificar', [AssinaturasController::class, 'verificarVencidas'])
-            ->name('assinaturas.verificar');
+        Route::get('assinaturas/{assinatura}/faturas', [FaturaController::class, 'index'])->name('faturas.index');
+        Route::get('assinaturas/{assinatura}/faturas/create', [FaturaController::class, 'create'])->name('faturas.create');
+        Route::post('assinaturas/{assinatura}/faturas', [FaturaController::class, 'store'])->name('faturas.store');
+        Route::put('faturas/{fatura}/pagar', [FaturaController::class, 'marcarPago'])->name('faturas.marcarPago');
+        Route::delete('faturas/{fatura}', [FaturaController::class, 'destroy'])->name('faturas.destroy');
+
+        Route::get('{empresa}/modulos', [EmpresaModuloController::class, 'edit'])->name('empresas.modulos.edit');
+        Route::put('{empresa}/modulos', [EmpresaModuloController::class, 'update'])->name('empresas.modulos.update');
     });
 
     Route::middleware(['auth', 'perfil:superadmin,admin'])->group(function () {

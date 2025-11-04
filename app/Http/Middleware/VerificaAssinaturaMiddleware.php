@@ -19,6 +19,7 @@ class VerificaAssinaturaMiddleware
         $user = auth()->user();
 
         // Superadmin ignora essa regra
+
         if ($user->perfil === 'superadmin') {
             return $next($request);
         }
@@ -26,15 +27,20 @@ class VerificaAssinaturaMiddleware
         $assinatura = Assinaturas::where('empresa_id', $user->empresa_id)
             ->orderByDesc('id')
             ->first();
-
         if (!$assinatura) {
             return redirect()->route('assinaturas.expirada')
                 ->with('error', 'Nenhuma assinatura ativa encontrada.');
         }
 
-        if ($assinatura->status === 'expirada' || $assinatura->data_vencimento < now()) {
-            return redirect()->route('assinaturas.expirada')
-                ->with('error', 'Sua assinatura expirou. Entre em contato para renovação.');
+        if ($assinatura->status === 'atrasado' || $assinatura->data_vencimento < now()) {
+            $assinatura->update(['status' => 'atrasado']);
+
+            return response()
+                ->view('errors.expirada', [
+                    'empresaNome' => $assinatura->empresa->nome,
+                    'dataExpiracao' => $assinatura->data_expiracao,
+                    'assinaturaId' => $assinatura->id,
+                ]);
         }
 
         return $next($request);

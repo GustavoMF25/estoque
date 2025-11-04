@@ -38,6 +38,10 @@
                                     <i class="fas fa-trash-alt"></i>
                                 </button>
                             </form>
+                            <a href="{{ route('empresas.modulos.edit', $empresa->id) }}"
+                                class="btn btn-sm btn-outline-primary">
+                                <i class="fa fa-puzzle-piece"></i> Módulos
+                            </a>
                         </td>
                     </tr>
                 @empty
