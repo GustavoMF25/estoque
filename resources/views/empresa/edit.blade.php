@@ -5,7 +5,7 @@
             <div class="alert alert-success">{{ session('success') }}</div>
         @endif
 
-        <form action="{{ route('empresa.update') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('empresas.update', $empresas->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
 

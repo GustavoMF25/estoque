@@ -88,20 +88,17 @@ class EmpresaController extends Controller
 
 
         if ($request->hasFile('logo')) {
-
+            // Verifica se a empresa já tem uma logo e se o arquivo existe, para então deletá-la
             if ($empresa->logo && Storage::disk('public')->exists($empresa->logo)) {
                 Storage::disk('public')->delete($empresa->logo);
             }
             $logo = $request->file('logo');
             $filename = uniqid('logo_') . '.' . $logo->getClientOriginalExtension();
-
-            $logo->move(storage_path('app/public/logos'), $filename);
-
+            $path = $logo->storeAs('logos', $filename, 'public');
             $data['logo'] = 'logos/' . $filename;
         }
 
         $empresa->update($data);
-
         return redirect()->back()->with('success', 'Dados da empresa atualizados com sucesso!');
     }
 
