@@ -20,7 +20,7 @@ class MigrarProdutosParaUnidadesSeeder extends Seeder
 
         try {
             $grupos = ProdutosAgrupados::query()
-                // ->where('nome', 'AGATA 1,30 x 1,30 Laminado')
+                // ->where('nome', '508 Tec (Nicaragua) 1,60')
                 ->orderBy('ultima_movimentacao', 'desc')
                 ->orderBy('nome', 'asc')
                 ->whereNotIn('ultima_movimentacao', ['cancelamento'])->get();

@@ -56,7 +56,6 @@ return new class extends Migration
     public function down(): void
     {
         $tabelas = [
-            'lojas',
             'estoques',
             'produtos',
             'movimentacoes',

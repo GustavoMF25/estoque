@@ -84,7 +84,6 @@ class FaturaController extends Controller
                 "external_reference" => (string) $fatura->id,
                 "notification_url" => env('MERCADO_PAGO_WEBHOOK_URL'),
 
-                // // ✅ Definir os back_urls corretamente
                 "back_urls" => [
                     "success" => route('faturas.pagamento.sucesso', $fatura->id), // URL de sucesso
                     "failure" => route('faturas.pagamento.erro', $fatura->id),    // URL de falha
