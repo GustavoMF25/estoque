@@ -20,10 +20,8 @@ class MigrarProdutosParaUnidadesSeeder extends Seeder
 
         try {
             $grupos = ProdutosAgrupados::query()
-                // ->where('nome', 'AGATA 1,30 x 1,30 Laminado')
                 ->orderBy('ultima_movimentacao', 'desc')
-                ->orderBy('nome', 'asc')
-                ->whereNotIn('ultima_movimentacao', ['cancelamento'])->get();
+                ->orderBy('nome', 'asc')->get();
 
             if ($grupos->isEmpty()) {
                 $this->command->warn('⚠️ Nenhum produto encontrado na view produtos_agrupados_view.');
@@ -43,6 +41,13 @@ class MigrarProdutosParaUnidadesSeeder extends Seeder
                 // 🔢 Quantidades
                 $quantidadeTotal = $grupo->quantidade_produtos;
                 $produtoPrincipal = $produtos->first();
+
+                if ($grupo->ultima_movimentacao == 'cancelamento') {
+                    $produtos->each(function ($p) {
+                        $p->ativo = false;
+                        $p->save();
+                    });
+                }
 
                 if ($grupo->ultima_movimentacao == 'disponivel') {
                     // 🔵 Desativa duplicados

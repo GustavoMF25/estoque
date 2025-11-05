@@ -55,13 +55,15 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
 
     Route::resource('categorias', CategoriaController::class);
     Route::resource('fabricantes', FabricanteController::class);
-    Route::resource('clientes', ClienteController::class);
+    // Route::resource('clientes', ClienteController::class);
 
-    Route::get('/carrinho/confirmar', ConfirmarVenda::class)->name('carrinho.confirmar');
+    Route::middleware(['block.old.sales'])->group(function () {
+        Route::get('/carrinho/confirmar', ConfirmarVenda::class)->name('carrinho.confirmar');
 
-    Route::get('/vendas', function () {
-        return view('vendas.index');
-    })->name('vendas.index');
-    Route::get('/vendas/{venda}/nota', [VendaController::class, 'gerar'])
-    ->name('vendas.nota');
+        Route::get('/vendas', function () {
+            return view('vendas.index');
+        })->name('vendas.index');
+        Route::get('/vendas/{venda}/nota', [VendaController::class, 'gerar'])
+            ->name('vendas.nota');
+    });
 });

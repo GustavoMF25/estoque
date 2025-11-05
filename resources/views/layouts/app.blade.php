@@ -54,7 +54,7 @@
 
     <!-- Scripts -->
 
-    
+
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="{{ asset('adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
@@ -67,6 +67,38 @@
     @livewireScripts
     @rappasoftTableScripts
     @rappasoftTableThirdPartyScripts
+
+    <!-- Modal Anúncio -->
+    <div class="modal fade" id="modalNovaVersao" tabindex="-1" role="dialog" aria-labelledby="modalNovaVersaoLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content shadow-lg border-0">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="modalNovaVersaoLabel">🚀 Nova Versão Disponível!</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Fechar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-center">
+                    <p>Uma nova versão do <strong>SyntaxWeb Estoque</strong> já está disponível com planos de assinatura
+                        e novos recursos!</p>
+                    <a href="https://estoque.syntaxweb.com.br" target="_blank" class="btn btn-primary mt-2">
+                        Conheça Agora
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            if (!localStorage.getItem('novaVersaoAviso')) {
+                $('#modalNovaVersao').modal('show');
+                localStorage.setItem('novaVersaoAviso', '1');
+            }
+        });
+    </script>
+
     <script>
         document.addEventListener("DOMContentLoaded", function(e) {
             @if (session('success') || session()->has('success'))
@@ -75,6 +107,9 @@
 
             @if (session('error') || session()->has('error'))
                 toastr.error(@json(session('error')))
+            @endif
+            @if (session('warning') || session()->has('warning'))
+                toastr.warning(@json(session('warning')))
             @endif
 
             Livewire.on('msgtSuccess', message => {

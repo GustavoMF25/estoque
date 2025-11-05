@@ -31,7 +31,6 @@ class CreateProdutosAgrupadosView extends Migration
         LEFT JOIN estoques e ON p.estoque_id = e.id
         LEFT JOIN fabricantes f ON p.fabricante_id = f.id
         LEFT JOIN ultima_mov um ON p.id = um.produto_id AND um.rn = 1
-        WHERE p.deleted_at IS NULL
         GROUP BY p.estoque_id, um.tipo, p.nome;
     ");
     }

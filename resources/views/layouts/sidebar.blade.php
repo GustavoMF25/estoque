@@ -84,7 +84,7 @@
                         </p>
                     </a>
                 </li>
-                {{-- <li class="nav-item">
+                <li class="nav-item">
                     <a href="{{ route('vendas.index') }}"
                         class="nav-link {{ request()->routeIs('vendas.index') ? 'active' : '' }}">
                         <i class="fa fa-shopping-cart"></i>
@@ -92,7 +92,7 @@
                             Vendas
                         </p>
                     </a>
-                </li> --}}
+                </li>
                 @if (optional(auth()->user())->isAdmin())
                     <li class="nav-item">
                         <a href="#" class="nav-link">
