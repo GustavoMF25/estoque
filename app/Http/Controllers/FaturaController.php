@@ -85,12 +85,12 @@ class FaturaController extends Controller
                 "notification_url" => env('MERCADO_PAGO_WEBHOOK_URL'),
 
                 // // ✅ Definir os back_urls corretamente
-                // "back_urls" => [
-                //     "success" => route('faturas.pagamento.sucesso', $fatura->id), // URL de sucesso
-                //     "failure" => route('faturas.pagamento.erro', $fatura->id),    // URL de falha
-                // ],
+                "back_urls" => [
+                    "success" => route('faturas.pagamento.sucesso', $fatura->id), // URL de sucesso
+                    "failure" => route('faturas.pagamento.erro', $fatura->id),    // URL de falha
+                ],
 
-                // "auto_return" => "approved", // Isso permite o retorno automático para sucesso
+                "auto_return" => "approved", // Isso permite o retorno automático para sucesso
             ]);
             // Salva o link de pagamento na fatura
             $fatura->update([

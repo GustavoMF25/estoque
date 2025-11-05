@@ -1,14 +1,9 @@
-<x-app-layout>
+<x-guest-layout>
     <section class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
-                <div class="col-sm-6">
+                <div class="col-sm-12">
                     <h1>Pagamento Concluído</h1>
-                </div>
-                <div class="col-sm-6 text-right">
-                    <a href="{{ route('assinaturas.show', $fatura->assinatura_id) }}" class="btn btn-outline-secondary btn-sm">
-                        <i class="fa fa-arrow-left"></i> Voltar à assinatura
-                    </a>
                 </div>
             </div>
         </div>
@@ -30,8 +25,8 @@
             <div class="alert alert-success mt-3">
                 <strong>Detalhes:</strong>
                 <ul class="mb-0 mt-2">
-                    <li><strong>Data de pagamento:</strong> {{ \Carbon\Carbon::parse($fatura->data_pagamento)->format('d/m/Y') }}</li>
-                    <li><strong>Valor pago:</strong> R$ {{ number_format($fatura->valor, 2, ',', '.') }}</li>
+                    <strong>Data de pagamento:</strong> {{ \Carbon\Carbon::parse($fatura->data_pagamento)->format('d/m/Y') }}</br>
+                    <strong>Valor pago:</strong> R$ {{ number_format($fatura->valor, 2, ',', '.') }}
                 </ul>
             </div>
 
@@ -42,4 +37,4 @@
             </div>
         </div>
     </div>
-</x-app-layout>
+</x-guest-layout>

@@ -1,14 +1,11 @@
-<x-app-layout>
+<x-guest-layout>
     <section class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
-                <div class="col-sm-6">
+                <div class="col-sm-12">
                     <h1>Erro no Pagamento</h1>
                 </div>
                 <div class="col-sm-6 text-right">
-                    <a href="{{ route('assinaturas.show', $fatura->assinatura_id) }}" class="btn btn-outline-secondary btn-sm">
-                        <i class="fa fa-arrow-left"></i> Voltar à assinatura
-                    </a>
                 </div>
             </div>
         </div>
@@ -30,8 +27,8 @@
             <div class="alert alert-danger mt-3">
                 <strong>O que você pode fazer:</strong>
                 <ul class="mb-0 mt-2">
-                    <li>Tente realizar o pagamento novamente mais tarde.</li>
-                    <li>Se o problema persistir, entre em contato com o suporte.</li>
+                    Tente realizar o pagamento novamente mais tarde.
+                    Se o problema persistir, entre em contato com o suporte.
                 </ul>
             </div>
 
@@ -42,4 +39,4 @@
             </div>
         </div>
     </div>
-</x-app-layout>
+</x-guest-layout>
