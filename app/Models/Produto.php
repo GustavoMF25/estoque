@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Traits\BelongsToEmpresa;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -26,6 +27,14 @@ class Produto extends Model
         'ativo'
     ];
 
+    /**
+     * 🧮 Escopo: unidades disponíveis
+     */
+    public function scopeAtivo($query)
+    {
+        return $query->where('ativo', true);
+    }
+
     public function estoque()
     {
         return $this->belongsTo(Estoque::class)->withTrashed();
@@ -38,6 +47,16 @@ class Produto extends Model
         } while (self::where('codigo_barras', $codigo)->exists());
 
         return $codigo;
+    }
+
+    public function getValorRecebidoAttribute()
+    {
+        return $this->unidadesVendidas()->count() * $this->preco;
+    }
+
+    public function getDisponiveisAttribute()
+    {
+        return $this->unidades()->Disponiveis()->count();
     }
 
     public function movimentacoes()
@@ -58,5 +77,20 @@ class Produto extends Model
     public function fabricante()
     {
         return $this->belongsTo(Fabricante::class, 'fabricante_id');
+    }
+
+    public function vinculos()
+    {
+        return $this->hasMany(ProdutoVinculos::class, 'produto_principal_id');
+    }
+
+    public function vinculadoEm()
+    {
+        return $this->hasMany(ProdutoVinculos::class, 'produto_vinculado_id');
+    }
+
+    public function unidades()
+    {
+        return $this->hasMany(ProdutosUnidades::class, 'produto_id');
     }
 }

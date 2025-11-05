@@ -9,12 +9,12 @@ use App\Services\ProdutosService;
 use App\Services\ProdutoUnidadeService;
 use Livewire\Component;
 
-class ModalAdicionarProduto extends Component
+class ModalRemoverProduto extends Component
 {
-
     public $nome;
     public $id;
     public $quantidade = 1;
+    public $observacao = 1;
     public $produto;
     public $mensagem;
 
@@ -28,15 +28,13 @@ class ModalAdicionarProduto extends Component
         $this->id = $id;
     }
 
-    public function adicionar()
+    public function remover()
     {
         try {
             // 🔍 Busca o produto base pelo nome
             $this->produto = Produto::where('nome', $this->nome)->firstOrFail();
-
             // 🔢 Quantidade de unidades que serão adicionadas
             $quantidade = (int) $this->quantidade;
-
             if ($quantidade <= 0) {
                 return $this->dispatch('toast', [
                     'type' => 'error',
@@ -44,23 +42,21 @@ class ModalAdicionarProduto extends Component
                 ]);
             }
 
-            // ⚙️ Cria novas unidades físicas (produtos_unidades)
-            $ultimaUnidade = $this->produto->unidades()->orderByDesc('id')->first();
-            $indiceBase = $ultimaUnidade ? $ultimaUnidade->id + 1 : 1;
+            // // ⚙️ Cria novas unidades físicas (produtos_unidades)
+            // $ultimaUnidade = $this->produto->unidades()->orderByDesc('id')->first();
+            // $indiceBase = $ultimaUnidade ? $ultimaUnidade->id - 1 : 1;
 
-            for ($i = 0; $i < $quantidade; $i++) {
-                $codigo = ProdutoUnidadeService::gerarCodigo(
-                    $this->produto,
-                    $indiceBase + $i
-                );
-
-                ProdutosUnidades::create([
-                    'produto_id' => $this->produto->id,
-                    'codigo_unico' => $codigo,
-                    'status' => 'disponivel',
-                ]);
-            }
-
+            // for ($i = 0; $i < $quantidade; $i++) {
+            //     $codigo = ProdutoUnidadeService::gerarCodigo(
+            //         $this->produto,
+            //         $indiceBase + $i
+            //     );
+            //     ProdutosUnidades::create([
+            //         'produto_id' => $this->produto->id,
+            //         'codigo_unico' => $codigo,
+            //         'status' => 'disponivel',
+            //     ]);
+            // }
             MovimentacaoService::registrar([
                 'produto_id' => $this->produto->id,
                 'tipo' => 'entrada',
@@ -74,10 +70,8 @@ class ModalAdicionarProduto extends Component
                 'quantidade' => $quantidade,
                 'observacao' => "Novas unidades disponíveis ({$quantidade}) adicionadas manualmente",
             ]);
-
             $this->mensagem = "{$quantidade} novas unidades adicionadas ao produto '{$this->produto->nome}'.";
             $this->dispatch('fecharModal');
-
             return $this->dispatch('toast', [
                 'type' => 'success',
                 'message' => $this->mensagem,

@@ -1,7 +1,7 @@
 <div @refresh-produto-visualizar.window="$wire.loadData()">
     <div class=" align-items-center">
         <div class=" text-center mb-3 mb-md-0">
-            <img src="{{ asset('storage/' . $image->imagem) }}" alt="Imagem do Produto" class="img-thumbnail shadow-sm"
+            <img src="{{ asset('storage/' . $image) }}" alt="Imagem do Produto" class="img-thumbnail shadow-sm"
                 style="max-height: 200px;">
         </div>
         <div>
@@ -35,7 +35,7 @@
 
                         <div class="info-box-content">
                             <span class="info-box-text">Em estoque</span>
-                            <span class="info-box-number">{{ $produto->quantidade_produtos }}</span>
+                            <span class="info-box-number">{{ $qtdDisponiveis }}</span>
                         </div>
                     </div>
                 </div>

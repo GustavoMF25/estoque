@@ -25,7 +25,7 @@ class CreateProdutosAgrupadosView extends Migration
             MAX(p.imagem) AS imagem,
             MAX(p.preco) AS preco,
             MAX(p.created_at) AS data_criacao,
-            MAX(e.nome) AS estoque_nome
+            MAX(e.nome) AS estoque_nome,
             MAX(f.nome) AS fabricante_nome
         FROM produtos p
         LEFT JOIN estoques e ON p.estoque_id = e.id
