@@ -41,7 +41,7 @@
                 <form method="POST" action="{{ route('logout') }}" x-data>
                     @csrf
 
-                    <a href="{{ route('logout') }}" class="dropdown-item" @click.prevent="$root.submit();">
+                    <a href="{{ route('logout') }}" class="dropdown-item" @click.prevent="$root.submit();" onclick="localStorage.removeItem('novaVersaoAviso');">
                         <i class="fas fa-sign-out-alt mr-2"></i>
                         {{ __('Log Out') }}
                     </a>
