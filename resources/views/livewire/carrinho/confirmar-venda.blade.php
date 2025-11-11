@@ -14,7 +14,7 @@
                             <div>
                                 <strong>{{ $item['nome'] }}</strong>
                                 <div class="small text-muted">
-                                    {{ $disponiveis[$item['nome']] ?? 0 }} disponíveis
+                                    {{ $disponiveis[$item['produto_id']] ?? 0 }} disponíveis
                                 </div>
                                 {{-- <div>
                                     <a href="#" wire:click.prevent="removerItem('{{ $item['nome'] }}')"
