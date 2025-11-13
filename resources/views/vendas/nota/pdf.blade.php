@@ -222,12 +222,12 @@
                 </tr>
                 <tr>
                     <td><strong>Descontos:</strong></td>
-                    <td class="right">R$ {{ number_format($venda->desconto ?? 0, 2, ',', '.') }}</td>
+                    <td class="right"> {{$venda->desconto ?? 0}} %</td>
                 </tr>
                 <tr>
                     <td><strong>Valor Líquido:</strong></td>
                     <td class="right total">R$
-                        {{ number_format($venda->valor_total - ($venda->desconto ?? 0), 2, ',', '.') }}</td>
+                        {{ number_format($venda->valor_final, 2, ',', '.') }}</td>
                 </tr>
             </table>
         </div>

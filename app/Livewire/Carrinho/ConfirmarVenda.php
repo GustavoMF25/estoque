@@ -18,6 +18,14 @@ class ConfirmarVenda extends Component
     public $protocolo = '';
     public $cliente_id = '';
     public $enderecoSelecionado = '';
+    public $total_original;
+    public $total_final;
+    public $desconto_percentual;
+    public $editando_total = false;
+    public $carrinho;
+    public $clientes;
+    public $disponiveis;
+
 
     protected $rules = [
         'protocolo' => 'required|string|max:255',
@@ -32,6 +40,7 @@ class ConfirmarVenda extends Component
         $quantidadeNoCarrinho = $carrinho[$produtoId]['quantidade'] ?? 0;
         $quantidadeDisponivel = $produto->Disponiveis;
 
+
         if ($quantidadeNoCarrinho + 1 > $quantidadeDisponivel) {
             $this->dispatch('toast', [
                 'type' => 'error',
@@ -40,20 +49,11 @@ class ConfirmarVenda extends Component
             return;
         }
 
-        if (isset($carrinho[$produtoId])) {
-            $carrinho[$produtoId]['quantidade'] += 1;
-        } else {
-            $carrinho[$produto->id] = [
-                'produto_id' => $produto->id,
-                'nome' => $produto->nome,
-                'quantidade' => 1,
-                'preco_unitario' => $produto->preco ?? 0,
-                'imagem' => $produto->imagem ?? null,
-                'codigo_barras' => $produto->codigo_barras ?? null,
-            ];
-        }
+        $carrinho[$produtoId]['quantidade'] += 1;
 
+        $this->carrinho = $carrinho;
         session(['carrinho' => $carrinho]);
+        $this->total_original = $this->calcularTotal();
 
         $this->dispatch('toast', [
             'type' => 'success',
@@ -72,8 +72,12 @@ class ConfirmarVenda extends Component
             } else {
                 unset($carrinho[$produtoId]);
             }
+
+            $this->carrinho = $carrinho;
             session(['carrinho' => $carrinho]);
 
+
+            $this->total_original = $this->calcularTotal();
             $this->dispatch('toast', [
                 'type' => 'success',
                 'message' => "Quantidade de '{$nome}' reduzida no carrinho."
@@ -127,22 +131,17 @@ class ConfirmarVenda extends Component
 
         try {
             // calcula o valor total bruto
-            $valorTotal = collect($carrinho)->sum(fn($item) => $item['quantidade'] * $item['preco_unitario']);
-
-            // aplica o desconto combo
-            $descontoCombo = $this->calcularDescontoCombo($carrinho);
-            $valorFinal = $valorTotal - $descontoCombo;
 
             $venda = Venda::create([
-                'empresa_id' => 1,
                 'loja_id' => null,
                 'user_id' => auth()->id(),
                 'cliente_id' => $this->cliente_id ?: null,
                 'protocolo' => $this->protocolo,
-                'valor_total' => $valorTotal,
-                'desconto' => $descontoCombo,
-                'valor_final' => $valorFinal,
+                'valor_total' => $this->total_original,
+                'desconto' => $this->desconto_percentual ?: null,
+                'valor_final' => $this->total_final,
                 'status' => 'aberta',
+                'empresa_id' => auth()->user()->empresa_id,
             ]);
 
             foreach ($carrinho as $item) {
@@ -184,8 +183,8 @@ class ConfirmarVenda extends Component
 
             $this->dispatch('toast', [
                 'type' => 'success',
-                'message' => $descontoCombo > 0
-                    ? "Venda concluída com desconto de R$ " . number_format($descontoCombo, 2, ',', '.')
+                'message' => $this->desconto_percentual  > 0
+                    ? "Venda concluída com desconto de " . $this->desconto_percentual. " %."
                     : 'Venda realizada com sucesso!'
             ]);
         } catch (\Exception $e) {
@@ -203,24 +202,90 @@ class ConfirmarVenda extends Component
             : '';
     }
 
-    public function render()
+    public function updatedDescontoPercentual($value)
     {
-        $carrinho = session('carrinho', []);
-        $clientes = Cliente::orderBy('nome')->get(); // 👈 lista de clientes
-        $disponiveis = [];
+        $value = floatval($value);
 
-        foreach ($carrinho as $item) {
+        if ($value < 0) $value = 0;
+        if ($value > 100) $value = 100;
+
+        $this->desconto_percentual = $value;
+        $this->editando_total = false;
+
+        $desconto = ($this->total_original * $value) / 100;
+        $this->total_final = max($this->total_original - $desconto, 0);
+    }
+
+    public function updatedTotalOriginal($value)
+    {
+        // Ignora valores vazios
+        if ($value === "" || $value === null) {
+            return;
+        }
+
+        // Agora sim converte
+        $valor = str_replace(',', '.', $value);
+
+        if (!is_numeric($valor)) {
+            return; // evita Livewire resetar
+        }
+
+        $valor = floatval($valor);
+
+        // Impede negativo
+        if ($valor < 0) {
+            $valor = 0;
+        }
+
+        $this->editando_total = true;
+        $this->total_final = $valor;
+    }
+
+    private function calcularTotal(): float
+    {
+        if (empty($this->carrinho)) {
+            return 0;
+        }
+
+
+        // $itens é aquele array que você usa na view: ['produto_id', 'nome', 'quantidade', 'preco_unitario', ...]
+        $valor =  collect($this->carrinho)->sum(function ($item) {
+            $quantidade = $item['quantidade'] ?? 0;
+            $preco = $item['preco_unitario'] ?? 0;
+
+            return $quantidade * $preco;
+        });
+
+
+        $this->total_final = $valor;
+        return $valor;
+    }
+
+
+    public function mount()
+    {
+        $this->carrinho = session('carrinho', []);
+        $this->clientes = Cliente::orderBy('nome')->get();
+        $this->disponiveis = [];
+
+        foreach ($this->carrinho as $item) {
 
             $produto = Produto::findOrFail($item['produto_id']);
 
-            $disponiveis[$item['produto_id']] = $produto ? $produto->Disponiveis : 0;
-        }
+            $this->disponiveis[$item['produto_id']] = $produto ? $produto->Disponiveis : 0;
 
+            $this->total_original = $this->total_original + ($item['quantidade'] * $item['preco_unitario']);
+        }
+        $this->total_final =  $this->total_original;
+    }
+
+    public function render()
+    {
         return view('livewire.carrinho.confirmar-venda', [
-            'itens' => $carrinho,
-            'clientes' => $clientes,
-            'total' => collect($carrinho)->sum(fn($item) => $item['quantidade'] * $item['preco_unitario']),
-            'disponiveis' => $disponiveis,
+            'itens' => $this->carrinho,
+            'clientes' => $this->clientes,
+            'total' => collect($this->carrinho)->sum(fn($item) => $item['quantidade'] * $item['preco_unitario']),
+            'disponiveis' => $this->disponiveis,
         ]);
     }
 }

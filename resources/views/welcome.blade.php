@@ -513,34 +513,104 @@
         <div class="container">
             <div class="section-head">
                 <h2>Planos para seu <span class="text-primary">Crescimento</span></h2>
-                <p>Escolha o plano ideal para o tamanho do seu negócio</p>
+                <p>Aproveite a oferta especial de Black Friday e economize mais!</p>
             </div>
 
-            <div class="grid grid-1 pricing" style="max-width:700px; margin:0 auto;">
+            <div class="grid grid-3" style="gap:2rem;">
+
+                <!-- Plano Mensal -->
                 <article class="price-card featured">
-                    <div class="ribbon">Acesso Completo</div>
+                    <div class="badge">BLACK FRIDAY 🔥</div>
+
                     <div class="price-head">
-                        <h3>Plano Profissional</h3>
-                        <p>Experimente todos os recursos na versão Beta</p>
-                        <div class="price-line"><span>R$ 200</span><small>/mês</small></div>
+                        <h3>Plano Mensal</h3>
+                        <p>Acesso completo a todos os recursos</p>
+
+                        <div class="price-line" style="font-size:1.4rem;">
+                            <span style="text-decoration:line-through; opacity:.6;">R$ 200</span>
+                            <br>
+                            <span style="font-size:2.5rem; font-weight:800;">R$ 97</span>
+                            <small>/mês</small>
+                        </div>
                     </div>
-                    <ul class="price-list">
-                        <li><i data-lucide="check"></i> Cadastro e controle de produtos</li>
-                        <li><i data-lucide="check"></i> Gestão de estoque e movimentações</li>
-                        <li><i data-lucide="check"></i> Registro de vendas e notas DAFs</li>
-                        <li><i data-lucide="check"></i> Relatórios e histórico de transações</li>
+
+                    <ul class="price-features">
+                        <li><i data-lucide="check"></i> Controle de produtos e estoque</li>
+                        <li><i data-lucide="check"></i> Movimentações</li>
                         <li><i data-lucide="check"></i> Múltiplas lojas e usuários</li>
-                        <li><i data-lucide="check"></i> Suporte via WhatsApp e e-mail</li>
+                        <li><i data-lucide="check"></i> Suporte via WhatsApp</li>
                     </ul>
-                    <a href="https://wa.me/5521974332531?text=Olá!%20Gostaria%20de%20testar%20o%20Plano%20Profissional%20(Beta)%20do%20Sistema%20de%20Gestão%20de%20Estoques."
+                    <div
+                        style="text-align:center; margin-top:0.5rem; font-weight:600; color:#8bc34a; margin-bottom: 0.5rem;">
+                        🔥 Promoção válida até 30/11/2025
+                    </div>
+                    <a href="https://wa.me/5521974332531?text=Quero%20assinar%20o%20Plano%20Mensal%20com%20desconto%20da%20Black%20Friday!"
                         target="_blank" class="btn btn-primary w-100 shadow-elegant">
-                        Conversar no WhatsApp
+                        Assinar Agora
+                    </a>
+
+                </article>
+
+                <!-- Plano Trimestral -->
+                <article class="price-card">
+                    <div class="badge" style="background:#8bc34a;">MAIS ECONÔMICO</div>
+
+                    <div class="price-head">
+                        <h3>Plano Trimestral</h3>
+                        <p>3 meses com desconto exclusivo</p>
+
+                        <div class="price-line" style="font-size:1.4rem;">
+                            <span style="font-size:2.2rem; font-weight:800;">R$ 249</span>
+                            <small>/trimestre</small>
+                        </div>
+                        <small style="opacity:.7;">Equivalente a R$ 83/mês</small>
+                    </div>
+
+                    <ul class="price-features">
+                        <li><i data-lucide="check"></i> Todas as funcionalidades inclusas</li>
+                        <li><i data-lucide="check"></i> Movimentações</li>
+                        <li><i data-lucide="check"></i> Suporte via WhatsApp</li>
+
+                    </ul>
+
+                    <a href="https://wa.me/5521974332531?text=Quero%20assinar%20o%20Plano%20Trimestral!"
+                        target="_blank" class="btn btn-outline w-100 shadow-elegant">
+                        Assinar Trimestral
                     </a>
                 </article>
-            </div>
 
+                <!-- Plano Anual -->
+                <article class="price-card">
+                    <div class="badge" style="background:#a4d36e;">MAIS VANTAJOSO 🔥</div>
+
+                    <div class="price-head">
+                        <h3>Plano Anual</h3>
+                        <p>Economia máxima com 12 meses completos</p>
+
+                        <div class="price-line" style="font-size:1.4rem;">
+                            <span style="font-size:2.2rem; font-weight:800;">R$ 799</span>
+                            <small>/ano</small>
+                        </div>
+                        <small style="opacity:.7;">Equivalente a R$ 66/mês</small>
+                    </div>
+
+                    <ul class="price-features">
+                        <li><i data-lucide="check"></i> Funcionalidades ilimitadas</li>
+                        <li><i data-lucide="check"></i> Movimentações</li>
+                        <li><i data-lucide="check"></i> Prioridade na fila de desenvolvimento</li>
+                        <li><i data-lucide="check"></i> Suporte via WhatsApp</li>
+                    </ul>
+
+                    <a href="https://wa.me/5521974332531?text=Quero%20assinar%20o%20Plano%20Anual!" target="_blank"
+                        class="btn btn-outline w-100 shadow-elegant">
+                        Assinar Anual
+                    </a>
+                </article>
+
+            </div>
         </div>
     </section>
+
 
     <!-- FOOTER -->
     <footer id="contato" class="footer">

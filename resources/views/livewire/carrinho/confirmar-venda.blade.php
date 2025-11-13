@@ -14,32 +14,31 @@
                             <div>
                                 <strong>{{ $item['nome'] }}</strong>
                                 <div class="small text-muted">
-                                    {{ $disponiveis[$item['nome']] ?? 0 }} disponíveis
+                                    {{ $disponiveis[$item['produto_id']] ?? 0 }} disponíveis
                                 </div>
-                                {{-- <div>
-                                    <a href="#" wire:click.prevent="removerItem('{{ $item['nome'] }}')"
-                                        class="text-danger small">Excluir</a> |
-                                    <a href="#" class="small">Comprar agora</a>
-                                </div> --}}
+                                <div>
+                                    <a href="#" wire:click.prevent="removerItem('{{ $item['produto_id'] }}')" class="text-danger small">Excluir</a>
+                                </div>
                             </div>
                         </div>
 
                         <div class="d-flex align-items-center">
-                            <button type="button" wire:click="diminuirQuantidade('{{ $item['produto_id'] }}', '{{$item['nome']}}')"
+                            <button type="button"
+                                wire:click="diminuirQuantidade('{{ $item['produto_id'] }}', '{{ $item['nome'] }}')"
                                 class="btn btn-sm btn-light border">
                                 <i class="fas fa-minus"></i>
                             </button>
                             <input type="text" readonly class="form-control form-control-sm mx-1 text-center"
                                 style="width: 50px;" value="{{ $item['quantidade'] }}">
-                            <button type="button" wire:click="aumentarQuantidade('{{ $item['produto_id'] }}', '{{$item['nome']}}')"
+                            <button type="button"
+                                wire:click="aumentarQuantidade('{{ $item['produto_id'] }}', '{{ $item['nome'] }}')"
                                 class="btn btn-sm btn-light border">
                                 <i class="fas fa-plus"></i>
                             </button>
                         </div>
 
                         <div class="ml-3 text-right">
-                            <strong>R$
-                                {{ App\Helpers\FormatHelper::brl($item['preco_unitario'] * $item['quantidade']) }}</strong>
+                            <strong> {{ App\Helpers\FormatHelper::brl($item['preco_unitario'] * $item['quantidade']) }}</strong>
                         </div>
                     </div>
                 </div>
@@ -84,8 +83,34 @@
                                 <strong>Endereço:</strong> {{ $enderecoSelecionado }}
                             </div>
                         @endif
+
+                        {{-- Valor da venda --}}
+                        <div class="form-group mt-3">
+                            <label>Valor da Venda (editar se necessário)</label>
+                            <input type="number" step="0.10" wire:model.live="total_original" class="form-control"
+                                placeholder="Valor final da venda">
+                        </div>
+
+                        {{-- Desconto em % --}}
+                        <div class="form-group mt-3">
+                            <label>Desconto (%)</label>
+                            <input type="number" step="0.01" wire:model.live="desconto_percentual"
+                                class="form-control" placeholder="0%">
+                        </div>
+
+                        {{-- Total original --}}
                         <div class="mt-3">
-                            <strong>Total:</strong> R$ {{ App\Helpers\FormatHelper::brl($total) }}
+                            <small class="text-muted">
+                                Total original: {{ App\Helpers\FormatHelper::brl($total_original ?? 0) }}
+                            </small>
+                        </div>
+
+                        {{-- Total final --}}
+                        <div class="mt-2">
+                            <strong>Total Final:</strong>
+                            <span class="float-right">
+                                {{ App\Helpers\FormatHelper::brl($total_final ?? 0) }}
+                            </span>
                         </div>
                     </div>
                     <div class="card-footer text-center">
