@@ -145,6 +145,16 @@
                     </a>
                 </li> --}}
 
+                @if (optional(auth()->user())->isAdmin() || optional(auth()->user())->isSuperAdmin())
+                    <li class="nav-item">
+                        <a href="{{ route('assinaturas.minha') }}"
+                           class="nav-link {{ request()->routeIs('assinaturas.minha') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-receipt"></i>
+                            <p>Minha Assinatura</p>
+                        </a>
+                    </li>
+                @endif
+
                 @if (optional(auth()->user())->isSuperAdmin())
                     <li class="nav-item">
                         <a href="#" class="nav-link">

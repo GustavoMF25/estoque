@@ -10,7 +10,6 @@ class CheckModuloAtivo
     public function handle(Request $request, Closure $next, $moduloSlug)
     {
         $empresa = auth()->user()->empresa;
-
         if (!$empresa) {
             abort(403, 'Empresa não encontrada.');
         }

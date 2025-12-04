@@ -54,10 +54,17 @@
                                     <div class="card-body p-0">
                                         <ul class="list-group list-group-flush">
                                             @forelse ($list['items'] as $item)
-                                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                    <div>
+                                                <li class="list-group-item d-flex justify-content-between align-items-start">
+                                                    <div class="flex-grow-1">
                                                         <div class="font-weight-bold">{{ $item['primary'] }}</div>
-                                                        <small class="text-muted">{{ $item['secondary'] ?? '' }}</small>
+                                                        <small class="text-muted d-block">{{ $item['secondary'] ?? '' }}</small>
+                                                        @if (!empty($item['action_route']))
+                                                            <a href="{{ $item['action_route'] }}"
+                                                               class="btn btn-sm btn-link px-0"
+                                                               @if (!empty($item['action_target'])) target="{{ $item['action_target'] }}" @endif>
+                                                                {{ $item['action_label'] ?? 'Ver detalhes' }}
+                                                            </a>
+                                                        @endif
                                                     </div>
                                                     @if (!empty($item['badge']))
                                                         <span class="badge badge-{{ $item['badge_variant'] ?? 'primary' }}">

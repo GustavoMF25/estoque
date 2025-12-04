@@ -43,6 +43,10 @@ Route::get('faturas/{fatura}/pagamento/erro', [FaturaController::class, 'erro'])
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified', 'assinatura.ativa'])->group(function () {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
 
+    Route::middleware(['auth', 'perfil:superadmin,admin'])->group(function () {
+        Route::get('assinaturas/minha', [AssinaturasController::class, 'minha'])->name('assinaturas.minha');
+    });
+
     Route::middleware(['auth', 'perfil:superadmin'])->group(function () {
         // Route::resource('assinaturas', AssinaturasController::class);
         Route::post('assinaturas/{id}/renovar', [AssinaturasController::class, 'renovar'])->name('assinaturas.renovar');

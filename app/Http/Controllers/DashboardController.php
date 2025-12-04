@@ -50,6 +50,17 @@ class DashboardController extends Controller
             ->whereBetween('updated_at', [$inicioMes, $fimMes])
             ->sum('valor');
 
+        $renovacoesUrgentes = Assinaturas::whereBetween('data_vencimento', [now(), now()->addDays(3)])
+            ->whereNotIn('status', ['cancelado'])
+            ->count();
+
+        $empresasComModulosInativos = Empresa::whereHas('modulos', function ($q) {
+            $q->where(function ($sub) {
+                $sub->where('empresa_modulos.ativo', false)
+                    ->orWhere('empresa_modulos.status', '!=', 'ativo');
+            });
+        })->count();
+
         return [
             [
                 'title' => 'Empresas ativas',
@@ -79,6 +90,20 @@ class DashboardController extends Controller
                 'icon' => 'coins',
                 'variant' => 'info',
                 'is_money' => true,
+            ],
+            [
+                'title' => 'Renovações urgentes',
+                'value' => $renovacoesUrgentes,
+                'subtitle' => 'Vencem em até 3 dias',
+                'icon' => 'calendar-exclamation',
+                'variant' => 'danger',
+            ],
+            [
+                'title' => 'Empresas com módulos inativos',
+                'value' => $empresasComModulosInativos,
+                'subtitle' => 'Precisam de revisão de permissões',
+                'icon' => 'tools',
+                'variant' => 'warning',
             ],
         ];
     }
@@ -174,6 +199,7 @@ class DashboardController extends Controller
         if ($user?->isSuperAdmin()) {
             return [
                 $this->assinaturasProximasList(),
+                $this->empresasComModulosDesativadosList(),
                 $this->empresasRecentesList(),
             ];
         }
@@ -211,6 +237,44 @@ class DashboardController extends Controller
                     'secondary' => 'Vence em ' . optional($assinatura->data_vencimento)->format('d/m/Y'),
                     'badge' => strtoupper($assinatura->status),
                     'badge_variant' => $assinatura->status === 'ativo' ? 'success' : 'warning',
+                    'action_route' => route('assinaturas.show', $assinatura),
+                    'action_label' => 'Gerenciar',
+                ];
+            })->all(),
+        ];
+    }
+
+    protected function empresasComModulosDesativadosList(): ?array
+    {
+        $empresas = Empresa::with(['modulos' => function ($q) {
+            $q->where(function ($sub) {
+                $sub->where('empresa_modulos.ativo', false)
+                    ->orWhere('empresa_modulos.status', '!=', 'ativo');
+            });
+        }])->whereHas('modulos', function ($q) {
+            $q->where(function ($sub) {
+                $sub->where('empresa_modulos.ativo', false)
+                    ->orWhere('empresa_modulos.status', '!=', 'ativo');
+            });
+        })->limit(5)->get();
+
+        if ($empresas->isEmpty()) {
+            return null;
+        }
+
+        return [
+            'title' => 'Empresas com módulos desativados',
+            'variant' => 'danger',
+            'items' => $empresas->map(function (Empresa $empresa) {
+                $modulos = $empresa->modulos->pluck('nome')->join(', ');
+
+                return [
+                    'primary' => $empresa->nome,
+                    'secondary' => 'Módulos: ' . ($modulos ?: 'Nenhum informado'),
+                    'badge' => 'Ajustar',
+                    'badge_variant' => 'danger',
+                    'action_route' => route('empresas.modulos.edit', $empresa),
+                    'action_label' => 'Configurar',
                 ];
             })->all(),
         ];

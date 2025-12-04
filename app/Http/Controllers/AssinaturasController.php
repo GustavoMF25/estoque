@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Assinatura;
 use App\Models\Assinaturas;
 use App\Models\Empresa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class AssinaturasController extends Controller
 {
@@ -73,8 +73,22 @@ class AssinaturasController extends Controller
 
     public function show($id)
     {
-        $assinatura = Assinaturas::with('empresa', 'faturas')->findOrFail($id);
-        return view('assinaturas.show', compact('assinatura'));
+        $assinatura = Assinaturas::with(['empresa.modulos', 'faturas'])->findOrFail($id);
+
+        return $this->renderAssinatura($assinatura);
+    }
+
+    public function minha()
+    {
+        $user = Auth::user();
+
+        abort_unless($user && ($user->isSuperAdmin() || $user->isAdmin()), 403);
+
+        $assinatura = Assinaturas::with(['empresa.modulos', 'faturas'])
+            ->where('empresa_id', $user->empresa_id)
+            ->firstOrFail();
+
+        return $this->renderAssinatura($assinatura, true);
     }
 
     /**
@@ -161,5 +175,41 @@ class AssinaturasController extends Controller
         }
 
         return response()->json(['message' => 'Status das assinaturas verificados com sucesso!']);
+    }
+
+    protected function renderAssinatura(Assinaturas $assinatura, bool $propria = false)
+    {
+        $user = Auth::user();
+
+        if ($user && !$user->isSuperAdmin()) {
+            abort_if($assinatura->empresa_id !== $user->empresa_id, 403);
+        }
+
+        $diasRestantes = $assinatura->data_vencimento
+            ? now()->diffInDays($assinatura->data_vencimento, false)
+            : null;
+
+        $progressoCiclo = null;
+        if ($assinatura->data_inicio && $assinatura->data_vencimento) {
+            $totalCiclo = max(1, $assinatura->data_inicio->diffInDays($assinatura->data_vencimento));
+            $diasConsumidos = $assinatura->data_inicio->diffInDays(now());
+            $diasConsumidos = max(0, min($totalCiclo, $diasConsumidos));
+            $progressoCiclo = round(($diasConsumidos / $totalCiclo) * 100, 0);
+        }
+
+        $faturasPendentes = $assinatura->faturas->where('status', '!=', 'pago')->count();
+        $valorAnual = $assinatura->valor_mensal ? $assinatura->valor_mensal * 12 : 0;
+        $ultimasFaturas = $assinatura->faturas->sortByDesc('created_at')->take(5);
+
+        return view('assinaturas.show', [
+            'assinatura' => $assinatura,
+            'diasRestantes' => $diasRestantes,
+            'progressoCiclo' => $progressoCiclo,
+            'faturasPendentes' => $faturasPendentes,
+            'valorAnual' => $valorAnual,
+            'ultimasFaturas' => $ultimasFaturas,
+            'podeRenovar' => $user?->isSuperAdmin(),
+            'podeEditarModulos' => $user && ($user->isSuperAdmin() || $user->isAdmin()),
+        ]);
     }
 }

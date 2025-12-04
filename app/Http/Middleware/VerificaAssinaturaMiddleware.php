@@ -17,10 +17,15 @@ class VerificaAssinaturaMiddleware
     public function handle(Request $request, Closure $next)
     {
         $user = auth()->user();
+        $routeName = optional($request->route())->getName();
 
         // Superadmin ignora essa regra
 
         if ($user->perfil === 'superadmin') {
+            return $next($request);
+        }
+        // Admins podem acessar apenas a rota da própria assinatura mesmo com pendências
+        if ($user->isAdmin() && $routeName === 'assinaturas.minha') {
             return $next($request);
         }
 
