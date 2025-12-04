@@ -3,9 +3,6 @@
 namespace App\Livewire\Produto;
 
 use App\Models\Produto;
-use App\Models\ProdutosUnidades;
-use App\Services\MovimentacaoService;
-use App\Services\ProdutosService;
 use App\Services\ProdutoUnidadeService;
 use Livewire\Component;
 
@@ -27,21 +24,19 @@ class ModalApagarProduto extends Component
         try {
             $produto = Produto::find($this->id);
             if (optional(auth()->user())->isAdmin()) {
-                $produto->unidades()->update([
-                    'status' => 'indisponivel'
-                ]);
+                $unidades = $produto->unidades()->get();
+
+                ProdutoUnidadeService::alterarStatus(
+                    $unidades,
+                    'indisponivel',
+                    ProdutoUnidadeService::tipoMovimentacaoPorStatus('indisponivel'),
+                    'Produto removido e unidades marcadas como indisponíveis'
+                );
 
                 $produto->ativo = false;
                 $produto->save();
 
                 $produto->delete();
-
-                MovimentacaoService::registrar([
-                    'produto_id' => $produto->id,
-                    'tipo' => 'cancelamento',
-                    'quantidade' => $produto->unidades()->count(),
-                    'observacao' => 'Produto removido e unidades marcadas como indisponíveis',
-                ]);
 
                 $this->dispatch('fecharModal');
 

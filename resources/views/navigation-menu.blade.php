@@ -15,6 +15,13 @@
                     <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+
+                    @if (Route::has('produtos.create') && (optional(Auth::user())->isAdmin() || optional(Auth::user())->isSuperAdmin()))
+                        <a href="{{ route('produtos.create') }}"
+                           class="inline-flex items-center px-4 py-2 text-sm font-semibold rounded-md text-white bg-emerald-600 hover:bg-emerald-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-400 transition">
+                            <i class="fas fa-plus me-2"></i> {{ __('Cadastrar Produto') }}
+                        </a>
+                    @endif
                 </div>
             </div>
 
@@ -142,6 +149,12 @@
             <x-responsive-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+
+            @if (Route::has('produtos.create') && (optional(Auth::user())->isAdmin() || optional(Auth::user())->isSuperAdmin()))
+                <x-responsive-nav-link href="{{ route('produtos.create') }}" :active="request()->routeIs('produtos.create')">
+                    {{ __('Cadastrar Produto') }}
+                </x-responsive-nav-link>
+            @endif
         </div>
 
         <!-- Responsive Settings Options -->

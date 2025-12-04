@@ -3,9 +3,6 @@
 namespace App\Livewire\Produto;
 
 use App\Models\Produto;
-use App\Models\ProdutosUnidades;
-use App\Services\MovimentacaoService;
-use App\Services\ProdutosService;
 use App\Services\ProdutoUnidadeService;
 use Livewire\Component;
 
@@ -31,10 +28,8 @@ class ModalAdicionarProduto extends Component
     public function adicionar()
     {
         try {
-            // 🔍 Busca o produto base pelo nome
             $this->produto = Produto::where('nome', $this->nome)->firstOrFail();
 
-            // 🔢 Quantidade de unidades que serão adicionadas
             $quantidade = (int) $this->quantidade;
 
             if ($quantidade <= 0) {
@@ -44,36 +39,11 @@ class ModalAdicionarProduto extends Component
                 ]);
             }
 
-            // ⚙️ Cria novas unidades físicas (produtos_unidades)
-            $ultimaUnidade = $this->produto->unidades()->orderByDesc('id')->first();
-            $indiceBase = $ultimaUnidade ? $ultimaUnidade->id + 1 : 1;
-
-            for ($i = 0; $i < $quantidade; $i++) {
-                $codigo = ProdutoUnidadeService::gerarCodigo(
-                    $this->produto,
-                    $indiceBase + $i
-                );
-
-                ProdutosUnidades::create([
-                    'produto_id' => $this->produto->id,
-                    'codigo_unico' => $codigo,
-                    'status' => 'disponivel',
-                ]);
-            }
-
-            MovimentacaoService::registrar([
-                'produto_id' => $this->produto->id,
-                'tipo' => 'entrada',
-                'quantidade' => $quantidade,
-                'observacao' => "Adição de {$quantidade} unidades ao produto {$this->produto->nome}",
-            ]);
-
-            MovimentacaoService::registrar([
-                'produto_id' => $this->produto->id,
-                'tipo' => 'disponivel',
-                'quantidade' => $quantidade,
-                'observacao' => "Novas unidades disponíveis ({$quantidade}) adicionadas manualmente",
-            ]);
+            ProdutoUnidadeService::adicionarUnidades(
+                $this->produto,
+                $quantidade,
+                "Adição manual de {$quantidade} unidade(s) ao produto {$this->produto->nome}"
+            );
 
             $this->mensagem = "{$quantidade} novas unidades adicionadas ao produto '{$this->produto->nome}'.";
             $this->dispatch('fecharModal');

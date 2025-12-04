@@ -13,6 +13,7 @@ use App\Http\Controllers\ProdutosController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\VendaController;
 use App\Http\Controllers\WebhookMercadoPagoController;
+use App\Http\Controllers\DashboardController;
 use App\Livewire\Carrinho\ConfirmarVenda;
 use Illuminate\Support\Facades\Route;
 
@@ -40,9 +41,7 @@ Route::get('faturas/{fatura}/pagamento/sucesso', [FaturaController::class, 'suce
 Route::get('faturas/{fatura}/pagamento/erro', [FaturaController::class, 'erro'])->name('faturas.pagamento.erro');
 
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified', 'assinatura.ativa'])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', DashboardController::class)->name('dashboard');
 
     Route::middleware(['auth', 'perfil:superadmin'])->group(function () {
         // Route::resource('assinaturas', AssinaturasController::class);

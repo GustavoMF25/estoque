@@ -6,10 +6,9 @@ use App\Models\Cliente;
 use App\Models\Venda;
 use App\Models\VendaItem;
 use App\Models\Produto;
-use App\Models\Movimentacao;
 use App\Models\ProdutosUnidades;
 use App\Models\ProdutoVinculos;
-use App\Services\MovimentacaoService;
+use App\Services\ProdutoUnidadeService;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
@@ -166,16 +165,12 @@ class ConfirmarVenda extends Component
 
                 $vendaItem->unidades()->attach($unidadesDisponiveis->pluck('id')->toArray());
 
-                foreach ($unidadesDisponiveis as $unidade) {
-                    $unidade->update(['status' => 'vendido']);
-
-                    MovimentacaoService::registrar([
-                        'produto_id' => $produto->id,
-                        'quantidade' => 1,
-                        'tipo' => 'saida',
-                        'observacao' => "Venda ID: {$venda->id} - Unidade {$unidade->codigo_unico}",
-                    ]);
-                }
+                ProdutoUnidadeService::alterarStatus(
+                    $unidadesDisponiveis,
+                    'vendido',
+                    ProdutoUnidadeService::tipoMovimentacaoPorStatus('vendido'),
+                    "Venda ID: {$venda->id} - Unidades: " . $unidadesDisponiveis->pluck('codigo_unico')->implode(', ')
+                );
             }
 
             session()->forget('carrinho');

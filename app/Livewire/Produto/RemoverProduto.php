@@ -4,7 +4,7 @@ namespace App\Livewire\Produto;
 
 use App\Models\Produto;
 use App\Models\ProdutosUnidades;
-use App\Services\MovimentacaoService;
+use App\Services\ProdutoUnidadeService;
 use Livewire\Component;
 
 class RemoverProduto extends Component
@@ -35,11 +35,7 @@ class RemoverProduto extends Component
     public function remover()
     {
         try {
-            // 🔍 Busca o produto base pelo nome
             $this->produto = Produto::where('nome', $this->nome)->firstOrFail();
-            // dd($this->produto);
-
-            // 🔢 Quantidade de unidades que serão adicionadas
             $quantidade = (int) $this->quantidade;
 
             if ($quantidade > $this->qtdMax) {
@@ -54,19 +50,14 @@ class RemoverProduto extends Component
                 ->limit($quantidade)
                 ->get();
 
-            $novoStatus = $this->novo_status ?? 'reservado';
+            $novoStatus = $this->novo_status ?: 'reservado';
 
-            // 🔄 Atualiza status das unidades selecionadas
-            foreach ($unidadesDisponiveis as $unidade) {
-                $unidade->update(['status' => $novoStatus]);
-            }
-
-            MovimentacaoService::registrar([
-                'produto_id' => $this->produto->id,
-                'tipo' => 'saida',
-                'quantidade' => $quantidade,
-                'observacao' => "Removidas {$quantidade} unidade(s) de '{$this->produto->nome}' do status 'disponivel' -> " . $this->observacao . ".",
-            ]);
+            ProdutoUnidadeService::alterarStatus(
+                $unidadesDisponiveis,
+                $novoStatus,
+                ProdutoUnidadeService::tipoMovimentacaoPorStatus($novoStatus),
+                $this->observacao ?: "Removidas {$quantidade} unidade(s) de '{$this->produto->nome}'"
+            );
 
             // ✅ Mensagem de sucesso
             $this->mensagem = "{$quantidade} unidade(s) do produto '{$this->produto->nome}' movidas para '{$novoStatus}'.";
