@@ -6,7 +6,7 @@ use App\Models\Produto;
 use App\Models\ProdutosAgrupados;
 use App\Models\ProdutosUnidades;
 use Livewire\Component;
-use Livewire\Attributes\On;
+use App\Models\Movimentacao;
 
 class ProdutoVisualizar extends Component
 {
@@ -19,6 +19,7 @@ class ProdutoVisualizar extends Component
     public $qtdVendidos;
     public $qtdDisponiveis;
     public $valorRecebido;
+
 
 
     public function mount($id = null, $nome = null, $estoque_id = null, $ultima_movimentacao = null)
@@ -40,6 +41,7 @@ class ProdutoVisualizar extends Component
         $this->valorRecebido = $this->qtdVendidos * $this->produto->preco;
         $this->image = $this->produto->imagem ?? null;
     }
+
 
     public function render()
     {

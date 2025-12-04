@@ -12,7 +12,7 @@ return new class extends Migration {
             $table->foreignId('produto_id')->constrained('produtos')->cascadeOnDelete();
             $table->string('codigo_unico', 100);
             $table->unique(['produto_id', 'codigo_unico'], 'produto_codigo_unique');
-            $table->enum('status', ['disponivel', 'vendido', 'reservado', 'defeito'])->default('disponivel');
+            $table->enum('status', ['disponivel', 'vendido', 'reservado', 'defeito', 'indisponivel'])->default('disponivel');
             $table->timestamps();
         });
     }

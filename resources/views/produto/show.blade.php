@@ -17,7 +17,7 @@
                     }));
                     $('#modal-sm').modal('show');
                 \"
-                class='btn btn-warning btn-block btn-sm'>
+                class='btn btn-primary btn-block btn-sm'>
                 <i class='fa fa-pencil-alt'></i>
                 Atualizar
             </button>
@@ -39,7 +39,7 @@
                     }));
                     $('#modal-sm').modal('show');
                 \"
-                class='btn btn-primary btn-block btn-sm'>
+                class='btn btn-success btn-block btn-sm'>
                 <i class='fa fa-plus'></i>
                 Adicionar
             </button>
@@ -61,8 +61,30 @@
                     }));
                     $('#modal-sm').modal('show');
                 \"
-                class='btn btn-primary btn-block btn-sm'>
+                class='btn btn-warning btn-block btn-sm'>
                 <i class='fa fa-minus'></i>
+                Retirar
+            </button>
+        </div>
+        <div class='ml-2'>
+            <button type='button'
+                onclick=\"
+                    window.dispatchEvent(new CustomEvent('abrirModal', {
+                        detail: {
+                            titulo: 'Apagar produto',
+                            formId: 'apagarProduto',
+                            paramsBtn: 'wire:click=\\'apagar\\'',
+                            componente: 'produto.modal-apagar-produto',
+                            props: { 
+                                nome: '$nome',
+                                id: '$id'
+                            }
+                        }
+                    }));
+                    $('#modal-sm').modal('show');
+                \"
+                class='btn btn-danger btn-block btn-sm'>
+                <i class='fa fa-trash'></i>
                 Retirar
             </button>
         </div>

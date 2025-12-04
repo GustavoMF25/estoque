@@ -70,8 +70,11 @@ class ProdutosUnidades extends Model
      */
     public function getCodigoFormatadoAttribute()
     {
-        return "{$this->produto->nome} #{$this->codigo_unico}";
+        $nome = $this->produto?->nome ?? 'N/A';
+
+        return "{$nome} #{$this->codigo_unico}";
     }
+
 
     /**
      * ⚙️ Atualiza o status da unidade (por ex: venda, reserva, defeito)

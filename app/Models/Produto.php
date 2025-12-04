@@ -33,7 +33,7 @@ class Produto extends Model
      */
     public function scopeAtivo($query)
     {
-        return $query->where('ativo', true);
+        return $query->where('produtos.ativo', true);
     }
 
     public function estoque()
