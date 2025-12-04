@@ -13,6 +13,13 @@ class Assinaturas extends Model
 
     protected $table = 'assinaturas';
 
+    public const PERIODICIDADES = [
+        'mensal' => 1,
+        'trimestral' => 3,
+        'anual' => 12,
+        'vitalicio' => null,
+    ];
+
     protected $fillable = [
         'empresa_id',
         'plano',
@@ -22,6 +29,7 @@ class Assinaturas extends Model
         'valor_mensal',
         'metodo_pagamento',
         'ultima_confirmacao',
+        'periodicidade',
     ];
 
     protected $casts = [
@@ -44,7 +52,11 @@ class Assinaturas extends Model
      */
     public function isAtiva(): bool
     {
-        return $this->status === 'ativo' && $this->data_vencimento->isFuture();
+        if ($this->periodicidade === 'vitalicio') {
+            return $this->status === 'ativo';
+        }
+
+        return $this->status === 'ativo' && $this->data_vencimento?->isFuture();
     }
 
     /**
@@ -52,6 +64,10 @@ class Assinaturas extends Model
      */
     public function isProximaDoVencimento(int $dias = 5): bool
     {
+        if ($this->periodicidade === 'vitalicio' || !$this->data_vencimento) {
+            return false;
+        }
+
         return $this->data_vencimento->isBetween(
             now(),
             now()->addDays($dias)
@@ -63,6 +79,10 @@ class Assinaturas extends Model
      */
     public function isVencida(): bool
     {
+        if ($this->periodicidade === 'vitalicio' || !$this->data_vencimento) {
+            return false;
+        }
+
         return $this->data_vencimento->isPast() && $this->status !== 'cancelado';
     }
 
@@ -90,11 +110,34 @@ class Assinaturas extends Model
     /**
      * 🔁 Renova a assinatura por mais 30 dias
      */
-    public function renovar(int $dias = 30): void
+    public function renovar(?int $dias = null): void
     {
-        $this->data_vencimento = Carbon::parse($this->data_vencimento)->addDays($dias);
+        if ($this->periodicidade === 'vitalicio') {
+            $this->status = 'ativo';
+            $this->ultima_confirmacao = now();
+            $this->save();
+            return;
+        }
+
+        $meses = self::PERIODICIDADES[$this->periodicidade] ?? 1;
+        $dias = $dias ?? ($meses * 30);
+
+        $this->data_vencimento = Carbon::parse($this->data_vencimento ?? now())->addMonths($meses);
         $this->status = 'ativo';
         $this->ultima_confirmacao = now();
         $this->save();
+    }
+
+    public function definirDatasPorPeriodicidade(): void
+    {
+        if ($this->periodicidade === 'vitalicio') {
+            $this->data_vencimento = null;
+            return;
+        }
+
+        $meses = self::PERIODICIDADES[$this->periodicidade] ?? 1;
+        $inicio = $this->data_inicio ?? now();
+        $this->data_inicio = $inicio;
+        $this->data_vencimento = Carbon::parse($inicio)->copy()->addMonths($meses);
     }
 }

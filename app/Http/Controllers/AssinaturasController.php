@@ -7,6 +7,7 @@ use App\Models\Empresa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class AssinaturasController extends Controller
 {
@@ -36,35 +37,27 @@ class AssinaturasController extends Controller
     {
         $empresa = Empresa::findOrFail($empresaId);
 
-        $meses = 1;
+        $request->validate([
+            'plano_nome' => 'required|string|max:60',
+            'valor' => 'required|numeric|min:0',
+            'periodicidade' => 'required|in:mensal,trimestral,anual,vitalicio',
+            'status' => 'nullable|string',
+        ]);
 
-        switch ($request->periodicidade) {
-            case 'anual':
-                $meses = 12;
-                break;
-            case 'trimestral':
-                $meses = 3;
-                break;
-            default:
-                $meses = 1;
-                break;
-        }
+        $periodicidade = $this->resolvePeriodicidade($request->periodicidade);
+        $status = $this->resolveStatus($request->status);
 
-        $status = strtolower($request->status);
-
-        if (!in_array($status, ['ativo', 'atrasado', 'pendente'])) {
-            $status = 'pendente';
-        }
-
-        Assinaturas::create([
+        $assinatura = Assinaturas::create([
             'empresa_id' => $empresa->id,
             'plano' => $request->plano_nome,
             'valor_mensal' => $request->valor,
             'data_inicio' => now(),
-            'periodicidade' => $request->periodicidade,
-            'data_vencimento' => now()->addMonths($meses),
+            'periodicidade' => $periodicidade,
             'status' => $status,
         ]);
+
+        $assinatura->definirDatasPorPeriodicidade();
+        $assinatura->save();
 
         return redirect()
             ->route('assinaturas.index')
@@ -96,6 +89,8 @@ class AssinaturasController extends Controller
      */
     public function edit($id)
     {
+        abort_unless(optional(auth()->user())->isSuperAdmin(), 403);
+
         $assinatura = Assinaturas::findOrFail($id);
         $empresas = Empresa::all();
 
@@ -107,19 +102,33 @@ class AssinaturasController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
+        $validated = $request->validate([
             'plano' => 'required|string|max:60',
             'valor_mensal' => 'required|numeric|min:0',
             'data_inicio' => 'required|date',
-            'data_vencimento' => 'required|date|after_or_equal:data_inicio',
             'status' => 'required|in:pendente,ativo,atrasado,cancelado',
             'metodo_pagamento' => 'required|in:manual,pix,asaas,pagseguro',
+            'periodicidade' => 'required|in:mensal,trimestral,anual,vitalicio',
         ]);
 
         DB::beginTransaction();
         try {
             $assinatura = Assinaturas::findOrFail($id);
-            $assinatura->update($request->all());
+            $assinatura->fill($validated);
+            $assinatura->periodicidade = $this->resolvePeriodicidade($request->periodicidade);
+
+            if ($assinatura->periodicidade === 'vitalicio') {
+                $assinatura->data_vencimento = null;
+            } else {
+                $assinatura->data_inicio = Carbon::parse($request->data_inicio);
+                $assinatura->definirDatasPorPeriodicidade();
+                if ($request->filled('data_vencimento')) {
+                    $assinatura->data_vencimento = Carbon::parse($request->data_vencimento);
+                }
+            }
+
+            $assinatura->status = $this->resolveStatus($request->status);
+            $assinatura->save();
             DB::commit();
 
             return redirect()
@@ -211,5 +220,23 @@ class AssinaturasController extends Controller
             'podeRenovar' => $user?->isSuperAdmin(),
             'podeEditarModulos' => $user && ($user->isSuperAdmin() || $user->isAdmin()),
         ]);
+    }
+
+    protected function resolvePeriodicidade(?string $valor): string
+    {
+        $valor = strtolower($valor ?? 'mensal');
+
+        return array_key_exists($valor, Assinaturas::PERIODICIDADES)
+            ? $valor
+            : 'mensal';
+    }
+
+    protected function resolveStatus(?string $status): string
+    {
+        $status = strtolower($status ?? 'pendente');
+
+        return in_array($status, ['ativo', 'atrasado', 'pendente', 'cancelado'])
+            ? $status
+            : 'pendente';
     }
 }

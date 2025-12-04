@@ -11,52 +11,42 @@ class EmpresaModuloController extends Controller
     public function edit($empresaId)
     {
         $empresas = Empresa::with('modulos')->findOrFail($empresaId);
-        $modulos = Modulo::all();
+        $modulos = Modulo::with('submodulos')->get();
 
-        return view('empresa.modulos', compact('empresas', 'modulos'));
+        $modulosSelecionados = $empresas->modulos->pluck('pivot')->mapWithKeys(function ($pivot) {
+            return [
+                $pivot->modulo_id => [
+                    'status' => $pivot->status,
+                    'expira_em' => $pivot->expira_em,
+                ],
+            ];
+        });
+
+        return view('empresa.modulos', compact('empresas', 'modulos', 'modulosSelecionados'));
     }
 
     public function update(Request $request, $empresaId)
     {
         $empresa = Empresa::findOrFail($empresaId);
 
-        // Recebe IDs dos módulos marcados
-        $modulosSelecionados = $request->input('modulos', []);
+        $modulosSelecionados = collect($request->input('modulos', []))
+            ->map(function ($dados, $id) {
+                return [
+                    'id' => (int) $id,
+                    'status' => $dados['status'] ?? 'ativo',
+                    'expira_em' => $dados['expira_em'] ?? null,
+                ];
+            })
+            ->values();
 
-        // Obtenha os módulos associados à empresa
-        $modulosAssociados = $empresa->modulos;
+        $empresa->modulos()->detach();
 
-        // Verifica se o módulo está ativo ou bloqueado
-        foreach ($modulosAssociados as $modulo) {
-            // Se o módulo não está mais selecionado, marcaremos ele como 'bloqueado'
-            if (!in_array($modulo->id, $modulosSelecionados)) {
-                // Verifica se o módulo já está marcado como bloqueado
-                $bloqueado = $modulo->pivot->status === 'bloqueado';
-
-                if (!$bloqueado) {
-                    // Marca o módulo como bloqueado
-                    $modulo->pivot->status = 'bloqueado';
-                    $modulo->pivot->save();
-                }
-            }
-        }
-
-        // Associa os módulos selecionados, garantindo que o status seja 'ativo'
-        foreach ($modulosSelecionados as $moduloId) {
-            // Verifica se o módulo já está associado
-            $modulo = $empresa->modulos()->where('modulo_id', $moduloId)->first();
-
-            if (!$modulo) {
-                // Se não estiver associado, associamos com status 'ativo'
-                $empresa->modulos()->attach($moduloId, ['status' => 'ativo']);
-            } else {
-                // Se já estiver associado, garantimos que o status seja 'ativo'
-                if ($modulo->pivot->status === 'bloqueado') {
-                    // Reativa o módulo, se estiver bloqueado
-                    $modulo->pivot->status = 'ativo';
-                    $modulo->pivot->save();
-                }
-            }
+        foreach ($modulosSelecionados as $entry) {
+            $empresa->modulos()->attach($entry['id'], [
+                'status' => $entry['status'],
+                'expira_em' => $entry['expira_em'],
+                'ativo' => $entry['status'] === 'ativo',
+            ]);
         }
 
         return redirect()->route('empresas.index')

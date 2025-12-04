@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('assinaturas', function (Blueprint $table) {
-            $table->enum('periodicidade', ['mensal', 'trimestral', 'anual'])
+            $table->enum('periodicidade', ['mensal', 'trimestral', 'anual' , 'vitalicio'])
                 ->default('mensal')
                 ->after('status');
         });

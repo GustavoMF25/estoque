@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-basic.content-page :title="__('Assinaturas')" :class="'card-secondary'" :btnCadastrar="['route' => route('clientes.create'), 'title' => 'Cadastrar Cliente']">
-        <form action="{{ route('assinaturas.update', $assinatura->id) }}" method="POST">
+        <form action="{{ route('assinaturas.update', $assinatura->id) }}" method="PUT">
             @csrf
             @method('PUT')
 
@@ -31,11 +31,13 @@
                         class="form-control" required>
                 </div>
 
-                <div class="col-md-3 mb-3">
-                    <label>Data Vencimento</label>
-                    <input type="date" name="data_vencimento"
-                        value="{{ $assinatura->data_vencimento->format('Y-m-d') }}" class="form-control" required>
-                </div>
+                @if ($assinatura->periodicidade !== 'vitalicio')
+                    <div class="col-md-3 mb-3">
+                        <label>Data Vencimento</label>
+                        <input type="date" name="data_vencimento"
+                            value="{{ $assinatura->data_vencimento?->format('Y-m-d') }}" class="form-control">
+                    </div>
+                @endif
 
                 <div class="col-md-3 mb-3">
                     <label>Status</label>
@@ -43,6 +45,18 @@
                         @foreach (['pendente', 'ativo', 'atrasado', 'cancelado'] as $status)
                             <option value="{{ $status }}" {{ $assinatura->status === $status ? 'selected' : '' }}>
                                 {{ ucfirst($status) }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <label>Periodicidade</label>
+                    <select name="periodicidade" class="form-select">
+                        @foreach (['mensal', 'trimestral', 'anual', 'vitalicio'] as $periodicidade)
+                            <option value="{{ $periodicidade }}"
+                                {{ $assinatura->periodicidade === $periodicidade ? 'selected' : '' }}>
+                                {{ ucfirst($periodicidade) }}
                             </option>
                         @endforeach
                     </select>

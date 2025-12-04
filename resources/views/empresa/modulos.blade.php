@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-basic.content-page :title="__('Editar Dados da Empresa')" :class="'card-primary'">
+    <x-basic.content-page-fluid :title="__('Editar Dados da Empresa')" :class="'card-primary'">
 
         @if (session('success'))
             <div class="alert alert-success">{{ session('success') }}</div>
@@ -13,21 +13,43 @@
                 <div class="row">
                     @foreach ($modulos as $modulo)
                         @php
-                            // Verifica se o módulo está associado à empresa
-                            $checked = $empresas->modulos->contains($modulo->id);
+                            $pivot = $empresas->modulos->firstWhere('id', $modulo->id)?->pivot;
                         @endphp
-
                         <div class="col-md-4 mb-3">
-                            <div class="form-check border p-3 rounded shadow-sm">
-                                <div class="custom-control custom-switch">
-                                    <input type="checkbox" class="custom-control-input" name="modulos[]"
-                                        value="{{ $modulo->id }}" id="modulo_{{ $modulo->id }}"
-                                        {{ $checked ? 'checked' : '' }}>
-                                    <label class="custom-control-label" for="modulo_{{ $modulo->id }}">
-                                        {{ $modulo->nome }}
-                                    </label>
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center justify-content-between mb-2">
+                                        <div class="form-check form-switch">
+                                            <input type="hidden" name="modulos[{{ $modulo->id }}][status]" value="bloqueado">
+                                            <input class="form-check-input" type="checkbox"
+                                                id="modulo_{{ $modulo->id }}"
+                                                name="modulos[{{ $modulo->id }}][status]"
+                                                value="ativo"
+                                                {{ optional($pivot)->status === 'ativo' ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="modulo_{{ $modulo->id }}">
+                                                {{ $modulo->nome }}
+                                            </label>
+                                        </div>
+                                        <span class="badge bg-light text-dark">{{ $modulo->categoria ?? 'Core' }}</span>
+                                    </div>
+                                    <p class="text-muted small mb-3">{{ $modulo->descricao ?? 'Sem descrição' }}</p>
+
+                                    <div class="mb-2">
+                                        <label class="form-label text-xs">Expira em (opcional)</label>
+                                        <input type="date" class="form-control form-control-sm"
+                                            name="modulos[{{ $modulo->id }}][expira_em]"
+                                            value="{{ optional(optional($pivot)->expira_em)->format('Y-m-d') }}">
+                                    </div>
+
+                                    @if ($modulo->submodulos->isNotEmpty())
+                                        <p class="text-xs text-muted mb-1">Submódulos:</p>
+                                        <ul class="list-unstyled text-xs">
+                                            @foreach ($modulo->submodulos as $sub)
+                                                <li><i class="fa fa-check text-success"></i> {{ $sub->nome }}</li>
+                                            @endforeach
+                                        </ul>
+                                    @endif
                                 </div>
-                                <p class="text-muted small mb-0">{{ $modulo->descricao ?? '' }}</p>
                             </div>
                         </div>
                     @endforeach
@@ -41,5 +63,5 @@
             </div>
         </form>
 
-    </x-basic.content-page>
+    </x-basic.content-page-fluid>
 </x-app-layout>

@@ -34,13 +34,19 @@
                         <div class="info-box-content">
                             <span class="info-box-text">Dias restantes</span>
                             <span class="info-box-number">
-                                {{ $diasRestantes !== null ? $diasRestantes : '—' }}
+                                @if ($assinatura->periodicidade === 'vitalicio')
+                                    Vitalício
+                                @else
+                                    {{ $diasRestantes !== null ? $diasRestantes : '—' }}
+                                @endif
                             </span>
-                            @if ($progressoCiclo !== null)
+                            @if ($progressoCiclo !== null && $assinatura->periodicidade !== 'vitalicio')
                                 <div class="progress">
                                     <div class="progress-bar" style="width: {{ $progressoCiclo }}%"></div>
                                 </div>
                                 <small>{{ $progressoCiclo }}% do ciclo utilizado</small>
+                            @else
+                                <small>Sem data de expiração definida</small>
                             @endif
                         </div>
                     </div>
@@ -68,6 +74,10 @@
                             <div class="col-md-6 d-flex justify-content-end align-items-center">
                                 <div class="btn-group btn-group-sm flex">
                                     @if ($podeRenovar)
+                                        <a href="{{ route('assinaturas.edit', $assinatura->id) }}"
+                                            class="btn btn-warning">
+                                            <i class="fas fa-edit"></i> Ajustar periodicidade
+                                        </a>
                                         <a href="{{ route('assinaturas.renovar', $assinatura->id) }}"
                                             class="btn btn-success"
                                             onclick="return confirm('Confirmar renovação por mais 30 dias?')">
@@ -103,7 +113,12 @@
                                     <p><strong>Iniciada em:</strong>
                                         {{ optional($assinatura->data_inicio)->format('d/m/Y') }}</p>
                                     <p><strong>Vence em:</strong>
-                                        {{ optional($assinatura->data_vencimento)->format('d/m/Y') }}</p>
+                                        @if ($assinatura->periodicidade === 'vitalicio')
+                                            Não expira
+                                        @else
+                                            {{ optional($assinatura->data_vencimento)->format('d/m/Y') }}
+                                        @endif
+                                    </p>
                                     <p><strong>Última atualização:</strong>
                                         {{ $assinatura->updated_at->format('d/m/Y H:i') }}</p>
                                 </div>

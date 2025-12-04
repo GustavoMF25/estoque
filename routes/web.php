@@ -56,6 +56,8 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
         Route::get('assinaturas/create/{empresa}', [AssinaturasController::class, 'create'])->name('assinaturas.create');
         Route::post('assinaturas/store/{empresa}', [AssinaturasController::class, 'store'])->name('assinaturas.store');
         Route::get('assinaturas/{assinatura}', [AssinaturasController::class, 'show'])->name('assinaturas.show');
+        Route::get('assinaturas/{assinatura}/editar', [AssinaturasController::class, 'edit'])->name('assinaturas.edit');
+        Route::put('assinaturas/{assinatura}', [AssinaturasController::class, 'update'])->name('assinaturas.update');
 
         Route::get('assinaturas/{assinatura}/faturas', [FaturaController::class, 'index'])->name('faturas.index');
         Route::get('assinaturas/{assinatura}/faturas/create', [FaturaController::class, 'create'])->name('faturas.create');
@@ -67,7 +69,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
         Route::put('{empresa}/modulos', [EmpresaModuloController::class, 'update'])->name('empresas.modulos.update');
     });
 
-    Route::middleware(['auth', 'perfil:superadmin,admin'])->group(function () {
+    Route::middleware(['auth', 'perfil:superadmin'])->group(function () {
         Route::resource('empresas', EmpresaController::class);
     });
     Route::middleware(['auth', 'perfil:admin'])->group(function () {
