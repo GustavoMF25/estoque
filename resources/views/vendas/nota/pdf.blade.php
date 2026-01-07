@@ -129,8 +129,8 @@
             <table style="width: 100%; border-bottom: 1px solid #000; margin-bottom: 5px;">
                 <tr>
                     <td style="width: 20%; text-align: left;">
-                        @if (isset($empresa->logo) && file_exists(public_path('storage/' . $empresa->logo)))
-                            <img src="{{ public_path('storage/' . $empresa->logo) }}" style="height: 80px;">
+                        @if (isset($empresa->logo))
+                            <img src="{{ asset('storage/' . $empresa->logo) }}" style="height: 80px;">
                         @endif
                     </td>
                     <td style="width: 80%; text-align: right; font-size: 12px;">
