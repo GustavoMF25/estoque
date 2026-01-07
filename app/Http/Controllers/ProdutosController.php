@@ -6,6 +6,7 @@ use App\Models\Categoria;
 use App\Models\Estoque;
 use App\Models\Fabricante;
 use App\Models\Produto;
+use App\Services\AuditLogger;
 use App\Services\MovimentacaoService;
 use App\Services\ProdutosService;
 use Exception;
@@ -62,6 +63,10 @@ class ProdutosController extends Controller
                     'observacao' => 'Remoção lógica via exclusão de produto',
                 ]);
 
+                AuditLogger::info('produto.deleted', [
+                    'produto_id' => $produto->id,
+                ]);
+
                 return redirect()->route('produtos.index')->with('success', 'Produto excluído com sucesso!');
             }
             return redirect()->route('produtos.index')->with('error', 'Sem permissão para remover.');
@@ -86,7 +91,9 @@ class ProdutosController extends Controller
             })->get();
 
             foreach ($produtos as $produto) {
-                if ($quantidadeRestante <= 0) break;
+                if ($quantidadeRestante <= 0) {
+                    break;
+                }
                 MovimentacaoService::registrar([
                     'produto_id' => $produto->id,
                     'tipo' => 'saida',
@@ -95,6 +102,13 @@ class ProdutosController extends Controller
                 ]);
                 $quantidadeRestante--;
             }
+
+            $vendido = $request->quantidade - $quantidadeRestante;
+            AuditLogger::info('produto.venda.realizada', [
+                'nome' => $request->nome,
+                'quantidade_solicitada' => $request->quantidade,
+                'quantidade_vendida' => $vendido,
+            ]);
             return redirect()->back()->with('success', 'Venda registrada com sucesso!');
         } catch (Exception $err) {
 

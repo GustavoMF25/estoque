@@ -3,149 +3,129 @@
 namespace App\Services;
 
 use App\Models\Estoque;
-use App\Models\Movimentacao;
 use App\Models\Produto;
-use Exception;
-use GuzzleHttp\Psr7\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Models\ProdutosUnidades;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 
 class ProdutosService
 {
     public static function cadastraProduto($request)
     {
-        try {
-            $request->validate([
-                'nome' => 'required|string|max:255',
-                'codigo_barras' => 'nullable|string|max:50',
-                'unidade' => 'nullable|string|max:10',
-                'preco' => 'required|numeric|min:0',
-                'estoque_id' => 'required|exists:estoques,id',
-                'categoria_id' => 'required|exists:categoria,id',
-                'quantidade' => 'required|integer|min:1',
-                'ativo' => 'boolean',
-            ]);
-
-            $estoque = Estoque::withCount('produtos')->findOrFail($request->estoque_id);
-            $totalAtual = $estoque->produtos_count;
-            $quantidadeMaxima = $estoque->quantidade_maxima;
-
-            if ($quantidadeMaxima > 0 && ($totalAtual + $request->quantidade) > $quantidadeMaxima) {
-                return redirect()->route('produtos.index')->with('error', 'Não é possível cadastrar: o estoque excederia o limite máximo de ' . $quantidadeMaxima . ' itens.');
-            }
-
-            $imagem = null;
-
-            if ($request->hasFile('imagem')) {
-                $imagem = $request->file('imagem')->store('produtos', 'public');
-            }
-
-            for ($i = 0; $i < $request->quantidade; $i++) {
-                $produto = Produto::create([
-                    'nome' => $request->nome,
-                    'codigo_barras' => Produto::gerarCodigoBarrasUnico(),
-                    'unidade' => $request->unidade ?? 'un',
-                    'preco' => $request->preco,
-                    'estoque_id' => $request->estoque_id,
-                    'categoria_id' => $request->categoria_id,
-                    'ativo' => $request->ativo ?? true,
-                    'imagem' => $imagem,
-                ]);
-
-                $movimentacao = MovimentacaoService::registrar([
-                    'produto_id' => $produto->id,
-                    'tipo' => 'entrada',
-                    'quantidade' => 1,
-                    'observacao' => 'Cadastro inicial do produto'
-                ]);
-
-                MovimentacaoService::registrar([
-                    'produto_id' => $produto->id,
-                    'tipo' => 'disponivel',
-                    'quantidade' => 1,
-                    'observacao' => 'Disponível para venda'
-                ]);
-            }
-        } catch (Exception $err) {
-            return $err->getMessage();
-        }
+        return self::cadProdutoRequest($request);
     }
 
+    /**
+     * Manipula o cadastro de um produto e de suas unidades físicas.
+     *
+     * @param  array<string, mixed>  $data
+     */
     public static function handleCadastroProduto(array $data)
     {
-        $estoque = Estoque::withCount('produtos')->findOrFail($data['estoque_id']);
-        $totalAtual = $estoque->produtos_count;
-        $quantidadeMaxima = $estoque->quantidade_maxima;
+        return DB::transaction(function () use ($data) {
+            $quantidade = (int) ($data['quantidade'] ?? 1);
 
-        if ($quantidadeMaxima > 0 && ($totalAtual + 1) > $quantidadeMaxima) {
-            return redirect()->route('produtos.index')
-                ->with('error', 'Não é possível cadastrar: o estoque excederia o limite máximo de ' . $quantidadeMaxima . ' itens.');
-        }
+            if ($quantidade < 1) {
+                throw new \InvalidArgumentException('Quantidade deve ser maior ou igual a 1.');
+            }
 
-        // Trata imagem
-        $imagem = $data['imagem'] ?? null;
-        if ($imagem instanceof \Illuminate\Http\UploadedFile) {
-            $imagem = $imagem->store('produtos', 'public');
-        }
+            $estoque = Estoque::findOrFail($data['estoque_id']);
+            $totalAtual = ProdutosUnidades::whereHas('produto', function ($query) use ($estoque) {
+                $query->where('estoque_id', $estoque->id);
+            })->count();
+            $quantidadeMaxima = (int) $estoque->quantidade_maxima;
 
-        // ✅ Cria apenas um produto
-        $produto = Produto::create([
-            'nome' => $data['nome'],
-            'codigo_barras' => Produto::gerarCodigoBarrasUnico(),
-            'unidade' => $data['unidade'] ?? 'un',
-            'preco' => $data['preco'],
-            'estoque_id' => $data['estoque_id'],
-            'categoria_id' => $data['categoria_id'],
-            'fabricante_id' => $data['fabricante_id'],
-            'ativo' => $data['ativo'] ?? true,
-            'imagem' => $imagem,
-        ]);
+            if ($quantidadeMaxima > 0 && ($totalAtual + $quantidade) > $quantidadeMaxima) {
+                throw new \RuntimeException('Não é possível cadastrar: o estoque excederia o limite máximo de ' . $quantidadeMaxima . ' itens.');
+            }
 
-        // ✅ Cria movimentações referentes à quantidade informada
-        $quantidade = (int) $data['quantidade'];
+            $imagem = $data['imagem'] ?? null;
+            if ($imagem instanceof UploadedFile) {
+                $imagem = $imagem->store('produtos', 'public');
+            }
 
-        for ($i = 0; $i < $data['quantidade']; $i++) {
+            $produto = Produto::create([
+                'nome' => $data['nome'],
+                'codigo_barras' => Produto::gerarCodigoBarrasUnico(),
+                'unidade' => $data['unidade'] ?? 'un',
+                'preco' => $data['preco'],
+                'estoque_id' => $data['estoque_id'],
+                'categoria_id' => $data['categoria_id'] ?? null,
+                'fabricante_id' => $data['fabricante_id'] ?? null,
+                'ativo' => $data['ativo'] ?? true,
+                'imagem' => $imagem,
+            ]);
+
+            AuditLogger::info('produto.created', [
+                'produto_id' => $produto->id,
+                'estoque_id' => $produto->estoque_id,
+                'quantidade_planejada' => $quantidade,
+            ]);
+
+            $indiceBase = optional($produto->unidades()->orderByDesc('id')->first())->id ?? 0;
+            $unidadesCriadas = [];
+
+            for ($i = 0; $i < $quantidade; $i++) {
+                $codigo = ProdutoUnidadeService::gerarCodigo($produto, $indiceBase + $i + 1);
+                $unidade = ProdutosUnidades::create([
+                    'produto_id' => $produto->id,
+                    'codigo_unico' => $codigo,
+                    'status' => 'disponivel',
+                ]);
+                $unidadesCriadas[] = $unidade->id;
+            }
+
+            AuditLogger::info('produto.unidades.created', [
+                'produto_id' => $produto->id,
+                'unidades_ids' => $unidadesCriadas,
+                'quantidade' => $quantidade,
+            ]);
+
             MovimentacaoService::registrar([
                 'produto_id' => $produto->id,
                 'tipo' => 'entrada',
-                'quantidade' => 1,
+                'quantidade' => $quantidade,
                 'observacao' => 'Cadastro inicial do produto',
+            ]);
+
+            AuditLogger::info('produto.movimentacao.entrada', [
+                'produto_id' => $produto->id,
+                'quantidade' => $quantidade,
             ]);
 
             MovimentacaoService::registrar([
                 'produto_id' => $produto->id,
                 'tipo' => 'disponivel',
-                'quantidade' => 1,
-                'observacao' => 'Unidade disponível para venda',
+                'quantidade' => $quantidade,
+                'observacao' => 'Unidades disponíveis para venda',
             ]);
-        }
 
+            AuditLogger::info('produto.movimentacao.disponivel', [
+                'produto_id' => $produto->id,
+                'quantidade' => $quantidade,
+            ]);
 
-        return true;
+            return $produto;
+        });
     }
 
     public static function cadProdutoRequest($request)
     {
-        try {
-            // dd($request->all());
-            $validated = $request->validate([
-                'nome' => 'required|string|max:255',
-                'codigo_barras' => 'nullable|string|max:50',
-                'unidade' => 'nullable|string|max:10',
-                'preco' => 'required|numeric|min:0',
-                'estoque_id' => 'required|exists:estoques,id',
-                'quantidade' => 'required|integer|min:1',
-                'categoria_id' => 'nullable|exists:categorias,id',
-                'fabricante_id' => 'nullable|exists:fabricantes,id',
-                'ativo' => 'boolean',
-                'imagem' => 'nullable|image|max:2048',
-            ]);
-            // dd($validated);
+        $validated = $request->validate([
+            'nome' => 'required|string|max:255',
+            'codigo_barras' => 'nullable|string|max:50',
+            'unidade' => 'nullable|string|max:10',
+            'preco' => 'required|numeric|min:0',
+            'estoque_id' => 'required|exists:estoques,id',
+            'quantidade' => 'required|integer|min:1',
+            'categoria_id' => 'nullable|exists:categorias,id',
+            'fabricante_id' => 'nullable|exists:fabricantes,id',
+            'ativo' => 'boolean',
+            'imagem' => 'nullable|image|max:2048',
+        ]);
 
-            $validated['imagem'] = $request->file('imagem') ?? null;
+        $validated['imagem'] = $request->file('imagem') ?? null;
 
-            return self::handleCadastroProduto($validated);
-        } catch (\Exception $e) {
-            return $e->getMessage();
-        }
+        return self::handleCadastroProduto($validated);
     }
 }

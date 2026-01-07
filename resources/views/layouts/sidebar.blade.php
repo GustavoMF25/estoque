@@ -118,6 +118,13 @@
                                     <p>Empresa</p>
                                 </a>
                             </li>
+                            <li class="nav-item">
+                                <a href="{{ route('auditoria.index') }}"
+                                    class="nav-link {{ request()->routeIs('auditoria.index') ? 'active' : '' }}">
+                                    <i class="fas fa-file-alt"></i>
+                                    <p>Auditoria</p>
+                                </a>
+                            </li>
 
                         </ul>
                     </li>

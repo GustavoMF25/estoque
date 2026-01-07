@@ -4,6 +4,7 @@ namespace App\Livewire\Produto;
 
 use App\Models\Produto;
 use App\Models\ProdutosUnidades;
+use App\Services\AuditLogger;
 use App\Services\MovimentacaoService;
 use Livewire\Component;
 
@@ -37,9 +38,13 @@ class RemoverProduto extends Component
         try {
             // 🔍 Busca o produto base pelo nome
             $this->produto = Produto::where('nome', $this->nome)->firstOrFail();
-            // dd($this->produto);
+            AuditLogger::info('produto.unidades.remocao.iniciada', [
+                'produto_id' => $this->produto->id,
+                'quantidade' => $this->quantidade,
+                'novo_status' => $this->novo_status ?? 'reservado',
+            ]);
 
-            // 🔢 Quantidade de unidades que serão adicionadas
+            // 🔢 Quantidade de unidades que serão removidas
             $quantidade = (int) $this->quantidade;
 
             if ($quantidade > $this->qtdMax) {
@@ -60,12 +65,23 @@ class RemoverProduto extends Component
             foreach ($unidadesDisponiveis as $unidade) {
                 $unidade->update(['status' => $novoStatus]);
             }
+            AuditLogger::info('produto.unidades.status.atualizado', [
+                'produto_id' => $this->produto->id,
+                'quantidade' => $quantidade,
+                'novo_status' => $novoStatus,
+            ]);
 
             MovimentacaoService::registrar([
                 'produto_id' => $this->produto->id,
                 'tipo' => 'saida',
                 'quantidade' => $quantidade,
                 'observacao' => "Removidas {$quantidade} unidade(s) de '{$this->produto->nome}' do status 'disponivel' -> " . $this->observacao . ".",
+            ]);
+
+            AuditLogger::info('produto.unidades.remocao.concluida', [
+                'produto_id' => $this->produto->id,
+                'quantidade' => $quantidade,
+                'status_destino' => $novoStatus,
             ]);
 
             // ✅ Mensagem de sucesso

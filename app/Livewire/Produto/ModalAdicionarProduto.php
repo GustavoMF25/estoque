@@ -4,8 +4,8 @@ namespace App\Livewire\Produto;
 
 use App\Models\Produto;
 use App\Models\ProdutosUnidades;
+use App\Services\AuditLogger;
 use App\Services\MovimentacaoService;
-use App\Services\ProdutosService;
 use App\Services\ProdutoUnidadeService;
 use Livewire\Component;
 
@@ -44,6 +44,11 @@ class ModalAdicionarProduto extends Component
                 ]);
             }
 
+            AuditLogger::info('produto.unidades.adicao.iniciada', [
+                'produto_id' => $this->produto->id,
+                'quantidade' => $quantidade,
+            ]);
+
             // ⚙️ Cria novas unidades físicas (produtos_unidades)
             $ultimaUnidade = $this->produto->unidades()->orderByDesc('id')->first();
             $indiceBase = $ultimaUnidade ? $ultimaUnidade->id + 1 : 1;
@@ -73,6 +78,11 @@ class ModalAdicionarProduto extends Component
                 'tipo' => 'disponivel',
                 'quantidade' => $quantidade,
                 'observacao' => "Novas unidades disponíveis ({$quantidade}) adicionadas manualmente",
+            ]);
+
+            AuditLogger::info('produto.unidades.adicao.concluida', [
+                'produto_id' => $this->produto->id,
+                'quantidade' => $quantidade,
             ]);
 
             $this->mensagem = "{$quantidade} novas unidades adicionadas ao produto '{$this->produto->nome}'.";
