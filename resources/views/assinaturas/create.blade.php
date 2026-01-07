@@ -30,6 +30,7 @@
                     <option value="mensal" selected>Mensal</option>
                     <option value="trimestral">Trimestral</option>
                     <option value="anual">Anual</option>
+                    <option value="vitalicio">Vitalício</option>
                 </select>
             </div>
 
@@ -42,6 +43,17 @@
                 </select>
             </div>
 
+            <div class="mb-3 form-check form-switch">
+                <input class="form-check-input" type="checkbox" role="switch" id="trialToggle" name="em_teste">
+                <label class="form-check-label" for="trialToggle">Iniciar como plano de teste (7 dias)</label>
+            </div>
+
+            <div class="mb-3 d-none" id="trialExpiraWrapper">
+                <label class="form-label fw-semibold">Trial expira em</label>
+                <input type="date" name="trial_expira_em" class="form-control">
+                <small class="text-muted">Se vazio, iremos definir automaticamente para 7 dias a partir de hoje.</small>
+            </div>
+
             {{-- Botões --}}
             <div class="text-end">
                 <button type="submit" class="btn btn-primary">
@@ -51,3 +63,16 @@
         </form>
     </x-basic.content-page>
 </x-app-layout>
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const toggle = document.getElementById('trialToggle');
+        const wrapper = document.getElementById('trialExpiraWrapper');
+
+        toggle?.addEventListener('change', () => {
+            wrapper.classList.toggle('d-none', !toggle.checked);
+        });
+    });
+</script>
+@endpush

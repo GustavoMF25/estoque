@@ -417,7 +417,7 @@
                 <a href="#planos" class="btn btn-primary shadow-elegant btn-lg">
                     Começar Agora <i data-lucide="arrow-right" class="ml"></i>
                 </a>
-                <a href="#demo" class="btn btn-outline btn-lg">Ver Demonstração</a>
+                <a href="{{ route('register') }}" class="btn btn-outline btn-lg">Ver Demonstração</a>
             </div>
 
             <div class="stats">
@@ -444,7 +444,7 @@
         <div class="container">
             <div class="section-head">
                 <h2>Recursos <span class="text-primary">Poderosos</span></h2>
-                <p>Tudo que você precisa para gerenciar seu estoque de forma profissional e eficiente</p>
+                <p>Tudo que você precisa para gerenciar estoque, vendas, assinaturas e permissões multiempresa.</p>
             </div>
 
             <div class="grid grid-3">
@@ -481,28 +481,19 @@
                     <p>Registre entradas, saídas, transferências entre lojas e mantenha histórico completo.</p>
                 </article>
 
-                <article class="card hover-elevate" style="position: relative;">
+                <article class="card hover-elevate">
                     <div class="icon-badge"><i data-lucide="shopping-cart"></i></div>
-                    <h3>Vendas e Notas Fiscais</h3>
+                    <h3>Vendas e Assinaturas</h3>
                     <p>
-                        Gerencie todo o processo de venda de forma prática — adicione produtos ao carrinho,
-                        registre as transações e gere automaticamente notas fiscais <strong>DAFs</strong> com integração
-                        direta ao sistema.
+                        Feche vendas pelo carrinho integrado, registre DAFs e acompanhe assinaturas mensais,
+                        trimestrais, anuais ou vitalícias com alertas automáticos.
                     </p>
-
-                    <div class="badge-dev">
-                        EM DESENVOLVIMENTO
-                    </div>
                 </article>
 
-                <article class="card hover-elevate" style="position: relative;">
+                <article class="card hover-elevate">
                     <div class="icon-badge"><i data-lucide="zap"></i></div>
                     <h3>Alertas Inteligentes</h3>
-                    <p>Notificações automáticas sobre estoque baixo, vencimentos e movimentações importantes.</p>
-
-                    <div class="badge-dev">
-                        EM DESENVOLVIMENTO
-                    </div>
+                    <p>Receba notificações sobre estoque baixo, assinaturas próximas do vencimento e módulos bloqueados.</p>
                 </article>
             </div>
         </div>

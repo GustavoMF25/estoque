@@ -15,6 +15,7 @@ use App\Http\Controllers\VendaController;
 use App\Http\Controllers\WebhookMercadoPagoController;
 use App\Http\Controllers\DashboardController;
 use App\Livewire\Carrinho\ConfirmarVenda;
+use Laravel\Fortify\Http\Controllers\RegisteredUserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -35,6 +36,12 @@ Route::get('/', function () {
 Route::get('/assinatura-expirada', function () {
     return view('assinaturas.expirada');
 })->name('assinaturas.expirada');
+
+Route::middleware('guest')->group(function () {
+    Route::get('/register', [RegisteredUserController::class, 'create'])
+        ->name('register');
+    Route::post('/register', [RegisteredUserController::class, 'store']);
+});
 
 Route::post('/api/mercadopago/webhook', [WebhookMercadoPagoController::class, 'handle']);
 Route::get('faturas/{fatura}/pagamento/sucesso', [FaturaController::class, 'sucesso'])->name('faturas.pagamento.sucesso');

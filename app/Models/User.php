@@ -33,7 +33,8 @@ class User extends Authenticatable
         'password',
         'cpf',
         'status',
-        'perfil'
+        'perfil',
+        'empresa_id',
     ];
 
     /**

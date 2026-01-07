@@ -12,6 +12,8 @@ services:
       - "8090:80"
     depends_on:
       - db
+    networks:
+      - apolonet
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -25,6 +27,9 @@ services:
       UPLOAD_LIMIT: 50M
     depends_on:
       - db
+    networks:
+      - apolonet
+
   db:
     image: mysql:8.0
     container_name: mysql_db
@@ -38,7 +43,12 @@ services:
       - "3306:3306"
     volumes:
       - dbdata:/var/lib/mysql
-      # - ./public/docs/base.sql:/docker-entrypoint-initdb.d/base.sql
+    networks:
+      - apolonet
 
 volumes:
   dbdata:
+
+networks:
+  apolonet:
+    external: true

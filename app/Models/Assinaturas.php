@@ -30,6 +30,8 @@ class Assinaturas extends Model
         'metodo_pagamento',
         'ultima_confirmacao',
         'periodicidade',
+        'em_teste',
+        'trial_expira_em',
     ];
 
     protected $casts = [
@@ -37,6 +39,8 @@ class Assinaturas extends Model
         'data_vencimento' => 'date',
         'ultima_confirmacao' => 'datetime',
         'valor_mensal' => 'decimal:2',
+        'em_teste' => 'boolean',
+        'trial_expira_em' => 'datetime',
     ];
 
     /**
@@ -52,6 +56,10 @@ class Assinaturas extends Model
      */
     public function isAtiva(): bool
     {
+        if ($this->emTesteAtivo()) {
+            return true;
+        }
+
         if ($this->periodicidade === 'vitalicio') {
             return $this->status === 'ativo';
         }
@@ -64,6 +72,12 @@ class Assinaturas extends Model
      */
     public function isProximaDoVencimento(int $dias = 5): bool
     {
+        if ($this->emTesteAtivo()) {
+            return $this->trial_expira_em
+                ? $this->trial_expira_em->isBetween(now(), now()->addDays($dias))
+                : false;
+        }
+
         if ($this->periodicidade === 'vitalicio' || !$this->data_vencimento) {
             return false;
         }
@@ -79,6 +93,10 @@ class Assinaturas extends Model
      */
     public function isVencida(): bool
     {
+        if ($this->em_teste) {
+            return $this->trial_expira_em && $this->trial_expira_em->isPast();
+        }
+
         if ($this->periodicidade === 'vitalicio' || !$this->data_vencimento) {
             return false;
         }
@@ -112,6 +130,12 @@ class Assinaturas extends Model
      */
     public function renovar(?int $dias = null): void
     {
+        if ($this->em_teste) {
+            $this->em_teste = false;
+            $this->trial_expira_em = null;
+            $this->data_inicio = now();
+        }
+
         if ($this->periodicidade === 'vitalicio') {
             $this->status = 'ativo';
             $this->ultima_confirmacao = now();
@@ -120,7 +144,6 @@ class Assinaturas extends Model
         }
 
         $meses = self::PERIODICIDADES[$this->periodicidade] ?? 1;
-        $dias = $dias ?? ($meses * 30);
 
         $this->data_vencimento = Carbon::parse($this->data_vencimento ?? now())->addMonths($meses);
         $this->status = 'ativo';
@@ -130,6 +153,12 @@ class Assinaturas extends Model
 
     public function definirDatasPorPeriodicidade(): void
     {
+        if ($this->em_teste) {
+            $this->trial_expira_em = $this->trial_expira_em ?? now()->copy()->addDays(7);
+            $this->data_vencimento = $this->trial_expira_em;
+            return;
+        }
+
         if ($this->periodicidade === 'vitalicio') {
             $this->data_vencimento = null;
             return;
@@ -139,5 +168,10 @@ class Assinaturas extends Model
         $inicio = $this->data_inicio ?? now();
         $this->data_inicio = $inicio;
         $this->data_vencimento = Carbon::parse($inicio)->copy()->addMonths($meses);
+    }
+
+    public function emTesteAtivo(): bool
+    {
+        return (bool) $this->em_teste && (!$this->trial_expira_em || $this->trial_expira_em->isFuture());
     }
 }

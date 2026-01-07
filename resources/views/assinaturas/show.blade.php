@@ -6,6 +6,20 @@
                 <div class="alert alert-success">{{ session('success') }}</div>
             @endif
 
+            @if ($assinatura->em_teste)
+                <div class="alert alert-info d-flex justify-content-between align-items-center">
+                    <span>
+                        Esta empresa está em período de teste até
+                        <strong>{{ optional($assinatura->trial_expira_em)->format('d/m/Y') ?? 'data não definida' }}</strong>.
+                    </span>
+                    @if ($podeRenovar)
+                        <a href="{{ route('assinaturas.edit', $assinatura->id) }}" class="btn btn-sm btn-outline-primary">
+                            Escolher plano agora
+                        </a>
+                    @endif
+                </div>
+            @endif
+
             <div class="row">
                 <div class="col-md-3 mb-3">
                     <div class="info-box bg-primary text-white">

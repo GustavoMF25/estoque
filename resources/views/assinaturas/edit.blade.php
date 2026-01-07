@@ -31,13 +31,12 @@
                         class="form-control" required>
                 </div>
 
-                @if ($assinatura->periodicidade !== 'vitalicio')
-                    <div class="col-md-3 mb-3">
-                        <label>Data Vencimento</label>
-                        <input type="date" name="data_vencimento"
-                            value="{{ $assinatura->data_vencimento?->format('Y-m-d') }}" class="form-control">
-                    </div>
-                @endif
+                <div class="col-md-3 mb-3">
+                    <label>Data Vencimento</label>
+                    <input type="date" name="data_vencimento"
+                        value="{{ $assinatura->data_vencimento?->format('Y-m-d') }}" class="form-control"
+                        {{ $assinatura->periodicidade === 'vitalicio' ? 'disabled' : '' }}>
+                </div>
 
                 <div class="col-md-3 mb-3">
                     <label>Status</label>
@@ -73,6 +72,36 @@
                         @endforeach
                     </select>
                 </div>
+
+                <div class="col-md-3 mb-3">
+                    <label>Periodicidade</label>
+                    <select name="periodicidade" class="form-select">
+                        @foreach (['mensal', 'trimestral', 'anual', 'vitalicio'] as $periodicidade)
+                            <option value="{{ $periodicidade }}"
+                                {{ $assinatura->periodicidade === $periodicidade ? 'selected' : '' }}>
+                                {{ ucfirst($periodicidade) }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <label>Plano de teste?</label>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="editTrialToggle"
+                            name="em_teste" value="1" {{ $assinatura->em_teste ? 'checked' : '' }}>
+                        <label class="form-check-label" for="editTrialToggle">
+                            Permitir acesso por 7 dias
+                        </label>
+                    </div>
+                </div>
+
+                <div class="col-md-3 mb-3 {{ $assinatura->em_teste ? '' : 'd-none' }}" id="editTrialDateWrapper">
+                    <label>Trial expira em</label>
+                    <input type="date" name="trial_expira_em" class="form-control"
+                        value="{{ $assinatura->trial_expira_em?->format('Y-m-d') }}">
+                    <small class="text-muted">Se não informado, consideraremos 7 dias a partir de hoje.</small>
+                </div>
             </div>
 
             <div class="mt-3">
@@ -84,3 +113,16 @@
         </form>
     </x-basic.content-page>
 </x-app-layout>
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const toggle = document.getElementById('editTrialToggle');
+        const wrapper = document.getElementById('editTrialDateWrapper');
+
+        toggle?.addEventListener('change', () => {
+            wrapper.classList.toggle('d-none', !toggle.checked);
+        });
+    });
+</script>
+@endpush

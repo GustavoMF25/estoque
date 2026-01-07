@@ -37,13 +37,33 @@ class VerificaAssinaturaMiddleware
                 ->with('error', 'Nenhuma assinatura ativa encontrada.');
         }
 
-        if ($assinatura->status === 'atrasado' || $assinatura->data_vencimento < now()) {
+        if ($assinatura->emTesteAtivo()) {
+            return $next($request);
+        }
+
+        if ($assinatura->em_teste && $assinatura->trial_expira_em && $assinatura->trial_expira_em->isPast()) {
+            $dataExpiracao = $assinatura->trial_expira_em;
+            $assinatura->update([
+                'em_teste' => false,
+                'trial_expira_em' => null,
+                'status' => 'pendente',
+            ]);
+
+            return response()
+                ->view('errors.expirada', [
+                    'empresaNome' => $assinatura->empresa->nome,
+                    'dataExpiracao' => $dataExpiracao,
+                    'assinaturaId' => $assinatura->id,
+                ]);
+        }
+
+        if ($assinatura->status === 'atrasado' || ($assinatura->data_vencimento && $assinatura->data_vencimento < now())) {
             $assinatura->update(['status' => 'atrasado']);
 
             return response()
                 ->view('errors.expirada', [
                     'empresaNome' => $assinatura->empresa->nome,
-                    'dataExpiracao' => $assinatura->data_expiracao,
+                    'dataExpiracao' => $assinatura->data_vencimento,
                     'assinaturaId' => $assinatura->id,
                 ]);
         }

@@ -20,6 +20,24 @@
                         </div>
                     </div>
                     <div class="input-group mb-3">
+                        <x-input id="empresa_nome" class="form-control" type="text" name="empresa_nome"
+                            placeholder="Nome da Empresa" :value="old('empresa_nome')" required />
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-building"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <x-input id="empresa_cnpj" class="form-control" type="text" name="empresa_cnpj"
+                            placeholder="CNPJ (opcional)" :value="old('empresa_cnpj')" />
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-id-card"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
                         <x-input id="email" class="form-control" type="email" name="email" placeholder="Email"
                             :value="old('email')" required autocomplete="username" />
                         <div class="input-group-append">

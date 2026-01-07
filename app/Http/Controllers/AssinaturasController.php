@@ -42,10 +42,16 @@ class AssinaturasController extends Controller
             'valor' => 'required|numeric|min:0',
             'periodicidade' => 'required|in:mensal,trimestral,anual,vitalicio',
             'status' => 'nullable|string',
+            'em_teste' => 'nullable|boolean',
+            'trial_expira_em' => 'nullable|date',
         ]);
 
         $periodicidade = $this->resolvePeriodicidade($request->periodicidade);
         $status = $this->resolveStatus($request->status);
+        $emTeste = $request->boolean('em_teste');
+        $trialExpira = $emTeste
+            ? ($request->filled('trial_expira_em') ? Carbon::parse($request->trial_expira_em) : now()->addDays(7))
+            : null;
 
         $assinatura = Assinaturas::create([
             'empresa_id' => $empresa->id,
@@ -53,10 +59,16 @@ class AssinaturasController extends Controller
             'valor_mensal' => $request->valor,
             'data_inicio' => now(),
             'periodicidade' => $periodicidade,
-            'status' => $status,
+            'status' => $emTeste ? 'ativo' : $status,
+            'em_teste' => $emTeste,
+            'trial_expira_em' => $trialExpira,
         ]);
 
-        $assinatura->definirDatasPorPeriodicidade();
+        if ($assinatura->em_teste) {
+            $assinatura->data_vencimento = $assinatura->trial_expira_em;
+        } else {
+            $assinatura->definirDatasPorPeriodicidade();
+        }
         $assinatura->save();
 
         return redirect()
@@ -109,6 +121,9 @@ class AssinaturasController extends Controller
             'status' => 'required|in:pendente,ativo,atrasado,cancelado',
             'metodo_pagamento' => 'required|in:manual,pix,asaas,pagseguro',
             'periodicidade' => 'required|in:mensal,trimestral,anual,vitalicio',
+            'em_teste' => 'nullable|boolean',
+            'trial_expira_em' => 'nullable|date',
+            'data_vencimento' => 'nullable|date',
         ]);
 
         DB::beginTransaction();
@@ -116,18 +131,30 @@ class AssinaturasController extends Controller
             $assinatura = Assinaturas::findOrFail($id);
             $assinatura->fill($validated);
             $assinatura->periodicidade = $this->resolvePeriodicidade($request->periodicidade);
+            $assinatura->em_teste = $request->boolean('em_teste');
 
-            if ($assinatura->periodicidade === 'vitalicio') {
-                $assinatura->data_vencimento = null;
-            } else {
+            if ($assinatura->em_teste) {
+                $assinatura->trial_expira_em = $request->filled('trial_expira_em')
+                    ? Carbon::parse($request->trial_expira_em)
+                    : now()->addDays(7);
                 $assinatura->data_inicio = Carbon::parse($request->data_inicio);
-                $assinatura->definirDatasPorPeriodicidade();
-                if ($request->filled('data_vencimento')) {
-                    $assinatura->data_vencimento = Carbon::parse($request->data_vencimento);
+                $assinatura->data_vencimento = $assinatura->trial_expira_em;
+                $assinatura->status = 'ativo';
+            } else {
+                $assinatura->trial_expira_em = null;
+                if ($assinatura->periodicidade === 'vitalicio') {
+                    $assinatura->data_vencimento = null;
+                } else {
+                    $assinatura->data_inicio = Carbon::parse($request->data_inicio);
+                    $assinatura->definirDatasPorPeriodicidade();
+                    if ($request->filled('data_vencimento')) {
+                        $assinatura->data_vencimento = Carbon::parse($request->data_vencimento);
+                    }
                 }
+
+                $assinatura->status = $this->resolveStatus($request->status);
             }
 
-            $assinatura->status = $this->resolveStatus($request->status);
             $assinatura->save();
             DB::commit();
 
@@ -194,12 +221,17 @@ class AssinaturasController extends Controller
             abort_if($assinatura->empresa_id !== $user->empresa_id, 403);
         }
 
-        $diasRestantes = $assinatura->data_vencimento
-            ? now()->diffInDays($assinatura->data_vencimento, false)
-            : null;
+        $diasRestantes = $assinatura->em_teste
+            ? ($assinatura->trial_expira_em ? now()->diffInDays($assinatura->trial_expira_em, false) : null)
+            : ($assinatura->data_vencimento ? now()->diffInDays($assinatura->data_vencimento, false) : null);
 
         $progressoCiclo = null;
-        if ($assinatura->data_inicio && $assinatura->data_vencimento) {
+        if ($assinatura->em_teste && $assinatura->trial_expira_em) {
+            $totalCiclo = max(1, $assinatura->data_inicio?->diffInDays($assinatura->trial_expira_em) ?? 7);
+            $diasConsumidos = $assinatura->data_inicio?->diffInDays(now()) ?? 0;
+            $diasConsumidos = max(0, min($totalCiclo, $diasConsumidos));
+            $progressoCiclo = round(($diasConsumidos / $totalCiclo) * 100, 0);
+        } elseif ($assinatura->data_inicio && $assinatura->data_vencimento) {
             $totalCiclo = max(1, $assinatura->data_inicio->diffInDays($assinatura->data_vencimento));
             $diasConsumidos = $assinatura->data_inicio->diffInDays(now());
             $diasConsumidos = max(0, min($totalCiclo, $diasConsumidos));

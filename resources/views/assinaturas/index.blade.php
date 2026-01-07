@@ -23,7 +23,7 @@
                             @if ($assinatura)
                                 <span
                                     class="badge bg-{{ $assinatura->status === 'ativo' ? 'success' : ($assinatura->status === 'pendente' ? 'warning' : 'danger') }}">
-                                    {{ ucfirst($assinatura->status) }}
+                                    {{ $assinatura->em_teste ? 'Teste' : ucfirst($assinatura->status) }}
                                 </span>
                             @else
                                 <span class="badge bg-secondary">Sem assinatura</span>
@@ -35,7 +35,15 @@
                         </td>
 
                         <td>
-                            {{ $assinatura ? \Carbon\Carbon::parse($assinatura->data_vencimento)->format('d/m/Y') : '—' }}
+                            @if ($assinatura)
+                                @if ($assinatura->em_teste)
+                                    {{ optional($assinatura->trial_expira_em)->format('d/m/Y') ?? '—' }}
+                                @else
+                                    {{ optional($assinatura->data_vencimento)->format('d/m/Y') ?? '—' }}
+                                @endif
+                            @else
+                                —
+                            @endif
                         </td>
 
                         <td>

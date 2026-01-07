@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Empresa;
+use App\Models\Assinaturas;
 use App\Models\Modulo;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -53,6 +54,19 @@ class EmpresaController extends Controller
                     'updated_at' => now(),
                 ]);
             }
+
+            Assinaturas::create([
+                'empresa_id' => $empresa->id,
+                'plano' => 'Plano Trial',
+                'valor_mensal' => 0,
+                'data_inicio' => now(),
+                'data_vencimento' => now()->addDays(7),
+                'status' => 'ativo',
+                'metodo_pagamento' => 'manual',
+                'periodicidade' => 'mensal',
+                'em_teste' => true,
+                'trial_expira_em' => now()->addDays(7),
+            ]);
 
             DB::commit();
             return redirect()->route('assinaturas.index')->with('success', 'Empresa cadastrada com sucesso!');
