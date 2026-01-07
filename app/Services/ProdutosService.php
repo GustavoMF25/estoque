@@ -11,25 +11,21 @@ class ProdutosService
 {
     public static function cadastraProduto($request)
     {
-        try {
-            $validated = $request->validate([
-                'nome' => 'required|string|max:255',
-                'codigo_barras' => 'nullable|string|max:50',
-                'unidade' => 'nullable|string|max:10',
-                'preco' => 'required|numeric|min:0',
-                'estoque_id' => 'required|exists:estoques,id',
-                'categoria_id' => 'required|exists:categoria,id',
-                'quantidade' => 'required|integer|min:1',
-                'ativo' => 'boolean',
-                'imagem' => 'nullable|image|max:2048',
-            ]);
+        $validated = $request->validate([
+            'nome' => 'required|string|max:255',
+            'codigo_barras' => 'nullable|string|max:50',
+            'unidade' => 'nullable|string|max:10',
+            'preco' => 'required|numeric|min:0',
+            'estoque_id' => 'required|exists:estoques,id',
+            'categoria_id' => 'required|exists:categoria,id',
+            'quantidade' => 'required|integer|min:1',
+            'ativo' => 'boolean',
+            'imagem' => 'nullable|image|max:2048',
+        ]);
 
-            $validated['imagem'] = $request->file('imagem') ?? null;
+        $validated['imagem'] = $request->file('imagem') ?? null;
 
-            return self::handleCadastroProduto($validated);
-        } catch (Exception $err) {
-            return $err->getMessage();
-        }
+        return self::handleCadastroProduto($validated);
     }
 
     public static function handleCadastroProduto(array $data)
@@ -41,6 +37,13 @@ class ProdutosService
         $quantidade = max((int) ($data['quantidade'] ?? 1), 1);
 
         if ($quantidadeMaxima > 0 && ($totalAtual + $quantidade) > $quantidadeMaxima) {
+            AuditLogger::info('produto.cadastro.limite', [
+                'estoque_id' => $data['estoque_id'],
+                'quantidade_atual' => $totalAtual,
+                'quantidade_maxima' => $quantidadeMaxima,
+                'quantidade_solicitada' => $quantidade,
+            ]);
+
             return redirect()->route('produtos.index')
                 ->with('error', 'Não é possível cadastrar: o estoque excederia o limite máximo de ' . $quantidadeMaxima . ' itens.');
         }
@@ -63,6 +66,13 @@ class ProdutosService
                 'imagem' => $imagem,
             ]);
 
+            AuditLogger::info('produto.created', [
+                'produto_id' => $produto->id,
+                'nome' => $produto->nome,
+                'estoque_id' => $produto->estoque_id,
+                'quantidade_planejada' => $quantidade,
+            ]);
+
             self::criarUnidadesEHistorico($produto, $quantidade);
 
             return $produto;
@@ -71,34 +81,36 @@ class ProdutosService
 
     public static function cadProdutoRequest($request)
     {
-        try {
-            $validated = $request->validate([
-                'nome' => 'required|string|max:255',
-                'codigo_barras' => 'nullable|string|max:50',
-                'unidade' => 'nullable|string|max:10',
-                'preco' => 'required|numeric|min:0',
-                'estoque_id' => 'required|exists:estoques,id',
-                'quantidade' => 'required|integer|min:1',
-                'categoria_id' => 'nullable|exists:categorias,id',
-                'fabricante_id' => 'nullable|exists:fabricantes,id',
-                'ativo' => 'boolean',
-                'imagem' => 'nullable|image|max:2048',
-            ]);
+        $validated = $request->validate([
+            'nome' => 'required|string|max:255',
+            'codigo_barras' => 'nullable|string|max:50',
+            'unidade' => 'nullable|string|max:10',
+            'preco' => 'required|numeric|min:0',
+            'estoque_id' => 'required|exists:estoques,id',
+            'quantidade' => 'required|integer|min:1',
+            'categoria_id' => 'nullable|exists:categorias,id',
+            'fabricante_id' => 'nullable|exists:fabricantes,id',
+            'ativo' => 'boolean',
+            'imagem' => 'nullable|image|max:2048',
+        ]);
 
-            $validated['imagem'] = $request->file('imagem') ?? null;
+        $validated['imagem'] = $request->file('imagem') ?? null;
 
-            return self::handleCadastroProduto($validated);
-        } catch (\Exception $e) {
-            return $e->getMessage();
-        }
+        return self::handleCadastroProduto($validated);
     }
 
     protected static function criarUnidadesEHistorico(Produto $produto, int $quantidade): void
     {
-        ProdutoUnidadeService::adicionarUnidades(
+        $unidades = ProdutoUnidadeService::adicionarUnidades(
             $produto,
             $quantidade,
             'Cadastro inicial do produto'
         );
+
+        AuditLogger::info('produto.unidades.iniciais', [
+            'produto_id' => $produto->id,
+            'quantidade' => $quantidade,
+            'unidades_ids' => $unidades->pluck('id'),
+        ]);
     }
 }

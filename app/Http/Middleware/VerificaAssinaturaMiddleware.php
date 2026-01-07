@@ -24,8 +24,8 @@ class VerificaAssinaturaMiddleware
         if ($user->perfil === 'superadmin') {
             return $next($request);
         }
-        // Admins podem acessar apenas a rota da própria assinatura mesmo com pendências
-        if ($user->isAdmin() && $routeName === 'assinaturas.minha') {
+        // Admins podem acessar rotas críticas mesmo com pendências
+        if ($user->isAdmin() && in_array($routeName, ['assinaturas.minha', 'auditoria.index'], true)) {
             return $next($request);
         }
 

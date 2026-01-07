@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AssinaturasController;
+use App\Http\Controllers\AuditLogController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\EmpresaController;
@@ -86,6 +87,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
         Route::resource('usuarios', UsuarioController::class);
         Route::get('/empresa', [EmpresaController::class, 'editEmpresa'])->name('empresa.editEmpresa');
         Route::put('/empresa', [EmpresaController::class, 'update'])->name('empresa.update');
+        Route::get('/auditoria', [AuditLogController::class, 'index'])->name('auditoria.index');
 
         Route::middleware(['modulo:estoques'])->group(function () {
             Route::resource('estoques', EstoqueController::class);

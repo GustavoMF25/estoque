@@ -153,6 +153,13 @@
                             <p>Minha Assinatura</p>
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a href="{{ route('auditoria.index') }}"
+                           class="nav-link {{ request()->routeIs('auditoria.index') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-clipboard-list"></i>
+                            <p>Auditoria</p>
+                        </a>
+                    </li>
                 @endif
 
                 @if (optional(auth()->user())->isSuperAdmin())

@@ -60,6 +60,13 @@ class ProdutoUnidadeService
                 'observacao' => "Unidades disponiveis - {$descricao}",
             ]);
 
+            AuditLogger::info('produto.unidades.adicionadas', [
+                'produto_id' => $produto->id,
+                'quantidade' => $quantidade,
+                'descricao' => $descricao,
+                'unidades_ids' => $unidades->pluck('id'),
+            ]);
+
             return $unidades;
         });
     }
@@ -83,6 +90,13 @@ class ProdutoUnidadeService
                 'produto_id' => $produtoId,
                 'tipo' => $tipoMovimentacao ?? self::tipoMovimentacaoPorStatus($novoStatus),
                 'quantidade' => $unidades->count(),
+                'observacao' => $observacao,
+            ]);
+
+            AuditLogger::info('produto.unidades.status_alterado', [
+                'produto_id' => $produtoId,
+                'quantidade' => $unidades->count(),
+                'novo_status' => $novoStatus,
                 'observacao' => $observacao,
             ]);
         });

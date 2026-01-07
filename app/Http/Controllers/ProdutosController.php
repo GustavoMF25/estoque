@@ -6,6 +6,7 @@ use App\Models\Categoria;
 use App\Models\Estoque;
 use App\Models\Fabricante;
 use App\Models\Produto;
+use App\Services\AuditLogger;
 use App\Services\MovimentacaoService;
 use App\Services\ProdutosService;
 use Exception;
@@ -41,9 +42,25 @@ class ProdutosController extends Controller
     public function store(Request $request)
     {
         try {
-            ProdutosService::cadProdutoRequest($request);
-            return redirect()->route('produtos.index')->with('success', 'Produtos cadastrados com sucesso!');    
+            $resultado = ProdutosService::cadProdutoRequest($request);
+
+            if ($resultado instanceof \Illuminate\Http\RedirectResponse) {
+                return $resultado;
+            }
+
+            AuditLogger::info('produto.cadastro.controller', [
+                'produto_id' => $resultado->id,
+                'nome' => $resultado->nome,
+                'quantidade' => $request->quantidade,
+            ]);
+
+            return redirect()->route('produtos.index')->with('success', 'Produtos cadastrados com sucesso!');
         } catch (Exception $err) {
+            AuditLogger::info('produto.cadastro.falhou', [
+                'nome' => $request->nome,
+                'mensagem' => $err->getMessage(),
+            ]);
+
             return redirect()->route('produtos.index')->with('error', 'Produtos não cadastrados: ' . $err->getMessage());
         }
     }
@@ -62,10 +79,23 @@ class ProdutosController extends Controller
                     'observacao' => 'Remoção lógica via exclusão de produto',
                 ]);
 
+                AuditLogger::info('produto.deleted', [
+                    'produto_id' => $produto->id,
+                ]);
+
                 return redirect()->route('produtos.index')->with('success', 'Produto excluído com sucesso!');
             }
+            AuditLogger::info('produto.delete.nao_autorizado', [
+                'produto_id' => $produto->id,
+            ]);
+
             return redirect()->route('produtos.index')->with('error', 'Sem permissão para remover.');
         } catch (Exception $err) {
+            AuditLogger::info('produto.delete.falhou', [
+                'produto_id' => $produto->id ?? null,
+                'mensagem' => $err->getMessage(),
+            ]);
+
             return redirect()->route('produtos.index')->with('error', 'Produtos não removido ' . $err->getMessage());
         }
     }
@@ -95,8 +125,21 @@ class ProdutosController extends Controller
                 ]);
                 $quantidadeRestante--;
             }
+
+            $vendido = $request->quantidade - $quantidadeRestante;
+            AuditLogger::info('produto.venda.realizada', [
+                'nome' => $request->nome,
+                'quantidade_solicitada' => $request->quantidade,
+                'quantidade_vendida' => $vendido,
+            ]);
+
             return redirect()->back()->with('success', 'Venda registrada com sucesso!');
         } catch (Exception $err) {
+
+            AuditLogger::info('produto.venda.erro', [
+                'nome' => $request->nome ?? null,
+                'mensagem' => $err->getMessage(),
+            ]);
 
             return redirect()->back()->with('error', 'Produtos não vendido ' . $err->getMessage());
         }

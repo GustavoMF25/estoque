@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Estoque;
 use App\Models\Loja;
+use App\Services\AuditLogger;
 use App\Services\MovimentacaoService;
 use Exception;
 use Illuminate\Http\Request;
@@ -31,7 +32,12 @@ class EstoqueController extends Controller
             'loja_id' => 'nullable|exists:lojas,id',
         ]);
 
-        Estoque::create($request->only('nome', 'descricao', 'quantidade_maxima', 'loja_id', 'localizacao'));
+        $estoque = Estoque::create($request->only('nome', 'descricao', 'quantidade_maxima', 'loja_id', 'localizacao'));
+
+        AuditLogger::info('estoque.created', [
+            'estoque_id' => $estoque->id,
+            'loja_id' => $estoque->loja_id,
+        ]);
 
         return redirect()->route('estoques.index')->with('success', 'Estoque criado com sucesso!');
     }
@@ -53,6 +59,10 @@ class EstoqueController extends Controller
 
         $estoque->update($request->only('nome', 'descricao', 'quantidade_maxima', 'loja_id'));
 
+        AuditLogger::info('estoque.updated', [
+            'estoque_id' => $estoque->id,
+        ]);
+
         return redirect()->route('estoques.index')->with('success', 'Estoque atualizado com sucesso!');
     }
 
@@ -60,6 +70,9 @@ class EstoqueController extends Controller
     {
         try {
             if (!optional(auth()->user())->isAdmin()) {
+                AuditLogger::info('estoque.delete.nao_autorizado', [
+                    'estoque_id' => $estoque->id,
+                ]);
                 return redirect()->route('estoques.index')->with('error', 'Estoque não removido, sem permissão.');
             }
 
@@ -76,8 +89,18 @@ class EstoqueController extends Controller
             $estoque->save();
             $estoque->delete();
 
+            AuditLogger::info('estoque.deleted', [
+                'estoque_id' => $estoque->id,
+                'produtos' => $produtos->pluck('id'),
+            ]);
+
             return redirect()->route('estoques.index')->with('success', 'Estoque removido com sucesso!');
         } catch (Exception $err) {
+            AuditLogger::info('estoque.delete.falhou', [
+                'estoque_id' => $estoque->id ?? null,
+                'mensagem' => $err->getMessage(),
+            ]);
+
             return redirect()->route('estoques.index')->with('error', 'Estoque não removido: ' . $err->getMessage());
         }
     }
@@ -115,8 +138,17 @@ class EstoqueController extends Controller
                 }
             });
 
+            AuditLogger::info('estoque.restaurado', [
+                'estoque_id' => $id,
+            ]);
+
             return redirect()->route('estoques.index')->with('success', 'Estoque e produtos restaurados com sucesso!');
         } catch (Exception $e) {
+            AuditLogger::info('estoque.restore.falhou', [
+                'estoque_id' => $id,
+                'mensagem' => $e->getMessage(),
+            ]);
+
             return redirect()->route('estoques.index')->with('error', 'Erro ao restaurar estoque: ' . $e->getMessage());
         }
     }
