@@ -11,7 +11,7 @@ class BlockOldSalesModule
     public function handle(Request $request, Closure $next)
     {
         // Data de liberação antiga
-        $dataInicial = Carbon::parse('2026-01-12');
+        $dataInicial = Carbon::parse('2026-01-15');
         $diasPermitidos = 5;
 
         // ⏳ Se ainda não chegou 2026, ignora o middleware
