@@ -65,6 +65,26 @@
                     Retirar
             </button>
         </div>
+        <div class='ml-2'>
+            <form action='" . route('produtos.desativar', $id) . "' method='POST'
+                onsubmit=\"return confirm('Deseja realmente desativar este produto?')\">
+                " . csrf_field() . method_field('PATCH') . "
+                <button type='submit' class='btn btn-secondary btn-block btn-sm'>
+                    <i class='fa fa-ban'></i>
+                    Desativar
+                </button>
+            </form>
+        </div>
+        <div class='ml-2'>
+            <form action='" . route('produtos.destroy', $id) . "' method='POST'
+                onsubmit=\"return confirm('Deseja realmente excluir este produto?')\">
+                " . csrf_field() . method_field('DELETE') . "
+                <button type='submit' class='btn btn-danger btn-block btn-sm'>
+                    <i class='fa fa-trash'></i>
+                    Excluir
+                </button>
+            </form>
+        </div>
 ";
 
 @endphp

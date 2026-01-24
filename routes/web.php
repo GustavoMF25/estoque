@@ -54,6 +54,9 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
     Route::get('produtos/catalogo', [ProdutosController::class, 'catalogo'])->name('produtos.catalogo');
     Route::get('/produtos/visualizar', [ProdutosController::class, 'show'])->name('produtos.show');
     Route::post('/produtos/vender', [ProdutosController::class, 'vender'])->name('produtos.vender');
+    Route::patch('/produtos/{produto}/desativar', [ProdutosController::class, 'desativar'])
+        ->middleware('perfil:admin')
+        ->name('produtos.desativar');
 
     Route::resource('categorias', CategoriaController::class);
     Route::resource('fabricantes', FabricanteController::class);

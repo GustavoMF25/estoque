@@ -30,6 +30,7 @@ class ModalCadastrarVenda extends Component
     private function carregarProdutos()
     {
         $q = Produto::query()
+            ->Ativo()
             ->whereHas('ultimaMovimentacao', fn($x) => $x->where('tipo', 'disponivel'))
             ->when($this->categoriaId, fn($x) => $x->where('categoria_id', $this->categoriaId));
 
@@ -54,6 +55,7 @@ class ModalCadastrarVenda extends Component
         }
 
         $this->qtdMax = Produto::query()
+            ->Ativo()
             ->whereHas('ultimaMovimentacao', fn($q) => $q->where('tipo', 'disponivel'))
             ->when($this->categoriaId, fn($q) => $q->where('categoria_id', $this->categoriaId))
             ->where('nome', $this->produtoSelecionado)
@@ -69,6 +71,7 @@ class ModalCadastrarVenda extends Component
     public function carregarQuantidade()
     {
         $query = Produto::query()
+            ->Ativo()
             ->whereHas('ultimaMovimentacao', fn($q) => $q->where('tipo', 'disponivel'));
 
         if (!empty($this->categoriaId)) {

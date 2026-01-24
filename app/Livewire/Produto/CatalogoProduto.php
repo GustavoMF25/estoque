@@ -29,7 +29,7 @@ class CatalogoProduto extends Component
     public function adicionarCarrinho($produtoId)
     {
         // 🔍 Busca o produto base
-        $produto = Produto::findOrFail($produtoId);
+        $produto = Produto::query()->Ativo()->findOrFail($produtoId);
 
         $quantidadeDisponivel = ProdutosUnidades::where('produto_id', $produto->id)
             ->where('status', 'disponivel')
@@ -80,6 +80,7 @@ class CatalogoProduto extends Component
             ->withCount([
                 'unidades as disponiveis_count' => fn($q) => $q->where('status', 'disponivel'),
             ])
+            ->Ativo()
             ->where('nome', 'like', '%' . $this->search . '%')
             ->whereHas('unidades', fn($q) => $q->where('status', 'disponivel'))
             ->paginate($this->perPage);
