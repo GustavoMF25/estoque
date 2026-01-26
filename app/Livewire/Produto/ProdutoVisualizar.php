@@ -36,9 +36,9 @@ class ProdutoVisualizar extends Component
         
         $this->qtdVendidos = ProdutosUnidades::where('produto_id', $this->produto->id)->Vendidas()->count();
         $this->qtdDisponiveis = ProdutosUnidades::where('produto_id', $this->produto->id)->Disponiveis()->count();
-        
 
-        $this->valorRecebido = $this->qtdVendidos * $this->produto->preco;
+        $valorVenda = $this->produto->valor_venda ?? $this->produto->preco;
+        $this->valorRecebido = $this->qtdVendidos * $valorVenda;
         $this->image = $this->produto->imagem ?? null;
     }
 

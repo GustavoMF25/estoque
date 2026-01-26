@@ -20,7 +20,8 @@ class ModalAtualizarProduto extends Component
     public $produto;
     public $nome;
     public $nome_atual;
-    public $preco;
+    public $valor_entrada;
+    public $valor_venda;
     public $quantidade = 1;
     public $imagem;
     public $estoque_id;
@@ -33,7 +34,8 @@ class ModalAtualizarProduto extends Component
 
     protected $rules = [
         'nome' => 'required|string|max:255',
-        'preco' => 'nullable|numeric|min:0',
+        'valor_entrada' => 'nullable|numeric|min:0',
+        'valor_venda' => 'nullable|numeric|min:0',
         'quantidade' => 'required|integer|min:1',
         'imagem' => 'nullable|image|max:2048',
         'estoque_id' => 'required|exists:estoques,id',
@@ -49,7 +51,8 @@ class ModalAtualizarProduto extends Component
 
         if ($this->produto) {
             $this->nome_atual = $this->produto->nome;
-            $this->preco = $this->produto->preco;
+            $this->valor_entrada = $this->produto->valor_entrada ?? 0;
+            $this->valor_venda = $this->produto->valor_venda ?? $this->produto->preco;
             $this->quantidade = $this->produto->disponiveis;
             $this->estoque_id = $this->produto->estoque_id;
             $this->fabricante_id = $this->produto->fabricante_id;
@@ -62,7 +65,8 @@ class ModalAtualizarProduto extends Component
     public function atualizar()
     {
         $this->validate([
-            'preco' => 'required|numeric|min:0',
+            'valor_entrada' => 'required|numeric|min:0',
+            'valor_venda' => 'required|numeric|min:0',
             'nome' => 'required|string|max:255',
             'estoque_id' => 'required|exists:estoques,id',
             'categoria' => 'nullable|exists:categorias,id',
@@ -81,7 +85,9 @@ class ModalAtualizarProduto extends Component
             }
 
             $this->produto->update([
-                'preco' => $this->preco ?? $this->produto->preco,
+                'preco' => $this->valor_venda ?? $this->produto->preco,
+                'valor_entrada' => $this->valor_entrada ?? $this->produto->valor_entrada,
+                'valor_venda' => $this->valor_venda ?? $this->produto->valor_venda,
                 'nome' => $this->nome ?? $this->produto->nome,
                 'estoque_id' => $this->estoque_id ?? $this->produto->estoque_id,
                 'categoria_id' => $this->categoria ?? $this->produto->categoria_id,

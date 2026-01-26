@@ -33,6 +33,9 @@ class CategoriaTable extends DataTableComponent
         return [
             Column::make('Nome', 'nome')->searchable()->sortable(),
             Column::make('Descricao', 'descricao')->searchable(),
+            Column::make('Limite venda', 'limite_venda_padrao')
+                ->format(fn($value) => $value ? $value : 'Sem limite')
+                ->sortable(),
             Column::make('Status', 'ativo')
                 ->format(function ($value, $row) {
                     if($value){

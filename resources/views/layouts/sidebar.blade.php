@@ -57,7 +57,7 @@
                         </p>
                     </a>
                 </li>
-                {{-- <li class="nav-item">
+                <li class="nav-item">
                     <a href="{{ route('clientes.index') }}"
                         class="nav-link {{ request()->routeIs('fabricantes.index') ? 'active' : '' }}">
                         <i class="fa fa-users"></i>
@@ -65,7 +65,7 @@
                             Clientes
                         </p>
                     </a>
-                </li> --}}
+                </li>
                 <li class="nav-item">
                     <a href="{{ route('produtos.index') }}"
                         class="nav-link {{ request()->routeIs('produtos.index') ? 'active' : '' }}">
@@ -90,6 +90,15 @@
                         <i class="fa fa-shopping-cart"></i>
                         <p>
                             Vendas
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('notificacoes.index') }}"
+                        class="nav-link {{ request()->routeIs('notificacoes.index') ? 'active' : '' }}">
+                        <i class="fa fa-bell"></i>
+                        <p>
+                            Notificações
                         </p>
                     </a>
                 </li>

@@ -39,7 +39,7 @@ class ProdutoTable extends DataTableComponent
                 },
             ])
             ->Ativo()
-            ->with([ 'estoque'])
+            ->with(['estoque', 'categoria', 'fabricante'])
             ->orderBy('nome', 'asc');
 
         return $query;
@@ -82,12 +82,30 @@ class ProdutoTable extends DataTableComponent
             Column::make('Nome', 'Nome')
                 ->sortable()
                 ->searchable(),
+            Column::make('Estoque', 'estoque.nome')
+                ->format(fn($value, $row) => $row->estoque->nome ?? 'N/A')
+                ->searchable()
+                ->sortable(),
+            Column::make('Categoria', 'categoria.nome')
+                ->format(fn($value, $row) => $row->categoria->nome ?? 'N/A')
+                ->searchable()
+                ->sortable(),
+            Column::make('Fabricante', 'fabricante.nome')
+                ->format(fn($value, $row) => $row->fabricante->nome ?? 'N/A')
+                ->searchable()
+                ->sortable(),
+            Column::make('Valor venda', 'valor_venda')
+                ->format(fn($value, $row) => FormatHelper::brl($row->valor_venda ?? $row->preco)),
+            Column::make('Valor entrada', 'valor_entrada')
+                ->format(fn($value, $row) => FormatHelper::brl($row->valor_entrada ?? 0)),
             Column::make('Disponíveis', 'id')
-                ->format(fn($value, $row) => $row->disponiveis_count)
+                ->format(fn($value, $row) => '<span class="badge badge-success">' . $row->disponiveis_count . '</span>')
+                ->html()
                 ->searchable()
                 ->sortable(),
             Column::make('Vendidos', 'id')
-                ->format(fn($value, $row) => $row->vendidos_count)
+                ->format(fn($value, $row) => '<span class="badge badge-danger">' . $row->vendidos_count . '</span>')
+                ->html()
                 ->searchable()
                 ->sortable(),
             Column::make('Ações', 'id')
@@ -99,6 +117,9 @@ class ProdutoTable extends DataTableComponent
                             'componente' => '',
                             'modal' => false,
                             'props' => ''
+                        ],
+                        "remove" => [
+                            'route' => route('produtos.destroy', $value),
                         ],
 
                     ]);

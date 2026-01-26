@@ -24,10 +24,11 @@ class CategoriaController extends Controller
         $request->validate([
             'nome' => 'required|string|max:255',
             'descricao' => 'nullable|string',
+            'limite_venda_padrao' => 'nullable|integer|min:1',
             'ativo' => 'required|boolean',
         ]);
 
-        Categoria::create($request->only('nome', 'descricao', 'ativo'));
+        Categoria::create($request->only('nome', 'descricao', 'limite_venda_padrao', 'ativo'));
 
         return redirect()->route('categorias.index')->with('success', 'Categoria criada com sucesso.');
     }
@@ -42,10 +43,11 @@ class CategoriaController extends Controller
         $request->validate([
             'nome' => 'required|string|max:255',
             'descricao' => 'nullable|string',
+            'limite_venda_padrao' => 'nullable|integer|min:1',
             'ativo' => 'required|boolean',
         ]);
 
-        $categoria->update($request->only('nome', 'descricao', 'ativo'));
+        $categoria->update($request->only('nome', 'descricao', 'limite_venda_padrao', 'ativo'));
 
         return redirect()->route('categorias.index')->with('success', 'Categoria atualizada com sucesso.');
     }

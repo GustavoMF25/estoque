@@ -9,6 +9,9 @@
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
         <li class="nav-item dropdown">
+            <livewire:notificacoes.notificacoes-nav-bar />
+        </li>
+        <li class="nav-item dropdown">
             <livewire:carrinho.carrinho-nav-bar />
         </li> 
 

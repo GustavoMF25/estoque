@@ -20,6 +20,8 @@ class Produto extends Model
         'imagem',
         'unidade',
         'preco',
+        'valor_entrada',
+        'valor_venda',
         'estoque_minimo',
         'estoque_id',
         'categoria_id',
@@ -32,7 +34,7 @@ class Produto extends Model
      */
     public function scopeAtivo($query)
     {
-        return $query->where('ativo', true);
+        return $query->where($this->getTable() . '.ativo', true);
     }
 
     public function estoque()
@@ -52,6 +54,12 @@ class Produto extends Model
     public function getValorRecebidoAttribute()
     {
         return $this->unidadesVendidas()->count() * $this->preco;
+    }
+
+    public function getPrecoAttribute($value)
+    {
+        $valorVenda = $this->attributes['valor_venda'] ?? null;
+        return $valorVenda !== null ? $valorVenda : $value;
     }
 
     public function getDisponiveisAttribute()

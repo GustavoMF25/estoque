@@ -9,15 +9,22 @@
             </div>
 
             <div class="col-md-4 mb-3">
-                <label>Preço</label>
-                <input type="number" wire:model.defer="preco" class="form-control" step="0.01">
-                @error('preco')
+                <label>Valor de entrada</label>
+                <input type="number" wire:model.defer="valor_entrada" class="form-control" step="0.01">
+                @error('valor_entrada')
                     <span class="text-danger">{{ $message }}</span>
                 @enderror
             </div>
 
+            <div class="col-md-4 mb-3">
+                <label>Valor de venda</label>
+                <input type="number" wire:model.defer="valor_venda" class="form-control" step="0.01">
+                @error('valor_venda')
+                    <span class="text-danger">{{ $message }}</span>
+                @enderror
+            </div>
 
-            <div class="col-md-4 mb-4">
+            <div class="col-md-3 mb-4">
                 <label>Imagem do Produto</label>
                 <input type="file" wire:model="imagem" class="form-control" accept="image/*">
                 @error('imagem')
@@ -25,7 +32,7 @@
                 @enderror
             </div>
 
-            <div class="col-md-4 mb-4">
+            <div class="col-md-3 mb-4">
                 <label>Estoque</label>
                 <select wire:model.defer="estoque_id" class="form-control">
                     <option value="">Selecione...</option>
@@ -37,7 +44,7 @@
                     <span class="text-danger">{{ $message }}</span>
                 @enderror
             </div>
-            <div class="col-md-4 mb-4">
+            <div class="col-md-3 mb-4">
                 <label>Categoria</label>
                 <select wire:model.defer="categoria" class="form-control">
                     <option value="">Selecione...</option>
@@ -49,7 +56,7 @@
                     <span class="text-danger">{{ $message }}</span>
                 @enderror
             </div>
-            <div class="form-group col-md-4 mb-4">
+            <div class="form-group col-md-3 mb-4">
                 <label for="fabrricante">Fabricante</label>
                 <select wire:model.defer="fabricante_id" name="fabricante_id" class="form-control select2">
                     <option value="">Sem fabricantes</option>

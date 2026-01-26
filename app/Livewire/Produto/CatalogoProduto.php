@@ -57,7 +57,7 @@ class CatalogoProduto extends Component
                 'produto_id' => $produto->id,
                 'nome' => $produto->nome,
                 'quantidade' => $quantidadeSolicitada,
-                'preco_unitario' => $produto->preco ?? 0,
+                'preco_unitario' => $produto->valor_venda ?? $produto->preco ?? 0,
                 'imagem' => $produto->imagem ?? null,
                 'codigo_barras' => $produto->codigo_barras ?? null,
             ];

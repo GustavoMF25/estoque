@@ -7,6 +7,7 @@ use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\EstoqueController;
 use App\Http\Controllers\FabricanteController;
 use App\Http\Controllers\LojaController;
+use App\Http\Controllers\NotificacaoController;
 use App\Http\Controllers\ProdutosController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\VendaController;
@@ -60,7 +61,10 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
 
     Route::resource('categorias', CategoriaController::class);
     Route::resource('fabricantes', FabricanteController::class);
-    // Route::resource('clientes', ClienteController::class);
+    Route::resource('clientes', ClienteController::class);
+    Route::get('/notificacoes', [NotificacaoController::class, 'index'])->name('notificacoes.index');
+    Route::patch('/notificacoes/{notificacao}/ler', [NotificacaoController::class, 'marcarComoLida'])
+        ->name('notificacoes.ler');
 
     Route::middleware(['block.old.sales'])->group(function () {
         Route::get('/carrinho/confirmar', ConfirmarVenda::class)->name('carrinho.confirmar');

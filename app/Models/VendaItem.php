@@ -15,6 +15,7 @@ class VendaItem extends Model
     protected $fillable = [
         'venda_id',
         'produto_id',
+        'quantidade',
         'valor_unitario',
         'valor_total',
     ];
@@ -41,6 +42,10 @@ class VendaItem extends Model
 
     public function getQuantidadeAttribute()
     {
+        if (!empty($this->attributes['quantidade'])) {
+            return (int) $this->attributes['quantidade'];
+        }
+
         return $this->unidades()->count();
     }
 }

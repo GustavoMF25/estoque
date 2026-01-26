@@ -9,6 +9,9 @@ use App\Models\Produto;
 use App\Models\Movimentacao;
 use App\Models\ProdutosUnidades;
 use App\Models\ProdutoVinculos;
+use App\Models\Notificacao;
+use App\Models\Categoria;
+use App\Models\User;
 use App\Services\MovimentacaoService;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
@@ -47,7 +50,7 @@ class ConfirmarVenda extends Component
                 'produto_id' => $produto->id,
                 'nome' => $produto->nome,
                 'quantidade' => 1,
-                'preco_unitario' => $produto->preco ?? 0,
+                'preco_unitario' => $produto->valor_venda ?? $produto->preco ?? 0,
                 'imagem' => $produto->imagem ?? null,
                 'codigo_barras' => $produto->codigo_barras ?? null,
             ];
@@ -125,6 +128,8 @@ class ConfirmarVenda extends Component
             return $this->dispatch('toast', ['type' => 'error', 'message' => 'Carrinho está vazio.']);
         }
 
+        DB::beginTransaction();
+
         try {
             // calcula o valor total bruto
             $valorTotal = collect($carrinho)->sum(fn($item) => $item['quantidade'] * $item['preco_unitario']);
@@ -132,6 +137,38 @@ class ConfirmarVenda extends Component
             // aplica o desconto combo
             $descontoCombo = $this->calcularDescontoCombo($carrinho);
             $valorFinal = $valorTotal - $descontoCombo;
+
+            $produtos = Produto::with('categoria')
+                ->whereIn('id', collect($carrinho)->pluck('produto_id')->unique())
+                ->get()
+                ->keyBy('id');
+
+            $totaisPorCategoria = [];
+            foreach ($carrinho as $item) {
+                $produto = $produtos->get($item['produto_id']);
+                if (!$produto || !$produto->categoria_id) {
+                    continue;
+                }
+                $totaisPorCategoria[$produto->categoria_id] = ($totaisPorCategoria[$produto->categoria_id] ?? 0)
+                    + (int) $item['quantidade'];
+            }
+
+            $categorias = Categoria::whereIn('id', array_keys($totaisPorCategoria))->get()->keyBy('id');
+            $violacoes = [];
+            foreach ($totaisPorCategoria as $categoriaId => $quantidade) {
+                $categoria = $categorias->get($categoriaId);
+                $limite = (int) ($categoria?->limite_venda_padrao ?? 0);
+                if ($limite > 0 && $quantidade > $limite) {
+                    $violacoes[] = [
+                        'categoria_id' => $categoriaId,
+                        'categoria' => $categoria?->nome,
+                        'limite' => $limite,
+                        'quantidade' => $quantidade,
+                    ];
+                }
+            }
+
+            $precisaAprovacao = !empty($violacoes);
 
             $venda = Venda::create([
                 'empresa_id' => 1,
@@ -143,10 +180,24 @@ class ConfirmarVenda extends Component
                 'desconto' => $descontoCombo,
                 'valor_final' => $valorFinal,
                 'status' => 'aberta',
+                'aprovacao_status' => $precisaAprovacao ? 'pendente' : null,
+                'aprovacao_detalhes' => $precisaAprovacao ? $violacoes : null,
             ]);
 
             foreach ($carrinho as $item) {
                 $produto = Produto::findOrFail($item['produto_id']);
+
+                $vendaItem = VendaItem::create([
+                    'venda_id' => $venda->id,
+                    'produto_id' => $produto->id,
+                    'quantidade' => $item['quantidade'],
+                    'valor_unitario' => $item['preco_unitario'],
+                    'valor_total' => $item['preco_unitario'] * $item['quantidade'],
+                ]);
+
+                if ($precisaAprovacao) {
+                    continue;
+                }
 
                 $unidadesDisponiveis = ProdutosUnidades::where('produto_id', $produto->id)
                     ->where('status', 'disponivel')
@@ -156,14 +207,6 @@ class ConfirmarVenda extends Component
                 if ($unidadesDisponiveis->count() < $item['quantidade']) {
                     throw new \Exception("O produto '{$produto->nome}' possui apenas {$unidadesDisponiveis->count()} unidades disponíveis.");
                 }
-
-                $vendaItem = VendaItem::create([
-                    'venda_id' => $venda->id,
-                    'produto_id' => $produto->id,
-                    'quantidade' => $item['quantidade'],
-                    'valor_unitario' => $item['preco_unitario'],
-                    'valor_total' => $item['preco_unitario'] * $item['quantidade'],
-                ]);
 
                 $vendaItem->unidades()->attach($unidadesDisponiveis->pluck('id')->toArray());
 
@@ -182,7 +225,29 @@ class ConfirmarVenda extends Component
             session()->forget('carrinho');
             $this->dispatch('atualizarCarrinho');
 
-            $this->dispatch('toast', [
+            if ($precisaAprovacao) {
+                $admins = User::where('perfil', 'admin')->get();
+                foreach ($admins as $admin) {
+                    Notificacao::create([
+                        'user_id' => $admin->id,
+                        'titulo' => 'Venda pendente de aprovação',
+                        'mensagem' => "Venda #{$venda->id} excedeu o limite da categoria e precisa de aprovação.",
+                        'tipo' => 'venda.aprovacao',
+                        'dados' => ['venda_id' => $venda->id, 'violacoes' => $violacoes],
+                    ]);
+                }
+
+                DB::commit();
+
+                return $this->dispatch('toast', [
+                    'type' => 'warning',
+                    'message' => 'Venda enviada para aprovação do administrador.',
+                ]);
+            }
+
+            DB::commit();
+
+            return $this->dispatch('toast', [
                 'type' => 'success',
                 'message' => $descontoCombo > 0
                     ? "Venda concluída com desconto de R$ " . number_format($descontoCombo, 2, ',', '.')

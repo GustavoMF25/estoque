@@ -58,7 +58,7 @@ class ProdutosVisualizarTable extends DataTableComponent
                 ->sortable()
                 ->searchable(),
 
-            Column::make('Preço', 'preco')
+            Column::make('Valor venda', 'valor_venda')
                 ->format(fn($value) => FormatHelper::brl($value)),
 
             Column::make('Estoque', 'estoque.nome'),
