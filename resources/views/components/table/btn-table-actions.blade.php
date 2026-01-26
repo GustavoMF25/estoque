@@ -6,7 +6,13 @@
 
     @if (!empty($edit))
         @if ((!empty($edit) && auth()->user()->perfil === 'admin') || $edit['permitir'])
-            <x-table.btn-edit :title="$edit['title']" :componente="$edit['componente']" :props="$edit['props']" :formId="$edit['formId']" />
+            @if (!empty($edit['route']))
+                <a href="{{ $edit['route'] }}" class="btn btn-sm btn-warning" title="{{ $edit['title'] ?? 'Editar' }}">
+                    <i class="fas fa-pen"></i>
+                </a>
+            @else
+                <x-table.btn-edit :title="$edit['title']" :componente="$edit['componente']" :props="$edit['props']" :formId="$edit['formId']" />
+            @endif
         @endif
     @endif
     @if (!empty($custonComponent))

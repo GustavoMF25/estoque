@@ -48,6 +48,11 @@ class CategoriaTable extends DataTableComponent
             Column::make('Ações', 'id')
                 ->format(function ($value, $row) {
                     return view('components.table.btn-table-actions', [
+                        'edit' => [
+                            'title' => 'Editar Categoria',
+                            'route' => route('categorias.edit', $value),
+                            'permitir' => false,
+                        ],
                         "remove" => [
                             'route' => route('categorias.destroy', $value),
                         ],
