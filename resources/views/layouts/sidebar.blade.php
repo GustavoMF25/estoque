@@ -59,7 +59,7 @@
                 </li>
                 <li class="nav-item">
                     <a href="{{ route('clientes.index') }}"
-                        class="nav-link {{ request()->routeIs('fabricantes.index') ? 'active' : '' }}">
+                        class="nav-link {{ request()->routeIs('clientes.index') ? 'active' : '' }}">
                         <i class="fa fa-users"></i>
                         <p>
                             Clientes

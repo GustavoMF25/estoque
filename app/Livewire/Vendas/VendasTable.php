@@ -79,12 +79,20 @@ class VendasTable extends DataTableComponent
                     $venda = Venda::findOrFail($value);
                     $custonComponents = [
                         [
+                            'title' => 'Visualizar venda',
+                            'componente' => 'vendas.visualizar-venda',
+                            'props' => ['id' => $value, 'size' => 'modal-lg'],
+                            'formId' => null,
+                            'icon' => 'fas fa-eye',
+                            'permitir' => true,
+                        ],
+                        [
                             'title' => 'Emitir nota',
                             'componente' => 'vendas.emitir-nota',
                             'props' => ['vendaId' => $value, 'size' => 'modal-lg'],
                             'formId' => null,
                             'icon' => 'fas fa-file-alt',
-                            'permitir' => true,
+                            'permitir' => $venda->status !== 'cancelada',
                         ],
                     ];
                     if (optional(auth()->user())->isAdmin() && $venda->aprovacao_status === 'pendente') {
@@ -97,14 +105,26 @@ class VendasTable extends DataTableComponent
                             'permitir' => true
                         ];
                     }
+                    if ($venda->status !== 'cancelada') {
+                        $custonComponents[] = [
+                            'title' => 'Cancelar venda',
+                            'componente' => 'vendas.cancelar-venda',
+                            'props' => ['id' => $value],
+                            'formId' => null,
+                            'icon' => 'fas fa-ban',
+                            'action' => 'danger',
+                            'permitir' => Auth::id() == $venda->user_id || optional(auth()->user())->isAdmin(),
+                        ];
+                    }
                     return view('components.table.btn-table-actions', [
                        'custonComponents' => $custonComponents,
-                       'edit' => [
+                        'edit' => [
                             'title' => 'Editar protocolo',
                             'componente' => 'vendas.atualizar-venda',
                             'props' => ['id' => $value , 'formId' => 'formUpdateVenda'],
                             'formId' => 'formUpdateVenda',
-                            'permitir' =>  Auth::id() == $venda->user_id || optional(auth()->user())->isAdmin()
+                            'permitir' =>  ($venda->status !== 'cancelada')
+                                && (Auth::id() == $venda->user_id || optional(auth()->user())->isAdmin())
                        ],
                         "remove" => '',
                         'show' => '',

@@ -28,10 +28,36 @@
         document.addEventListener('livewire:init', () => {
             Livewire.on('initSelect2', () => {
                 setTimeout(() => {
-                    if ($('.modal-content').find('select.select2').length > 0) {
-                        $('.modal-content').find('select.select2').select2({
+                    const $selects = $('.modal-content').find('select.select2');
+                    if ($selects.length > 0) {
+                        $selects.each(function() {
+                            const $select = $(this);
+                            if ($select.data('select2')) {
+                                return;
+                            }
+                            $select.select2({
                             width: 'resolve',
                             // theme: "classic"
+                            });
+                        });
+
+                        $selects.off('change.select2-lw').on('change.select2-lw', function() {
+                            const $select = $(this);
+                            const wireModel = $select.attr('wire:model')
+                                || $select.attr('wire:model.defer')
+                                || $select.attr('wire:model.lazy');
+                            if (!wireModel) {
+                                return;
+                            }
+                            const componentEl = this.closest('[wire\\:id]');
+                            if (!componentEl) {
+                                return;
+                            }
+                            const component = Livewire.find(componentEl.getAttribute('wire:id'));
+                            if (!component) {
+                                return;
+                            }
+                            component.set(wireModel, $select.val(), false);
                         });
                     }
                 }, 50); // espera 50ms

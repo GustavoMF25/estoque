@@ -25,7 +25,7 @@ class ModalAtualizarProduto extends Component
     public $quantidade = 1;
     public $imagem;
     public $estoque_id;
-    public $fabricante_id;
+    public $fabricante;
     public $categoria;
     public $estoques;
     public $fabricantes;
@@ -54,7 +54,7 @@ class ModalAtualizarProduto extends Component
         $this->valor_venda = $this->produto->valor_venda ?? $this->produto->preco;
         $this->quantidade = $this->produto->disponiveis;
         $this->estoque_id = $this->produto->estoque_id;
-        $this->fabricante_id = $this->produto->fabricante_id;
+        $this->fabricante = $this->produto->fabricante_id;
         $this->categoria = $this->produto->categoria_id;
     }
 
@@ -66,7 +66,7 @@ class ModalAtualizarProduto extends Component
             'nome' => 'required|string|max:255',
             'estoque_id' => 'required|exists:estoques,id',
             'categoria' => 'nullable|exists:categorias,id',
-            'fabricante_id' => 'nullable|exists:fabricantes,id',
+            'fabricante' => 'nullable|exists:fabricantes,id',
             'imagem' => 'nullable|image|max:2048', // até 2MB
         ]);
         try {
@@ -81,7 +81,6 @@ class ModalAtualizarProduto extends Component
                 $this->produto->imagem = $path;
                 $this->produto->save();
             }
-
             $this->produto->update([
                 'preco' => $this->valor_venda ?? $this->produto->preco,
                 'valor_entrada' => $this->valor_entrada ?? $this->produto->valor_entrada,
@@ -89,7 +88,7 @@ class ModalAtualizarProduto extends Component
                 'nome' => $this->nome ?? $this->produto->nome,
                 'estoque_id' => $this->estoque_id ?? $this->produto->estoque_id,
                 'categoria_id' => $this->categoria ?? $this->produto->categoria_id,
-                'fabricante_id' => $this->fabricante_id ?? $this->produto->fabricante_id,
+                'fabricante_id' => $this->fabricante ?? $this->produto->fabricante_id,
                 'imagem' => $this->produto->imagem,
             ]);
 

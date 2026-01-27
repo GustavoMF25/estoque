@@ -23,7 +23,7 @@ class ModalDinamico extends Component
     {
         $this->titulo = $titulo;
         $this->formId = $formId;
-        $this->size = $props['size'] ?? 'modal-sm';
+        $this->size = $props['size'] ?? 'modal-lg';
         $props['formId'] = $formId;
         $props['size'] = $this->size;
         $this->conteudo = Livewire::mount($componente, $props);

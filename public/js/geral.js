@@ -65,6 +65,23 @@ document.addEventListener('click', function (event) {
 
     const timers = new WeakMap();
 
+    function notifyCepNotFound(input) {
+        if (window.toastr && typeof window.toastr.error === 'function') {
+            window.toastr.error('CEP nao encontrado.');
+        } else {
+            alert('CEP nao encontrado.');
+        }
+        if (!input || !input.dataset) return;
+        const rua = document.getElementById(input.dataset.cepRua);
+        const bairro = document.getElementById(input.dataset.cepBairro);
+        const cidade = document.getElementById(input.dataset.cepCidade);
+        const estado = document.getElementById(input.dataset.cepEstado);
+        setValue(rua, '');
+        setValue(bairro, '');
+        setValue(cidade, '');
+        setValue(estado, '');
+    }
+
     function handleCepInput(input) {
         if (!input || !input.dataset || !input.dataset.cepLookup) return;
 
@@ -84,7 +101,10 @@ document.addEventListener('click', function (event) {
             fetch('https://viacep.com.br/ws/' + cep + '/json/')
                 .then(function (resp) { return resp.json(); })
                 .then(function (data) {
-                    if (!data || data.erro) return;
+                    if (!data || data.erro) {
+                        notifyCepNotFound(input);
+                        return;
+                    }
                     const rua = document.getElementById(input.dataset.cepRua);
                     const bairro = document.getElementById(input.dataset.cepBairro);
                     const cidade = document.getElementById(input.dataset.cepCidade);

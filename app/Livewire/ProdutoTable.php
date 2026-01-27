@@ -113,7 +113,7 @@ class ProdutoTable extends DataTableComponent
                     return view('components.table.btn-table-actions', [
                         "show" => [
                             'route' => route('produtos.show', ['id' => $value, 'nome' => $row->nome, 'estoque_id' => $row->estoque_id]),
-                            'title' => 'Estoque → ' . $row->nome,
+                            'title' => $row->nome,
                             'componente' => '',
                             'modal' => false,
                             'props' => ''
