@@ -15,7 +15,13 @@
             @endif
         @endif
     @endif
-    @if (!empty($custonComponent))
+    @if (!empty($custonComponents) && is_array($custonComponents))
+        @foreach ($custonComponents as $custonItem)
+            @if ((!empty($custonItem) && auth()->user()->perfil === 'admin') || $custonItem['permitir'])
+                <x-table.btn-custon-component :icon="$custonItem['icon']" :title="$custonItem['title']" :componente="$custonItem['componente']" :props="$custonItem['props']" :formId="$custonItem['formId']" />
+            @endif
+        @endforeach
+    @elseif (!empty($custonComponent))
         @if ((!empty($custonComponent) && auth()->user()->perfil === 'admin') || $custonComponent['permitir'])
             <x-table.btn-custon-component :icon="$custonComponent['icon']" :title="$custonComponent['title']" :componente="$custonComponent['componente']" :props="$custonComponent['props']" :formId="$custonComponent['formId']" />
         @endif

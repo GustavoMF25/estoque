@@ -8,6 +8,7 @@ use App\Http\Controllers\EstoqueController;
 use App\Http\Controllers\FabricanteController;
 use App\Http\Controllers\LojaController;
 use App\Http\Controllers\NotificacaoController;
+use App\Http\Controllers\NotaModeloController;
 use App\Http\Controllers\ProdutosController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\VendaController;
@@ -45,6 +46,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
         Route::get('/empresa', [EmpresaController::class, 'edit'])->name('empresa.edit');
         Route::put('/empresa', [EmpresaController::class, 'update'])->name('empresa.update');
         Route::get('/auditoria', [AuditLogController::class, 'index'])->name('auditoria.index');
+        Route::resource('nota-modelos', NotaModeloController::class);
     });
 
     Route::resource('lojas', LojaController::class);
@@ -74,5 +76,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
         })->name('vendas.index');
         Route::get('/vendas/{venda}/nota', [VendaController::class, 'gerar'])
             ->name('vendas.nota');
+        Route::get('/vendas/nota/editavel/{emissao}', [VendaController::class, 'gerarEditavel'])
+            ->name('vendas.nota.editavel');
     });
 });

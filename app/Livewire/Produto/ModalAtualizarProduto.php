@@ -47,19 +47,15 @@ class ModalAtualizarProduto extends Component
         $this->categorias = Categoria::all();
         $this->fabricantes = Fabricante::all();
         $this->id = $id;
-        $this->produto = Produto::find($this->id);
+        $this->produto = Produto::withTrashed()->findOrFail($this->id);
 
-        if ($this->produto) {
-            $this->nome_atual = $this->produto->nome;
-            $this->valor_entrada = $this->produto->valor_entrada ?? 0;
-            $this->valor_venda = $this->produto->valor_venda ?? $this->produto->preco;
-            $this->quantidade = $this->produto->disponiveis;
-            $this->estoque_id = $this->produto->estoque_id;
-            $this->fabricante_id = $this->produto->fabricante_id;
-            $this->categoria = $this->produto->categoria_id;
-        } else {
-            session()->flash('error', 'Produto não encontrado.');
-        }
+        $this->nome_atual = $this->produto->nome;
+        $this->valor_entrada = $this->produto->valor_entrada ?? 0;
+        $this->valor_venda = $this->produto->valor_venda ?? $this->produto->preco;
+        $this->quantidade = $this->produto->disponiveis;
+        $this->estoque_id = $this->produto->estoque_id;
+        $this->fabricante_id = $this->produto->fabricante_id;
+        $this->categoria = $this->produto->categoria_id;
     }
 
     public function atualizar()
@@ -74,6 +70,8 @@ class ModalAtualizarProduto extends Component
             'imagem' => 'nullable|image|max:2048', // até 2MB
         ]);
         try {
+            $this->produto = Produto::withTrashed()->findOrFail($this->id);
+
             if ($this->imagem instanceof \Illuminate\Http\UploadedFile) {
                 $path = $this->imagem->store('produtos', 'public');
 

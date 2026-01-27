@@ -1,6 +1,6 @@
 <div>
     <div wire:ignore.self class="modal fade modal-custom-center" id="modal-sm" tabindex="-1">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-dialog {{ $size }} modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="titulo">{{ $titulo }}</h5>

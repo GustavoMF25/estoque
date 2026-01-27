@@ -77,9 +77,18 @@ class VendasTable extends DataTableComponent
             Column::make('Ações', 'id')
                 ->format(function ($value, $row) {
                     $venda = Venda::findOrFail($value);
-                    $custonComponent = null;
+                    $custonComponents = [
+                        [
+                            'title' => 'Emitir nota',
+                            'componente' => 'vendas.emitir-nota',
+                            'props' => ['vendaId' => $value, 'size' => 'modal-lg'],
+                            'formId' => null,
+                            'icon' => 'fas fa-file-alt',
+                            'permitir' => true,
+                        ],
+                    ];
                     if (optional(auth()->user())->isAdmin() && $venda->aprovacao_status === 'pendente') {
-                        $custonComponent = [
+                        $custonComponents[] = [
                             'title' => 'Aprovar venda',
                             'componente' => 'vendas.aprovar-venda',
                             'props' => ['id' => $value],
@@ -89,6 +98,7 @@ class VendasTable extends DataTableComponent
                         ];
                     }
                     return view('components.table.btn-table-actions', [
+                       'custonComponents' => $custonComponents,
                        'edit' => [
                             'title' => 'Editar protocolo',
                             'componente' => 'vendas.atualizar-venda',
@@ -99,10 +109,6 @@ class VendasTable extends DataTableComponent
                         "remove" => '',
                         'show' => '',
                         'restore' => '',
-                        'custonComponent' => $custonComponent,
-                        'pdf' => [
-                            'route' => route('vendas.nota', $value)
-                        ]
                     ]);
                 }),
         ];

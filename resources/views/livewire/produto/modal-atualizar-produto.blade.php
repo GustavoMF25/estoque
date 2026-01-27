@@ -34,7 +34,7 @@
 
             <div class="col-md-3 mb-4">
                 <label>Estoque</label>
-                <select wire:model.defer="estoque_id" class="form-control">
+                <select wire:model.defer="estoque_id" class="form-control select2">
                     <option value="">Selecione...</option>
                     @foreach ($estoques as $estoque)
                         <option value="{{ $estoque->id }}">{{ $estoque->nome }}</option>
@@ -46,7 +46,7 @@
             </div>
             <div class="col-md-3 mb-4">
                 <label>Categoria</label>
-                <select wire:model.defer="categoria" class="form-control">
+                <select wire:model.defer="categoria" class="form-control select2">
                     <option value="">Selecione...</option>
                     @foreach ($categorias as $categoriaItem)
                         <option value="{{ $categoriaItem->id }}">{{ $categoriaItem->nome }}</option>
@@ -65,7 +65,7 @@
                     @empty
                     @endforelse
                 </select>
-                @error('fabricante')
+                @error('fabricante_id')
                     <span class="text-danger">{{ $message }}</span>
                 @enderror
             </div>

@@ -21,6 +21,7 @@
 
 
     <link href="{{ asset('css/geral.css') }}" rel="stylesheet">
+    @stack('styles')
 
     <!-- Styles -->
     @livewireStyles
