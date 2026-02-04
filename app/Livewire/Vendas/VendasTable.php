@@ -86,15 +86,17 @@ class VendasTable extends DataTableComponent
                             'icon' => 'fas fa-eye',
                             'permitir' => true,
                         ],
-                        [
+                    ];
+                    if (optional(auth()->user())->isAdmin()) {
+                        $custonComponents[] = [
                             'title' => 'Emitir nota',
                             'componente' => 'vendas.emitir-nota',
                             'props' => ['vendaId' => $value, 'size' => 'modal-lg'],
                             'formId' => null,
                             'icon' => 'fas fa-file-alt',
                             'permitir' => $venda->status !== 'cancelada',
-                        ],
-                    ];
+                        ];
+                    }
                     if (optional(auth()->user())->isAdmin() && $venda->aprovacao_status === 'pendente') {
                         $custonComponents[] = [
                             'title' => 'Aprovar venda',
@@ -105,7 +107,7 @@ class VendasTable extends DataTableComponent
                             'permitir' => true
                         ];
                     }
-                    if ($venda->status !== 'cancelada') {
+                    if (optional(auth()->user())->isAdmin() && $venda->status !== 'cancelada') {
                         $custonComponents[] = [
                             'title' => 'Cancelar venda',
                             'componente' => 'vendas.cancelar-venda',
@@ -113,7 +115,7 @@ class VendasTable extends DataTableComponent
                             'formId' => null,
                             'icon' => 'fas fa-ban',
                             'action' => 'danger',
-                            'permitir' => Auth::id() == $venda->user_id || optional(auth()->user())->isAdmin(),
+                            'permitir' => true,
                         ];
                     }
                     return view('components.table.btn-table-actions', [
