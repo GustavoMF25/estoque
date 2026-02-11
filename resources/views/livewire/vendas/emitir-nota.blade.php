@@ -73,7 +73,7 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>CEP</label>
-                        <input type="text" class="form-control" wire:model.defer="cep" id="nota_cep" maxlength="8"
+                        <input type="text" class="form-control" wire:model.defer="cep" id="nota_cep" maxlength="9"
                             data-cep-lookup="true"
                             data-cep-rua="nota_rua"
                             data-cep-bairro="nota_bairro"
