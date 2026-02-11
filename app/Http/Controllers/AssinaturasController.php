@@ -58,6 +58,7 @@ class AssinaturasController extends Controller
             'plano' => $request->plano_nome,
             'valor_mensal' => $request->valor,
             'data_inicio' => now(),
+            'data_vencimento' => now()->addMonth(),
             'periodicidade' => $periodicidade,
             'status' => $emTeste ? 'ativo' : $status,
             'em_teste' => $emTeste,

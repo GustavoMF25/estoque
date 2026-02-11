@@ -1,20 +1,21 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
+    @php
+        $empresa = $empresa ?? auth()->user()?->empresa;
+        $modulos = $empresa
+            ? $empresa
+                ->modulos()
+                ->with([
+                    'submodulos' => function ($q) {
+                        $q->where('ativo', true);
+                    },
+                ])->get()
+            : collect();
+    @endphp
     <!-- Brand Logo -->
     <a href="{{ route('dashboard') }}" class="brand-link">
         <x-application-mark class="block h-9 w-auto" />
-        <span class="brand-text font-weight-light">{{ $empresa->nome }} - <small>Sistema </small></span>
+        <span class="brand-text font-weight-light">{{ $empresa?->nome ?? config('app.name') }} - <small>Sistema </small></span>
     </a>
-
-    @php
-        $empresa = auth()->user()->empresa;
-        $modulos = $empresa
-            ->modulos()
-            ->with([
-                'submodulos' => function ($q) {
-                    $q->where('ativo', true);
-                },
-            ])->get();
-    @endphp
 
     <!-- Sidebar -->
     <div class="sidebar">

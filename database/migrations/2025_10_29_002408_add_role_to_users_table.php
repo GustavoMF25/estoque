@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -11,9 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->enum('perfil', ['admin', 'gerente', 'operador', 'vendedor', 'superadmin'])->default('operador')->change();
-        });
+        if (!Schema::hasTable('users') || !Schema::hasColumn('users', 'perfil')) {
+            return;
+        }
+
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement(
+                "ALTER TABLE users MODIFY perfil ENUM('admin','gerente','operador','vendedor','superadmin') NOT NULL DEFAULT 'operador'"
+            );
+        }
     }
 
     /**
@@ -21,8 +27,14 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            //
-        });
+        if (!Schema::hasTable('users') || !Schema::hasColumn('users', 'perfil')) {
+            return;
+        }
+
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement(
+                "ALTER TABLE users MODIFY perfil ENUM('admin','gerente','operador','vendedor') NOT NULL DEFAULT 'operador'"
+            );
+        }
     }
 };

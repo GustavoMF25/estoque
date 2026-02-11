@@ -2,12 +2,17 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
+    @php
+        $empresaView = $empresa ?? auth()->user()?->empresa;
+        $empresaNome = $empresaView?->nome ?? config('app.name', 'Laravel');
+        $empresaLogo = $empresaView?->logo ? asset('storage/' . $empresaView->logo) : asset('imagens/logo.png');
+    @endphp
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ $empresa->nome }} - {{ config('app.name', 'Laravel') }}</title>
+    <title>{{ $empresaNome }} - {{ config('app.name', 'Laravel') }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="shortcut icon" type="imagex/png" href="{{ asset('storage/' . $empresa->logo) }}">
+    <link rel="shortcut icon" type="imagex/png" href="{{ $empresaLogo }}">
 
     <!-- AdminLTE CSS -->
     <link href="{{ asset('adminlte/dist/css/adminlte.min.css') }}" rel="stylesheet">

@@ -417,7 +417,9 @@
                 <a href="#planos" class="btn btn-primary shadow-elegant btn-lg">
                     Começar Agora <i data-lucide="arrow-right" class="ml"></i>
                 </a>
-                <a href="{{ route('register') }}" class="btn btn-outline btn-lg">Ver Demonstração</a>
+                @if (Route::has('register'))
+                    <a href="{{ route('register') }}" class="btn btn-outline btn-lg">Ver Demonstração</a>
+                @endif
             </div>
 
             <div class="stats">

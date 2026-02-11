@@ -6,8 +6,8 @@ use Illuminate\Support\Facades\DB;
 return new class extends Migration {
     public function up(): void
     {
-        DB::statement(<<<SQL
-        CREATE OR REPLACE VIEW produtos_agrupados_view AS
+        $this->replaceView(<<<SQL
+        CREATE VIEW produtos_agrupados_view AS
         WITH ultima_mov AS (
             SELECT
                 produto_id,
@@ -40,9 +40,8 @@ return new class extends Migration {
 
     public function down(): void
     {
-        // Versão anterior da view sem o fabricante
-        DB::statement(<<<SQL
-        CREATE OR REPLACE VIEW produtos_agrupados_view AS
+        $this->replaceView(<<<SQL
+        CREATE VIEW produtos_agrupados_view AS
         WITH ultima_mov AS (
             SELECT
                 produto_id,
@@ -69,5 +68,11 @@ return new class extends Migration {
             um.tipo,
             p.nome
         SQL);
+    }
+
+    private function replaceView(string $createSql): void
+    {
+        DB::statement('DROP VIEW IF EXISTS produtos_agrupados_view');
+        DB::statement($createSql);
     }
 };
