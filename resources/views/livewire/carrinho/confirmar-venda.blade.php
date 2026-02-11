@@ -84,8 +84,19 @@
                                 <strong>Endereço:</strong> {{ $enderecoSelecionado }}
                             </div>
                         @endif
+                        <div class="form-group mt-3">
+                            <label for="frete">Valor do frete</label>
+                            <input type="number" step="0.01" wire:model.live="frete" id="frete" class="form-control"
+                                placeholder="0,00">
+                        </div>
                         <div class="mt-3">
-                            <strong>Total:</strong> R$ {{ App\Helpers\FormatHelper::brl($total) }}
+                            <strong>Subtotal:</strong> R$ {{ App\Helpers\FormatHelper::brl($total) }}
+                        </div>
+                        <div class="mt-2">
+                            <strong>Total com frete:</strong>
+                            <span class="float-right">
+                                R$ {{ App\Helpers\FormatHelper::brl($total + (float) ($frete ?? 0)) }}
+                            </span>
                         </div>
                     </div>
                     <div class="card-footer text-center">

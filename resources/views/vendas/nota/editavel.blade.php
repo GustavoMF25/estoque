@@ -91,9 +91,11 @@
     </style>
 </head>
 <body>
-    <div class="pagina">
-        {!! $emissao->conteudo_frente !!}
-    </div>
+    @if (!($apenasVerso ?? false))
+        <div class="pagina">
+            {!! $emissao->conteudo_frente !!}
+        </div>
+    @endif
     <div class="pagina pagina-ultima">
         {!! $emissao->conteudo_verso !!}
     </div>

@@ -26,6 +26,12 @@
                         </select>
                         @error('modelo_id') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" id="apenas_verso" wire:model="apenas_verso">
+                        <label class="form-check-label" for="apenas_verso">
+                            Imprimir apenas a segunda página (verso)
+                        </label>
+                    </div>
                     @if ($modeloIcone)
                         <div class="mb-2 text-muted">
                             <i class="{{ $modeloIcone }}"></i> Ícone do modelo
