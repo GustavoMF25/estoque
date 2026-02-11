@@ -377,7 +377,11 @@
                     <!-- Botões de ação -->
                     <div class="nav-cta">
                         <a href="{{ route('login') }}" class="btn btn-ghost">Entrar</a>
-                        <a href="#planos" class="btn btn-primary shadow-elegant">Começar Agora</a>
+                        @if (Route::has('register'))
+                            <a href="{{ route('register') }}" class="btn btn-primary shadow-elegant">Começar Agora</a>
+                        @else
+                            <a href="#planos" class="btn btn-primary shadow-elegant">Começar Agora</a>
+                        @endif
                     </div>
                     <!-- Botão de menu (hambúrguer) -->
                     <button class="nav-toggle" id="navToggle" aria-label="Abrir menu">
@@ -414,11 +418,15 @@
             </p>
 
             <div class="hero-actions">
-                <a href="#planos" class="btn btn-primary shadow-elegant btn-lg">
-                    Começar Agora <i data-lucide="arrow-right" class="ml"></i>
-                </a>
                 @if (Route::has('register'))
-                    <a href="{{ route('register') }}" class="btn btn-outline btn-lg">Ver Demonstração</a>
+                    <a href="{{ route('register') }}" class="btn btn-primary shadow-elegant btn-lg">
+                        Começar Agora <i data-lucide="arrow-right" class="ml"></i>
+                    </a>
+                    <a href="{{ route('register') }}" class="btn btn-outline btn-lg">Iniciar Cadastro</a>
+                @else
+                    <a href="#planos" class="btn btn-primary shadow-elegant btn-lg">
+                        Começar Agora <i data-lucide="arrow-right" class="ml"></i>
+                    </a>
                 @endif
             </div>
 

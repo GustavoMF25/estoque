@@ -144,7 +144,7 @@ return [
     */
 
     'features' => [
-        // Features::registration(),
+        ...(env('ENABLE_SELF_REGISTRATION', true) ? [Features::registration()] : []),
         Features::resetPasswords(),
         // Features::emailVerification(),
         Features::updateProfileInformation(),

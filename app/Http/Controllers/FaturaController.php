@@ -116,6 +116,8 @@ class FaturaController extends Controller
      */
     public function marcarPago($id)
     {
+        abort_unless(optional(auth()->user())->isSuperAdmin(), 403);
+
         $fatura = Fatura::with('assinatura')->findOrFail($id);
 
         // Atualiza status e data de pagamento

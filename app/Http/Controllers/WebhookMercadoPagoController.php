@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Fatura;
+use Carbon\Carbon;
 
 class WebhookMercadoPagoController extends Controller
 {
@@ -38,9 +39,24 @@ class WebhookMercadoPagoController extends Controller
 
                     $assinatura = $fatura->assinatura;
                     if ($assinatura) {
+                        $dataBase = $fatura->data_vencimento
+                            ? Carbon::parse($fatura->data_vencimento)
+                            : now();
+
+                        $periodicidade = $assinatura->periodicidade ?? 'mensal';
+                        $novaDataVencimento = match ($periodicidade) {
+                            'trimestral' => $dataBase->copy()->addMonths(3),
+                            'anual' => $dataBase->copy()->addYear(),
+                            'vitalicio' => null,
+                            default => $dataBase->copy()->addMonth(),
+                        };
+
                         $assinatura->update([
                             'status' => 'ativo',
-                            'data_expiracao' => now()->addMonth(),
+                            'data_vencimento' => $novaDataVencimento,
+                            'em_teste' => false,
+                            'trial_expira_em' => null,
+                            'ultima_confirmacao' => now(),
                         ]);
                     }
                 }
