@@ -9,11 +9,11 @@
             </div>
             <div class="col-md-4 mb-3">
                 <label for="valor_entrada">Valor de entrada</label>
-                <input type="number" name="valor_entrada" class="form-control" step="0.01" required>
+                <input type="number" name="valor_entrada" class="form-control" step="0.01" min="0">
             </div>
             <div class="col-md-4 mb-3">
                 <label for="valor_venda">Valor de venda</label>
-                <input type="number" name="valor_venda" class="form-control" step="0.01" required>
+                <input type="number" name="valor_venda" class="form-control" step="0.01" min="0">
             </div>
 
             <div class="col-md-4 mb-3">
@@ -47,7 +47,7 @@
             </div>
             <div class="form-group col-md-3 mb-3">
                 <label for="fabrricante">Fabricante</label>
-                <select name="fabrricante_id" class="form-control select2">
+                <select name="fabricante_id" class="form-control select2">
                     <option value="">Sem fabricantes</option>
                     @forelse ($fabricantes as $fabricante)
                     <option value="{{ $fabricante->id }}">{{ $fabricante->nome }}</option>

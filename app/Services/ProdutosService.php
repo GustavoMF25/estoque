@@ -15,7 +15,9 @@ class ProdutosService
             'nome' => 'required|string|max:255',
             'codigo_barras' => 'nullable|string|max:50',
             'unidade' => 'nullable|string|max:10',
-            'preco' => 'required|numeric|min:0',
+            'preco' => 'nullable|numeric|min:0',
+            'valor_entrada' => 'nullable|numeric|min:0',
+            'valor_venda' => 'nullable|numeric|min:0',
             'estoque_id' => 'required|exists:estoques,id',
             'categoria_id' => 'required|exists:categoria,id',
             'quantidade' => 'required|integer|min:1',
@@ -54,11 +56,16 @@ class ProdutosService
                 $imagem = $imagem->store('produtos', 'public');
             }
 
+            $valorEntrada = (float) ($data['valor_entrada'] ?? 0);
+            $valorVenda = (float) ($data['valor_venda'] ?? ($data['preco'] ?? 0));
+
             $produto = Produto::create([
                 'nome' => $data['nome'],
                 'codigo_barras' => Produto::gerarCodigoBarrasUnico(),
                 'unidade' => $data['unidade'] ?? 'un',
-                'preco' => $data['preco'],
+                'preco' => $valorVenda,
+                'valor_entrada' => $valorEntrada,
+                'valor_venda' => $valorVenda,
                 'estoque_id' => $data['estoque_id'],
                 'categoria_id' => $data['categoria_id'] ?? null,
                 'fabricante_id' => $data['fabricante_id'] ?? null,
@@ -85,7 +92,9 @@ class ProdutosService
             'nome' => 'required|string|max:255',
             'codigo_barras' => 'nullable|string|max:50',
             'unidade' => 'nullable|string|max:10',
-            'preco' => 'required|numeric|min:0',
+            'preco' => 'nullable|numeric|min:0',
+            'valor_entrada' => 'nullable|numeric|min:0',
+            'valor_venda' => 'nullable|numeric|min:0',
             'estoque_id' => 'required|exists:estoques,id',
             'quantidade' => 'required|integer|min:1',
             'categoria_id' => 'nullable|exists:categorias,id',

@@ -10,11 +10,11 @@
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="valor_entrada">Valor de entrada</label>
-                    <input type="number" name="valor_entrada" class="form-control" step="0.01" required>
+                    <input type="number" name="valor_entrada" class="form-control" step="0.01" min="0">
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="valor_venda">Valor de venda</label>
-                    <input type="number" name="valor_venda" class="form-control" step="0.01" required>
+                    <input type="number" name="valor_venda" class="form-control" step="0.01" min="0">
                 </div>
 
                 <div class="col-md-4 mb-3">
