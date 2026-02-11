@@ -26,6 +26,7 @@
 
 
     <link href="{{ asset('css/geral.css') }}" rel="stylesheet">
+    @stack('styles')
 
     <!-- Styles -->
     @livewireStyles
@@ -51,10 +52,6 @@
 
         <!-- Footer -->
         {{-- @include('layouts.footer') --}}
-
-
-
-
     </div>
     @livewire('modal-dinamico')
 
@@ -73,6 +70,10 @@
     @livewireScripts
     @rappasoftTableScripts
     @rappasoftTableThirdPartyScripts
+
+
+
+    <livewire:components.toast />
     <script>
         document.addEventListener("DOMContentLoaded", function(e) {
             @if (session('success') || session()->has('success'))
@@ -81,6 +82,10 @@
 
             @if (session('error') || session()->has('error'))
                 toastr.error(@json(session('error')))
+            @endif
+
+            @if (session('warning') || session()->has('warning'))
+                toastr.warning(@json(session('warning')))
             @endif
 
             Livewire.on('msgtSuccess', message => {

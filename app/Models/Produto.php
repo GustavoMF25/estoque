@@ -21,6 +21,8 @@ class Produto extends Model
         'imagem',
         'unidade',
         'preco',
+        'valor_entrada',
+        'valor_venda',
         'estoque_minimo',
         'estoque_id',
         'categoria_id',

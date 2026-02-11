@@ -10,6 +10,8 @@ use App\Http\Controllers\EstoqueController;
 use App\Http\Controllers\FabricanteController;
 use App\Http\Controllers\FaturaController;
 use App\Http\Controllers\LojaController;
+use App\Http\Controllers\NotificacaoController;
+use App\Http\Controllers\NotaModeloController;
 use App\Http\Controllers\ProdutosController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\VendaController;

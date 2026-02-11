@@ -32,7 +32,7 @@
                             </small>
                         </div>
 
-                        <p><b>Preço: </b> {{ App\Helpers\FormatHelper::brl($product->preco) }}</p>
+                        <p><b>Valor de venda: </b> {{ App\Helpers\FormatHelper::brl($product->valor_venda ?? $product->preco) }}</p>
                         <p></p>
 
                     </div>

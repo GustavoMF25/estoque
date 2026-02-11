@@ -100,6 +100,36 @@ class ProdutosController extends Controller
         }
     }
 
+    public function desativar(Produto $produto)
+    {
+        try {
+            if (!optional(auth()->user())->isAdmin()) {
+                return redirect()->route('produtos.index')->with('error', 'Sem permissão para desativar.');
+            }
+
+            if (!$produto->ativo) {
+                return redirect()->route('produtos.index')->with('success', 'Produto já está desativado.');
+            }
+
+            $produto->update(['ativo' => false]);
+
+            MovimentacaoService::registrar([
+                'produto_id' => $produto->id,
+                'tipo' => 'cancelamento',
+                'quantidade' => 1,
+                'observacao' => 'Produto desativado pelo administrador',
+            ]);
+
+            AuditLogger::info('produto.deactivated', [
+                'produto_id' => $produto->id,
+            ]);
+
+            return redirect()->route('produtos.index')->with('success', 'Produto desativado com sucesso!');
+        } catch (Exception $err) {
+            return redirect()->route('produtos.index')->with('error', 'Produto não desativado ' . $err->getMessage());
+        }
+    }
+
     public function vender(Request $request)
     {
         try {
@@ -111,12 +141,16 @@ class ProdutosController extends Controller
             $quantidadeRestante = $request->quantidade;
 
             // Busca os produtos com o nome fornecido
-            $produtos = Produto::where('nome', $request->nome)->whereHas('ultimaMovimentacao', function ($query) {
-                $query->where('tipo', 'disponivel');
-            })->get();
+            $produtos = Produto::Ativo()
+                ->where('nome', $request->nome)
+                ->whereHas('ultimaMovimentacao', function ($query) {
+                    $query->where('tipo', 'disponivel');
+                })->get();
 
             foreach ($produtos as $produto) {
-                if ($quantidadeRestante <= 0) break;
+                if ($quantidadeRestante <= 0) {
+                    break;
+                }
                 MovimentacaoService::registrar([
                     'produto_id' => $produto->id,
                     'tipo' => 'saida',

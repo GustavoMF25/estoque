@@ -9,8 +9,12 @@
                     <input type="text" name="nome" class="form-control" required>
                 </div>
                 <div class="col-md-4 mb-3">
-                    <label for="preco">Preço</label>
-                    <input type="number" name="preco" class="form-control" step="0.01">
+                    <label for="valor_entrada">Valor de entrada</label>
+                    <input type="number" name="valor_entrada" class="form-control" step="0.01" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="valor_venda">Valor de venda</label>
+                    <input type="number" name="valor_venda" class="form-control" step="0.01" required>
                 </div>
 
                 <div class="col-md-4 mb-3">
