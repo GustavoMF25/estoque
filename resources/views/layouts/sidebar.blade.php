@@ -228,15 +228,6 @@
                                     </a>
                                 </li>
                             @endif
-                            @if (config('features.note_templates'))
-                                <li class="nav-item">
-                                    <a href="{{ route('nota-modelos.index') }}"
-                                        class="nav-link {{ request()->routeIs('nota-modelos.*') ? 'active' : '' }}">
-                                        <i class="fas fa-file-signature"></i>
-                                        <p>Modelos de Nota</p>
-                                    </a>
-                                </li>
-                            @endif
 
                         </ul>
                     </li>
