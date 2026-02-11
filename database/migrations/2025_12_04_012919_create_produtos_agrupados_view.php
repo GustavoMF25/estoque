@@ -9,6 +9,7 @@ class CreateProdutosAgrupadosView extends Migration
 {
     public function up()
     {
+        DB::statement("DROP VIEW IF EXISTS produtos_agrupados_view");
         DB::statement("
         CREATE VIEW produtos_agrupados_view AS
         WITH ultima_mov AS (

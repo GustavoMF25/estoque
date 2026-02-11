@@ -14,11 +14,11 @@ return new class extends Migration
         });
 
         DB::statement('
-            UPDATE venda_itens vi
+            UPDATE venda_itens
             SET quantidade = (
                 SELECT COUNT(*)
-                FROM venda_item_unidades viu
-                WHERE viu.venda_item_id = vi.id
+                FROM venda_item_unidades
+                WHERE venda_item_unidades.venda_item_id = venda_itens.id
             )
         ');
     }
