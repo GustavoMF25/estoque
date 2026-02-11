@@ -9,15 +9,11 @@
     </div>
     <a href="#"
         onclick="
-        window.dispatchEvent(new CustomEvent('abrirModal', {
-            detail: {
-                titulo: 'Cadastrar Venda/Saida',
-                formId: 'formVenda',
-                componente: 'produto.modal-cadastrar-venda',
-            }
-                
-        }));
-        $('#modal-sm').modal('show');
+        abrirModalDinamico({
+            titulo: 'Cadastrar Venda/Saida',
+            formId: 'formVenda',
+            componente: 'produto.modal-cadastrar-venda',
+        })
     "
         class="small-box-footer">
         Cadastrar <i class="fas fa-arrow-circle-right"></i>

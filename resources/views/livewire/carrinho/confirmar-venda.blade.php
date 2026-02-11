@@ -14,7 +14,7 @@
                             <div>
                                 <strong>{{ $item['nome'] }}</strong>
                                 <div class="small text-muted">
-                                    {{ $disponiveis[$item['nome']] ?? 0 }} disponíveis
+                                    {{ $disponiveis[$item['produto_id']] ?? 0 }} disponíveis
                                 </div>
                                 {{-- <div>
                                     <a href="#" wire:click.prevent="removerItem('{{ $item['nome'] }}')"
@@ -25,13 +25,13 @@
                         </div>
 
                         <div class="d-flex align-items-center">
-                            <button type="button" wire:click="diminuirQuantidade('{{ $item['nome'] }}')"
+                            <button type="button" wire:click="diminuirQuantidade('{{ $item['produto_id'] }}', '{{$item['nome']}}')"
                                 class="btn btn-sm btn-light border">
                                 <i class="fas fa-minus"></i>
                             </button>
                             <input type="text" readonly class="form-control form-control-sm mx-1 text-center"
                                 style="width: 50px;" value="{{ $item['quantidade'] }}">
-                            <button type="button" wire:click="aumentarQuantidade('{{ $item['nome'] }}')"
+                            <button type="button" wire:click="aumentarQuantidade('{{ $item['produto_id'] }}', '{{$item['nome']}}')"
                                 class="btn btn-sm btn-light border">
                                 <i class="fas fa-plus"></i>
                             </button>
@@ -66,8 +66,37 @@
                             @enderror
                         </div>
 
+                        <div class="form-group">
+                            <label for="cliente_id">Cliente</label>
+                            <select wire:model.change="cliente_id" id="cliente_id" class="form-control">
+                                <option value="">-- Selecione o Cliente --</option>
+                                @foreach ($clientes as $cliente)
+                                    <option value="{{ $cliente->id }}">{{ $cliente->nome }}</option>
+                                @endforeach
+                            </select>
+                            @error('cliente_id')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        @if ($enderecoSelecionado)
+                            <div class="alert alert-info mt-2">
+                                <strong>Endereço:</strong> {{ $enderecoSelecionado }}
+                            </div>
+                        @endif
+                        <div class="form-group mt-3">
+                            <label for="frete">Valor do frete</label>
+                            <input type="number" step="0.01" wire:model.live="frete" id="frete" class="form-control"
+                                placeholder="0,00">
+                        </div>
                         <div class="mt-3">
-                            <strong>Total:</strong> R$ {{ App\Helpers\FormatHelper::brl($total) }}
+                            <strong>Subtotal:</strong> R$ {{ App\Helpers\FormatHelper::brl($total) }}
+                        </div>
+                        <div class="mt-2">
+                            <strong>Total com frete:</strong>
+                            <span class="float-right">
+                                R$ {{ App\Helpers\FormatHelper::brl($total + (float) ($frete ?? 0)) }}
+                            </span>
                         </div>
                     </div>
                     <div class="card-footer text-center">

@@ -28,20 +28,20 @@ class ProdutoTable extends DataTableComponent
 
     public function builder(): Builder
     {
-        $query =  ProdutosAgrupados::query();
-        $query->select([
-            'nome',
-            'imagem', // 🔥 o que estava faltando!
-            'preco',
-            'estoque_id',
-            'quantidade_produtos',
-            'data_criacao',
-            'estoque_nome',
-            'ultima_movimentacao'
-        ])
-        ->orderBy('ultima_movimentacao', 'desc')
-        ->orderBy('nome', 'asc')
-        ->whereNotIn('ultima_movimentacao', ['cancelamento']);
+        $query = Produto::query()
+            ->withCount([
+                'movimentacoes',
+                'unidades as disponiveis_count' => function ($q) {
+                    $q->where('status', 'disponivel');
+                },
+                'unidades as vendidos_count' => function ($q) {
+                    $q->where('status', 'vendido');
+                },
+            ])
+            ->Ativo()
+            ->with(['estoque', 'categoria', 'fabricante'])
+            ->orderBy('nome', 'asc');
+
         return $query;
     }
 
@@ -82,26 +82,46 @@ class ProdutoTable extends DataTableComponent
             Column::make('Nome', 'Nome')
                 ->sortable()
                 ->searchable(),
-            Column::make('Quantidade', 'quantidade_produtos')->searchable()
-                ->sortable()
-                ->searchable(),
-            Column::make('Status', 'ultima_movimentacao')
-                ->format(function ($value, $row) {
-                    return view('components.table.status-badge', ['status' => $value] );
-                })
+            Column::make('Estoque', 'estoque.nome')
+                ->format(fn($value, $row) => $row->estoque->nome ?? 'N/A')
                 ->searchable()
                 ->sortable(),
-            Column::make('Ações', 'nome')
+            Column::make('Categoria', 'categoria.nome')
+                ->format(fn($value, $row) => $row->categoria->nome ?? 'N/A')
+                ->searchable()
+                ->sortable(),
+            Column::make('Fabricante', 'fabricante.nome')
+                ->format(fn($value, $row) => $row->fabricante->nome ?? 'N/A')
+                ->searchable()
+                ->sortable(),
+            Column::make('Valor venda', 'valor_venda')
+                ->format(fn($value, $row) => FormatHelper::brl($row->valor_venda ?? $row->preco)),
+            Column::make('Valor entrada', 'valor_entrada')
+                ->format(fn($value, $row) => FormatHelper::brl($row->valor_entrada ?? 0)),
+            Column::make('Disponíveis', 'id')
+                ->format(fn($value, $row) => '<span class="badge badge-success">' . $row->disponiveis_count . '</span>')
+                ->html()
+                ->searchable()
+                ->sortable(),
+            Column::make('Vendidos', 'id')
+                ->format(fn($value, $row) => '<span class="badge badge-danger">' . $row->vendidos_count . '</span>')
+                ->html()
+                ->searchable()
+                ->sortable(),
+            Column::make('Ações', 'id')
                 ->format(function ($value, $row) {
                     return view('components.table.btn-table-actions', [
                         "show" => [
-                            'route' => route('produtos.show', ['nome' => $row->nome, 'estoque_id' => $row->estoque_id, 'ultima_movimentacao' => $row->ultima_movimentacao]),
-                            'title' => 'Estoque → ' . $row->nome,
+                            'route' => route('produtos.show', ['id' => $value, 'nome' => $row->nome, 'estoque_id' => $row->estoque_id]),
+                            'title' => $row->nome,
                             'componente' => '',
                             'modal' => false,
                             'props' => ''
                         ],
-                       
+                        "remove" => [
+                            'route' => route('produtos.destroy', $value),
+                        ],
+
                     ]);
                 }),
         ];

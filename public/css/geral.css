@@ -54,3 +54,20 @@ dialog[open] {
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
     transition: box-shadow 0.3s ease;
 }
+
+.select2-container .select2-selection--single {
+    box-sizing: border-box;
+    cursor: pointer;
+    display: block;
+    height: 38px;
+    user-select: none;
+    -webkit-user-select: none;
+}
+/* .select2-container .select2-selection--single {
+    box-sizing: border-box;
+    cursor: pointer;
+    display: block;
+    height: 28px;
+    user-select: none;
+    -webkit-user-select: none;
+} */

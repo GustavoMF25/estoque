@@ -17,8 +17,10 @@
     <link href="{{ asset('adminlte/plugins/fontawesome-free/css/all.min.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('adminlte/plugins/toastr/toastr.min.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
     <link href="{{ asset('css/geral.css') }}" rel="stylesheet">
+    @stack('styles')
 
     <!-- Styles -->
     @livewireStyles
@@ -51,6 +53,7 @@
     @stack('scripts')
     <script src="{{ asset('adminlte/plugins/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="{{ asset('adminlte/dist/js/adminlte.min.js') }}"></script>
     <script src="{{ asset('js/geral.js') }}"></script>
     <script src="{{ asset('adminlte/plugins/toastr/toastr.min.js') }}"></script>
@@ -64,12 +67,16 @@
     <livewire:components.toast />
     <script>
         document.addEventListener("DOMContentLoaded", function(e) {
-            @if(session('success'))
-            toastr.success(@json(session('success')))
+            @if (session('success') || session()->has('success'))
+                toastr.success(@json(session('success')))
             @endif
 
-            @if(session('error'))
-            toastr.error(@json(session('error')))
+            @if (session('error') || session()->has('error'))
+                toastr.error(@json(session('error')))
+            @endif
+
+            @if (session('warning') || session()->has('warning'))
+                toastr.warning(@json(session('warning')))
             @endif
 
             Livewire.on('msgtSuccess', message => {

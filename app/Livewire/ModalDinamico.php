@@ -12,9 +12,10 @@ class ModalDinamico extends Component
     public $componente = '';
     public $props = '';
     public $formId = '';
+    public $size = '';
     public $aberto = false;
 
-    protected $listeners = ['abrirModal'];
+    protected $listeners = ['abrirModal', 'fecharModal'];
 
     // protected $listeners = ['abrirModal', 'fecharModal'];
 
@@ -22,11 +23,23 @@ class ModalDinamico extends Component
     {
         $this->titulo = $titulo;
         $this->formId = $formId;
+        $this->size = $props['size'] ?? 'modal-lg';
         $props['formId'] = $formId;
-
+        $props['size'] = $this->size;
         $this->conteudo = Livewire::mount($componente, $props);
+        $this->aberto = true;
         $this->dispatch('refreshTabelaMovimentacoes');
-        
+        $this->dispatch('initSelect2');
+    }
+
+    public function fecharModal()
+    {
+        $this->aberto = false;
+        $this->titulo = '';
+        $this->conteudo = '';
+        $this->componente = '';
+        $this->props = '';
+        $this->formId = '';
     }
 
     public function render()

@@ -17,6 +17,7 @@
             </div><!-- /.container-fluid -->
         </section>
     @endif
+    
     <div class="card {{ $class ?? '' }}">
         <div class="card-header">
             <h3 class="card-title">{{ $title ?? null }}</h3>
@@ -24,6 +25,11 @@
             @if (!empty($btnCadastrarAdmin))
                 <x-basic.botao-cadastrar :route="$btnCadastrarAdmin['route']" :title="$btnCadastrarAdmin['title']" />
             @endif
+            <div class="d-flex justify-content-end mb-2">
+                @if (!empty($btnAcoes) && Auth::user()->isAdmin())
+                    {!! $btnAcoes !!}
+                @endif
+            </div>
         </div>
         <div class="card-body">
             {{ $slot }}

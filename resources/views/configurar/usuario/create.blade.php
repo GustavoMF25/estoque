@@ -47,6 +47,7 @@
                     <option value="admin" {{ old('perfil') == 'admin' ? 'selected' : '' }}>Admin</option>
                     <option value="operador" {{ old('perfil') == 'operador' ? 'selected' : '' }}>Operador</option>
                     <option value="gerente" {{ old('perfil') == 'gerente' ? 'selected' : '' }}>Gerente</option>
+                    <option value="vendedor" {{ old('perfil') == 'vendedor' ? 'selected' : '' }}>Vendedor</option>
                 </select>
                 @error('perfil')
                     <span class="text-danger">{{ $message }}</span>

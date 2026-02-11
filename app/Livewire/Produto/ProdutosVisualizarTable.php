@@ -11,6 +11,7 @@ use Rappasoft\LaravelLivewireTables\Views\Column;
 class ProdutosVisualizarTable extends DataTableComponent
 {
     public string $nome = '';
+    public string $id = '';
     public int $estoqueId = 0;
     public string $ultimaMovimentacao = '';
 
@@ -57,7 +58,7 @@ class ProdutosVisualizarTable extends DataTableComponent
                 ->sortable()
                 ->searchable(),
 
-            Column::make('Preço', 'preco')
+            Column::make('Valor venda', 'valor_venda')
                 ->format(fn($value) => FormatHelper::brl($value)),
 
             Column::make('Estoque', 'estoque.nome'),
@@ -80,7 +81,7 @@ class ProdutosVisualizarTable extends DataTableComponent
 
             Column::make('Ações', 'id')
                 ->format(function ($value, $row) {
-                    if ($row->ultimaMovimentacao->tipo !== 'saida') {
+                    if ($row->ultimaMovimentacao->tipo !== 'saida' && $row->ultimaMovimentacao->tipo !== 'cancelamento' ) {
                         return view('components.table.btn-table-actions', [
                             'remove' => [
                                 'route' => route('produtos.destroy', $value),

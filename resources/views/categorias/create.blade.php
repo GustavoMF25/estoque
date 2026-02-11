@@ -14,6 +14,12 @@
             </div>
 
             <div class="form-group">
+                <label>Limite de venda padrão</label>
+                <input type="number" name="limite_venda_padrao" class="form-control" min="1">
+                <small class="text-muted">Deixe vazio para não exigir aprovação.</small>
+            </div>
+
+            <div class="form-group">
                 <label>Ativo</label>
                 <select name="ativo" class="form-control" required>
                     <option value="1" selected>Sim</option>

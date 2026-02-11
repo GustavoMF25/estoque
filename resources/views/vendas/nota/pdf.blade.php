@@ -3,57 +3,83 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Nota de Venda - {{ $venda->protocolo }}</title>
+    <title>DAFEN - Documento Auxiliar de Fatura Eletrônica Nacional</title>
     <style>
         body {
-            font-family: sans-serif;
-            font-size: 12px;
-            color: #333;
+            font-family: DejaVu Sans, sans-serif;
+            font-size: 11px;
+            color: #000;
+            margin: 15px;
         }
 
-        .header,
-        .footer {
+        .container {
+            border: 1px solid #000;
+            padding: 10px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            padding-bottom: 8px;
+            margin-bottom: 5px;
+        }
+
+        .div-logo {
+            width: 100%;
             text-align: center;
         }
 
         .logo {
-            margin-bottom: 10px;
+            width: 20%;
         }
 
-        .title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 5px;
+        .logo img {
+            height: 70px;
         }
 
-        .subtitle {
-            font-size: 14px;
-            margin-bottom: 15px;
-        }
-
-        .info,
-        .total {
+        .empresa {
             width: 100%;
-            margin-bottom: 15px;
+            text-align: center;
+            font-size: 12px;
         }
 
-        .info td {
-            padding: 5px;
+        .empresa strong {
+            font-size: 14px;
         }
 
-        .items-table {
+        .documento {
+            text-align: center;
+            border: 1px solid #000;
+            padding: 4px;
+            background: #f2f2f2;
+            font-weight: bold;
+        }
+
+        .secao {
+            border: 1px solid #000;
+            margin-top: 5px;
+        }
+
+        .secao-titulo {
+            background: #f2f2f2;
+            font-weight: bold;
+            padding: 2px 5px;
+            border-bottom: 1px solid #000;
+        }
+
+        table {
             width: 100%;
             border-collapse: collapse;
         }
 
-        .items-table th,
-        .items-table td {
-            border: 1px solid #ddd;
-            padding: 6px;
+        td,
+        th {
+            padding: 3px 5px;
+            border: 1px solid #000;
         }
 
-        .items-table th {
-            background-color: #f8f8f8;
+        th {
+            background: #f8f8f8;
             text-align: left;
         }
 
@@ -61,100 +87,42 @@
             text-align: right;
         }
 
-        .signature {
-            margin-top: 40px;
+        .center {
             text-align: center;
-            font-size: 11px;
         }
 
-        .signature div {
-            border-top: 1px solid #333;
-            width: 200px;
+        .no-border td {
+            border: none;
+        }
+
+        .total {
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .assinatura {
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .assinatura div {
+            border-top: 1px solid #000;
+            width: 220px;
             margin: 0 auto;
             padding-top: 5px;
+            font-size: 10px;
+        }
+
+        .footer {
+            font-size: 9px;
+            text-align: center;
+            margin-top: 10px;
         }
     </style>
 </head>
 
 <body>
-
-    {{-- Logo da Empresa --}}
-    @if (isset($empresa->logo) && file_exists(public_path('storage/' . $empresa->logo)))
-        <div class="logo">
-            <img src="{{ public_path('storage/' . $empresa->logo) }}" alt="Logo da Empresa" style="height: 60px;">
-        </div>
-    @endif
-
-    {{-- Título --}}
-    <div class="header">
-        <div class="title">Nota de Venda</div>
-        <div class="subtitle">Protocolo: {{ $venda->protocolo }} | Data: {{ $venda->created_at->format('d/m/Y H:i') }}
-        </div>
-    </div>
-
-    {{-- Dados da Empresa --}}
-    <table class="info">
-        <tr>
-            <td><strong>Empresa:</strong> {{ $empresa->nome ?? '-' }}</td>
-            <td><strong>CNPJ:</strong> {{ $empresa->cnpj ?? '-' }}</td>
-        </tr>
-        <tr>
-            <td><strong>Telefone:</strong> {{ $empresa->telefone ?? '-' }}</td>
-            <td><strong>Endereço:</strong> {{ $empresa->endereco ?? '-' }}</td>
-        </tr>
-    </table>
-
-    {{-- Dados da Venda --}}
-    <table class="info">
-        <tr>
-            <td><strong>Usuário:</strong> {{ $venda->usuario->name ?? '-' }}</td>
-            <td><strong>Loja:</strong> {{ $venda->loja->nome ?? '-' }}</td>
-        </tr>
-        <tr>
-            <td colspan="2"><strong>Status:</strong> {{ ucfirst($venda->status) }}</td>
-        </tr>
-    </table>
-
-    {{-- Itens da Venda --}}
-    <table class="items-table">
-        <thead>
-            <tr>
-                <th>Produto</th>
-                <th>Preço Unitário</th>
-                <th>Quantidade</th>
-                <th class="right">Subtotal</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($venda->itens as $item)
-                <tr>
-                    <td>{{ $item->produto->nome ?? '-' }}</td>
-                    <td>R$ {{ number_format($item->valor_unitario, 2, ',', '.') }}</td>
-                    <td>1</td>
-                    <td class="right">R$ {{ number_format($item->valor_total, 2, ',', '.') }}</td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
-
-    {{-- Total --}}
-    <table class="total">
-        <tr>
-            <td class="right"><strong>Total da Venda:</strong> R$
-                {{ number_format($venda->valor_total, 2, ',', '.') }}</td>
-        </tr>
-    </table>
-
-    {{-- Mensagem de agradecimento --}}
-    <div class="footer">
-        <p>Obrigado pela sua compra!</p>
-    </div>
-
-    {{-- Assinatura --}}
-    <div class="signature">
-        <div>Assinatura do Cliente</div>
-    </div>
-
+    @include('vendas.nota._conteudo', ['venda' => $venda])
 </body>
 
 </html>

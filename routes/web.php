@@ -1,9 +1,14 @@
 <?php
 
 use App\Http\Controllers\CategoriaController;
+use App\Http\Controllers\AuditLogController;
+use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\EstoqueController;
+use App\Http\Controllers\FabricanteController;
 use App\Http\Controllers\LojaController;
+use App\Http\Controllers\NotificacaoController;
+use App\Http\Controllers\NotaModeloController;
 use App\Http\Controllers\ProdutosController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\VendaController;
@@ -40,6 +45,14 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
 
         Route::get('/empresa', [EmpresaController::class, 'edit'])->name('empresa.edit');
         Route::put('/empresa', [EmpresaController::class, 'update'])->name('empresa.update');
+
+        if (config('features.audit_logs')) {
+            Route::get('/auditoria', [AuditLogController::class, 'index'])->name('auditoria.index');
+        }
+
+        if (config('features.note_templates')) {
+            Route::resource('nota-modelos', NotaModeloController::class);
+        }
     });
 
     Route::resource('lojas', LojaController::class);
@@ -50,14 +63,36 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
     Route::get('produtos/catalogo', [ProdutosController::class, 'catalogo'])->name('produtos.catalogo');
     Route::get('/produtos/visualizar', [ProdutosController::class, 'show'])->name('produtos.show');
     Route::post('/produtos/vender', [ProdutosController::class, 'vender'])->name('produtos.vender');
+    Route::patch('/produtos/{produto}/desativar', [ProdutosController::class, 'desativar'])
+        ->middleware('perfil:admin')
+        ->name('produtos.desativar');
+
+    if (config('features.manufacturers')) {
+        Route::resource('fabricantes', FabricanteController::class);
+    }
+
+    if (config('features.customers')) {
+        Route::resource('clientes', ClienteController::class);
+    }
+
+    if (config('features.notifications')) {
+        Route::get('/notificacoes', [NotificacaoController::class, 'index'])->name('notificacoes.index');
+        Route::patch('/notificacoes/{notificacao}/ler', [NotificacaoController::class, 'marcarComoLida'])
+            ->name('notificacoes.ler');
+    }
 
     Route::get('/carrinho/confirmar', ConfirmarVenda::class)->name('carrinho.confirmar');
 
     Route::get('/vendas', function () {
         return view('vendas.index');
     })->name('vendas.index');
-    Route::get('/vendas/{venda}/nota', [VendaController::class, 'gerar'])
-        ->name('vendas.nota');
+
+    if (config('features.note_templates')) {
+        Route::get('/vendas/{venda}/nota', [VendaController::class, 'gerar'])
+            ->name('vendas.nota');
+        Route::get('/vendas/nota/editavel/{emissao}', [VendaController::class, 'gerarEditavel'])
+            ->name('vendas.nota.editavel');
+    }
 
     Route::resource('categorias', CategoriaController::class);
 });

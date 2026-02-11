@@ -12,9 +12,15 @@
         </div>
 
         <div class="form-group">
-            <label>Preço</label>
-            <input type="number" step="0.01" class="form-control" wire:model.defer="preco">
-            @error('preco') <small class="text-danger">{{ $message }}</small> @enderror
+            <label>Valor de entrada</label>
+            <input type="number" step="0.01" class="form-control" wire:model.defer="valor_entrada">
+            @error('valor_entrada') <small class="text-danger">{{ $message }}</small> @enderror
+        </div>
+
+        <div class="form-group">
+            <label>Valor de venda</label>
+            <input type="number" step="0.01" class="form-control" wire:model.defer="valor_venda">
+            @error('valor_venda') <small class="text-danger">{{ $message }}</small> @enderror
         </div>
 
         <div class="form-group">

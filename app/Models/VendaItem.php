@@ -15,6 +15,7 @@ class VendaItem extends Model
     protected $fillable = [
         'venda_id',
         'produto_id',
+        'quantidade',
         'valor_unitario',
         'valor_total',
     ];
@@ -27,5 +28,24 @@ class VendaItem extends Model
     public function produto()
     {
         return $this->belongsTo(Produto::class);
+    }
+
+    public function unidades()
+    {
+        return $this->belongsToMany(
+            \App\Models\ProdutosUnidades::class, // model relacionada
+            'venda_item_unidades',               // nome exato da tabela pivô
+            'venda_item_id',                     // FK que representa este model
+            'produto_unidade_id'                 // FK da model relacionada
+        );
+    }
+
+    public function getQuantidadeAttribute()
+    {
+        if (!empty($this->attributes['quantidade'])) {
+            return (int) $this->attributes['quantidade'];
+        }
+
+        return $this->unidades()->count();
     }
 }

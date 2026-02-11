@@ -18,7 +18,41 @@ class Venda extends Model
         'protocolo',
         'valor_total',
         'status',
+        'aprovacao_status',
+        'aprovacao_motivo',
+        'aprovacao_detalhes',
+        'aprovacao_admin_id',
+        'cliente_id',
+        'desconto',
+        'valor_final'
     ];
+
+    protected $casts = [
+        'aprovacao_detalhes' => 'array',
+    ];
+
+    protected static function booted()
+    {
+        static::updated(function (self $venda) {
+            if ($venda->wasChanged('status') && $venda->status === 'cancelada') {
+                $venda->restaurarUnidadesVendidas();
+            }
+        });
+    }
+
+    public function restaurarUnidadesVendidas(): void
+    {
+        $this->loadMissing('itens.unidades');
+
+        foreach ($this->itens as $item) {
+            foreach ($item->unidades as $unidade) {
+                if ($unidade->status !== 'disponivel') {
+                    $unidade->update(['status' => 'disponivel']);
+                }
+            }
+            $item->unidades()->detach();
+        }
+    }
 
     public function itens()
     {
@@ -38,5 +72,10 @@ class Venda extends Model
     public function usuario()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function cliente()
+    {
+        return $this->belongsTo(\App\Models\Cliente::class, 'cliente_id');
     }
 }

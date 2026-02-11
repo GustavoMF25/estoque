@@ -33,29 +33,39 @@ class CategoriaTable extends DataTableComponent
         return [
             Column::make('Nome', 'nome')->searchable()->sortable(),
             Column::make('Descricao', 'descricao')->searchable(),
+            Column::make('Limite venda', 'limite_venda_padrao')
+                ->format(fn($value) => $value ? $value : 'Sem limite')
+                ->sortable(),
             Column::make('Status', 'ativo')
                 ->format(function ($value, $row) {
-                    return view('components.table.status-badge', ['status' => $value]);
+                    if($value){
+                        return 'Ativo';
+                    }
+                    return 'Inativo';
                 })
                 ->searchable()
                 ->sortable(),
             Column::make('Ações', 'id')
                 ->format(function ($value, $row) {
                     return view('components.table.btn-table-actions', [
+                        'edit' => [
+                            'title' => 'Editar Categoria',
+                            'route' => route('categorias.edit', $value),
+                            'permitir' => false,
+                        ],
                         "remove" => [
-                            'route' => route('estoques.destroy', $value),
+                            'route' => route('categorias.destroy', $value),
                         ],
-
-                        'show' => [
-                            'title' => 'Estoque → ' . $row->nome,
-                            'componente' => 'estoque.estoque-visualizar',
-                            'props' => ['estoqueId' => $value],
-                            'modal' => true,
-                            'route' => ''
-                        ],
-                        'restore' => [
-                            'route' => route('estoques.restore', $value)
-                        ]
+                        // 'show' => [
+                        //     'title' => 'Estoque → ' . $row->nome,
+                        //     'componente' => 'estoque.estoque-visualizar',
+                        //     'props' => ['estoqueId' => $value],
+                        //     'modal' => true,
+                        //     'route' => ''
+                        // ],
+                        // 'restore' => [
+                        //     'route' => route('estoques.restore', $value)
+                        // ]
                     ]);
                 }),
         ];

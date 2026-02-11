@@ -8,6 +8,11 @@
 
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
+        @if (config('features.notifications'))
+            <li class="nav-item dropdown">
+                <livewire:notificacoes.notificacoes-nav-bar />
+            </li>
+        @endif
         <li class="nav-item dropdown">
             <livewire:carrinho.carrinho-nav-bar />
         </li> 

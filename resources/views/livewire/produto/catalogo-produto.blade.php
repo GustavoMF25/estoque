@@ -15,30 +15,29 @@
                 <div class="card card-default shadow-sm hover-shadow border border-1">
                     <div class="card-body">
                         <div class="text-center">
-                            <img src="{{ asset('storage/' . $product->imagem) }}" alt="Imagem do Produto" class=""
-                                style="max-height: 100px;">
+                            <img src="{{ $product->imagem ? asset('storage/' . $product->imagem) : '/imagens/no-image.png' }}" alt="Imagem do Produto" class="" style="max-height: 100px;">
                         </div>
                         <p><b>Nome: </b> {{ $product->nome }}</p>
                         <div class="mb-2">
-                            <label for="quantidade_{{ $product->nome }}" class="form-label">
+                            <label for="quantidade_{{ $product->id }}" class="form-label">
                                 Quantidade:
                             </label>
-                            <input type="number" id="quantidade_{{ $product->nome }}"
-                                name="quantidade_{{ $product->nome }}" class="form-control" min="1"
-                                max="{{ $product->quantidade_produtos }}"
-                                wire:model.defer="quantidades.{{ $product->nome }}"
-                                placeholder="Máx: {{ $product->quantidade_produtos }}">
+                            <input type="number" id="quantidade_{{ $product->id }}"
+                                name="quantidade_{{ $product->id }}" class="form-control" min="1"
+                                max="{{ $product->disponiveis_count }}"
+                                wire:model.defer="quantidades.{{ $product->id }}"
+                                placeholder="Máx: {{ $product->disponiveis_count }}">
                             <small class="text-muted">
-                                Disponível: {{ $product->quantidade_produtos }}
+                                Disponível: {{ $product->disponiveis_count }}
                             </small>
                         </div>
 
-                        <p><b>Preço: </b> {{ App\Helpers\FormatHelper::brl($product->preco) }}</p>
+                        <p><b>Valor de venda: </b> {{ App\Helpers\FormatHelper::brl($product->valor_venda ?? $product->preco) }}</p>
                         <p></p>
 
                     </div>
                     <div class="card-footer text-center">
-                        <button wire:click="adicionarCarrinho('{{ $product->nome }}')" type="button"
+                        <button wire:click="adicionarCarrinho('{{ $product->id }}')" type="button"
                             class="btn btn-primary btn-block">
                             <i class="fas fa-cart-plus"></i>
                             Adicionar </button>

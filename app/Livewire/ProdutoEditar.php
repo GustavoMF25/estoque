@@ -12,14 +12,15 @@ class ProdutoEditar extends Component
     use WithFileUploads;
 
     public $produtoId;
-    public $nome, $unidade, $preco, $estoque_id, $ativo;
+    public $nome, $unidade, $valor_entrada, $valor_venda, $estoque_id, $ativo;
     public $imagem, $imagemPreview;
     public $estoques;
 
     protected $rules = [
         'nome' => 'required|string|max:255',
         'unidade' => 'nullable|string|max:10',
-        'preco' => 'required|numeric|min:0',
+        'valor_entrada' => 'required|numeric|min:0',
+        'valor_venda' => 'required|numeric|min:0',
         'estoque_id' => 'required|exists:estoques,id',
         'ativo' => 'boolean',
         'imagem' => 'nullable|image|max:2048',
@@ -32,7 +33,8 @@ class ProdutoEditar extends Component
         $this->produtoId = $produto->id;
         $this->nome = $produto->nome;
         $this->unidade = $produto->unidade;
-        $this->preco = $produto->preco;
+        $this->valor_entrada = $produto->valor_entrada ?? 0;
+        $this->valor_venda = $produto->valor_venda ?? $produto->preco;
         $this->estoque_id = $produto->estoque_id;
         $this->ativo = $produto->ativo;
         $this->imagemPreview = $produto->imagem;
@@ -53,7 +55,9 @@ class ProdutoEditar extends Component
         $produto->update([
             'nome' => $this->nome,
             'unidade' => $this->unidade ?? 'un',
-            'preco' => $this->preco,
+            'preco' => $this->valor_venda,
+            'valor_entrada' => $this->valor_entrada,
+            'valor_venda' => $this->valor_venda,
             'estoque_id' => $this->estoque_id,
             'ativo' => $this->ativo,
         ]);

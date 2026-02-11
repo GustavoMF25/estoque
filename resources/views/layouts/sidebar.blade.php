@@ -38,16 +38,38 @@
                             Estoque
                         </p>
                     </a>
-                </li>
+                </li>    
                 <li class="nav-item">
                     <a href="{{ route('categorias.index') }}"
-                        class="nav-link {{ request()->routeIs('estoques.index') ? 'active' : '' }}">
+                        class="nav-link {{ request()->routeIs('categorias.index') ? 'active' : '' }}">
                         <i class="fas fa-warehouse"></i>
                         <p>
                             Categorias
                         </p>
                     </a>
                 </li>
+                @if (config('features.manufacturers'))
+                    <li class="nav-item">
+                        <a href="{{ route('fabricantes.index') }}"
+                            class="nav-link {{ request()->routeIs('fabricantes.index') ? 'active' : '' }}">
+                            <i class="fa fa-industry"></i>
+                            <p>
+                                Fabricante
+                            </p>
+                        </a>
+                    </li>
+                @endif
+                @if (config('features.customers'))
+                    <li class="nav-item">
+                        <a href="{{ route('clientes.index') }}"
+                            class="nav-link {{ request()->routeIs('clientes.index') ? 'active' : '' }}">
+                            <i class="fa fa-users"></i>
+                            <p>
+                                Clientes
+                            </p>
+                        </a>
+                    </li>
+                @endif
                 <li class="nav-item">
                     <a href="{{ route('produtos.index') }}"
                         class="nav-link {{ request()->routeIs('produtos.index') ? 'active' : '' }}">
@@ -60,21 +82,32 @@
                 <li class="nav-item">
                     <a href="{{ route('produtos.catalogo') }}"
                         class="nav-link {{ request()->routeIs('produtos.catalogo') ? 'active' : '' }}">
-                        <i class="fas fa-layer-group"></i>
+                        <i class="fa fa-book"></i>
                         <p>
-                            Catálogo
+                            Catálogo de Produtos
                         </p>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{{ route('vendas.index') }}"
                         class="nav-link {{ request()->routeIs('vendas.index') ? 'active' : '' }}">
-                        <i class="fas fa-layer-group"></i>
+                        <i class="fa fa-shopping-cart"></i>
                         <p>
                             Vendas
                         </p>
                     </a>
                 </li>
+                @if (config('features.notifications'))
+                    <li class="nav-item">
+                        <a href="{{ route('notificacoes.index') }}"
+                            class="nav-link {{ request()->routeIs('notificacoes.index') ? 'active' : '' }}">
+                            <i class="fa fa-bell"></i>
+                            <p>
+                                Notificações
+                            </p>
+                        </a>
+                    </li>
+                @endif
                 @if (optional(auth()->user())->isAdmin())
                     <li class="nav-item">
                         <a href="#" class="nav-link">
@@ -100,6 +133,24 @@
                                     <p>Empresa</p>
                                 </a>
                             </li>
+                            @if (config('features.audit_logs'))
+                                <li class="nav-item">
+                                    <a href="{{ route('auditoria.index') }}"
+                                        class="nav-link {{ request()->routeIs('auditoria.index') ? 'active' : '' }}">
+                                        <i class="fas fa-file-alt"></i>
+                                        <p>Auditoria</p>
+                                    </a>
+                                </li>
+                            @endif
+                            @if (config('features.note_templates'))
+                                <li class="nav-item">
+                                    <a href="{{ route('nota-modelos.index') }}"
+                                        class="nav-link {{ request()->routeIs('nota-modelos.*') ? 'active' : '' }}">
+                                        <i class="fas fa-file-signature"></i>
+                                        <p>Modelos de Nota</p>
+                                    </a>
+                                </li>
+                            @endif
 
                         </ul>
                     </li>

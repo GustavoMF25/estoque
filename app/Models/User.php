@@ -30,7 +30,8 @@ class User extends Authenticatable
         'email',
         'password',
         'cpf',
-        'status'
+        'status',
+        'perfil'
     ];
 
     /**
@@ -66,5 +67,15 @@ class User extends Authenticatable
     public function isAdmin()
     {
         return $this->perfil === 'admin';
+    }
+
+    public function isOperador()
+    {
+        return $this->perfil === 'operador';
+    }
+
+    public function isVendedor()
+    {
+        return $this->perfil === 'vendedor';
     }
 }

@@ -35,6 +35,11 @@ class VenderProdutoCard extends Component
         $this->view = view('livewire.produto.modal-cadastrar-venda', ['produtos' => $produtosAgrupados, 'categorias' => $this->categorias])->render();
     }
 
+    public function categoriaSelecionada($value)
+    {
+        $this->carregarProdutos();
+    }
+
     public function render()
     {
         return view('livewire.produto.vender-produto-card');
