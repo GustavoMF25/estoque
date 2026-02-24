@@ -20,9 +20,9 @@
             ->filter()
             ->values();
         $logoSrc = null;
-        if ($logoPath && file_exists($logoPath)) {
+        if ($logoPath && Storage::disk('public')->exists($logoFile)) {
             $logoExt = pathinfo($logoPath, PATHINFO_EXTENSION) ?: 'png';
-            $logoData = base64_encode(file_get_contents($logoPath));
+            $logoData = base64_encode(Storage::disk('public')->get($logoFile));
             $logoSrc = 'data:image/' . $logoExt . ';base64,' . $logoData;
         }
     @endphp
@@ -185,6 +185,6 @@
 
     {{-- Rodapé --}}
     <div class="footer">
-        Emitido por {{ $emitente->nome ?? 'Sistema de Estoque' }} em {{ now()->format('d/m/Y H:i') }}
+        Emitido por {{ $emitente->nome ?? 'Sistema de Estoque' }} em {{ now()->format('d/m/Y') }}
     </div>
 </div>
