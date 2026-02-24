@@ -67,6 +67,37 @@ class Produto extends Model
         return $this->unidades()->Disponiveis()->count();
     }
 
+    public function getQuantidadeComprometidaAChegarAttribute(): int
+    {
+        return (int) $this->chegadasAbertas()
+            ->selectRaw('COALESCE(SUM(quantidade_comprometida), 0) as total')
+            ->value('total');
+    }
+
+    public function getQuantidadeAChegarAttribute(): int
+    {
+        return (int) $this->chegadasAbertas()
+            ->selectRaw('COALESCE(SUM(quantidade_total), 0) as total')
+            ->value('total');
+    }
+
+    public function getQuantidadeAChegarDisponivelAttribute(): int
+    {
+        return (int) $this->chegadasAbertas()
+            ->selectRaw('COALESCE(SUM(quantidade_total - quantidade_comprometida), 0) as total')
+            ->value('total');
+    }
+
+    public function getDisponivelParaVendaAttribute(): int
+    {
+        return max(0, (int) $this->disponiveis + (int) $this->quantidade_a_chegar_disponivel);
+    }
+
+    public function getSaldoEstoqueRealAttribute(): int
+    {
+        return (int) $this->disponiveis - (int) $this->quantidade_comprometida_a_chegar;
+    }
+
     public function movimentacoes()
     {
         return $this->hasMany(Movimentacao::class);
@@ -100,5 +131,15 @@ class Produto extends Model
     public function unidades()
     {
         return $this->hasMany(ProdutosUnidades::class, 'produto_id');
+    }
+
+    public function chegadas()
+    {
+        return $this->hasMany(ProdutoChegada::class, 'produto_id');
+    }
+
+    public function chegadasAbertas()
+    {
+        return $this->hasMany(ProdutoChegada::class, 'produto_id')->where('status', 'aberto');
     }
 }

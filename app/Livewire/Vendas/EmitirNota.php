@@ -36,11 +36,12 @@ class EmitirNota extends Component
     public $previewFrente = '';
     public $previewVerso = '';
     public $modeloIcone = '';
+    public $apenas_verso = false;
 
     public function mount($vendaId)
     {
         $this->vendaId = $vendaId;
-        $this->venda = Venda::with(['itens.produto', 'cliente.enderecoPadrao'])->findOrFail($vendaId);
+        $this->venda = Venda::with(['itens.produto', 'cliente.enderecoPadrao', 'loja'])->findOrFail($vendaId);
         $this->modelos = NotaModelo::where('ativo', true)->orderBy('nome')->get();
         $this->clientes = Cliente::orderBy('nome')->get();
 
@@ -214,7 +215,7 @@ class EmitirNota extends Component
 
             if ($clienteId && $this->venda->cliente_id !== $clienteId) {
                 $this->venda->update(['cliente_id' => $clienteId]);
-                $this->venda->refresh()->load('cliente.enderecoPadrao');
+                $this->venda->refresh()->load(['cliente.enderecoPadrao', 'loja']);
             }
 
             $modelo = NotaModelo::findOrFail($this->modelo_id);
@@ -239,7 +240,10 @@ class EmitirNota extends Component
                 'conteudo_verso' => view('vendas.nota._conteudo', ['venda' => $this->venda])->render(),
             ]);
 
-            return $this->redirect(route('vendas.nota.editavel', $emissao->id));
+            return $this->redirect(route('vendas.nota.editavel', [
+                'emissao' => $emissao->id,
+                'apenas_verso' => $this->apenas_verso ? 1 : 0,
+            ]));
         });
     }
 

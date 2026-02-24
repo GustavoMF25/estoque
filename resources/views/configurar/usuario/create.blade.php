@@ -55,6 +55,21 @@
             </div>
 
             <div class="form-group">
+                <label for="loja_id">Loja vinculada ao vendedor (opcional)</label>
+                <select name="loja_id" class="form-control @error('loja_id') is-invalid @enderror">
+                    <option value="">-- Sem vínculo fixo --</option>
+                    @foreach (($lojas ?? []) as $loja)
+                        <option value="{{ $loja->id }}" {{ old('loja_id') == $loja->id ? 'selected' : '' }}>
+                            {{ $loja->nome }}
+                        </option>
+                    @endforeach
+                </select>
+                @error('loja_id')
+                    <span class="text-danger">{{ $message }}</span>
+                @enderror
+            </div>
+
+            <div class="form-group">
                 <label for="password">Senha</label>
                 <input type="password" name="password" class="form-control @error('password') is-invalid @enderror"
                     required>

@@ -21,11 +21,12 @@ class VendaController extends Controller
         $mpdf->Output("Venda_{$venda->protocolo}.pdf", 'I'); // 'I' abre no navegador, 'D' força download
     }
 
-    public function gerarEditavel($emissaoId)
+    public function gerarEditavel(Request $request, $emissaoId)
     {
         $emissao = NotaEmissao::with(['venda', 'cliente'])->findOrFail($emissaoId);
+        $apenasVerso = $request->boolean('apenas_verso');
 
-        $html = view('vendas.nota.editavel', compact('emissao'))->render();
+        $html = view('vendas.nota.editavel', compact('emissao', 'apenasVerso'))->render();
 
         // return $html;
         $mpdf = new Mpdf();

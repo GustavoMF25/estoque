@@ -22,9 +22,23 @@
                 <option value="">Selecione</option>
                 <option value="admin">Administrador</option>
                 <option value="operador">Operador</option>
+                <option value="gerente">Gerente</option>
                 <option value="vendedor">Vendedor</option>
             </select>
             @error('perfil')
+                <small class="text-danger">{{ $message }}</small>
+            @enderror
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Loja vinculada (opcional)</label>
+            <select class="form-control" wire:model.defer="loja_id">
+                <option value="">Sem vínculo fixo</option>
+                @foreach ($lojas as $loja)
+                    <option value="{{ $loja->id }}">{{ $loja->nome }}</option>
+                @endforeach
+            </select>
+            @error('loja_id')
                 <small class="text-danger">{{ $message }}</small>
             @enderror
         </div>

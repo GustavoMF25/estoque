@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\EstoqueChegadaService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -23,8 +24,12 @@ class Venda extends Model
         'aprovacao_detalhes',
         'aprovacao_admin_id',
         'cliente_id',
+        'frete',
         'desconto',
-        'valor_final'
+        'valor_final',
+        'forma_pagamento',
+        'status_pagamento',
+        'parcelas_cartao',
     ];
 
     protected $casts = [
@@ -43,6 +48,8 @@ class Venda extends Model
     public function restaurarUnidadesVendidas(): void
     {
         $this->loadMissing('itens.unidades');
+
+        EstoqueChegadaService::liberarReservasDaVenda($this);
 
         foreach ($this->itens as $item) {
             foreach ($item->unidades as $unidade) {

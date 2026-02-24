@@ -5,10 +5,8 @@ namespace App\Livewire\Produto;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\Product;
 use App\Models\Produto;
-use App\Models\ProdutosAgrupados;
-use App\Models\ProdutosUnidades;
+use App\Services\VendaEstoqueService;
 
 class CatalogoProduto extends Component
 {
@@ -31,9 +29,8 @@ class CatalogoProduto extends Component
         // 🔍 Busca o produto base
         $produto = Produto::query()->Ativo()->findOrFail($produtoId);
 
-        $quantidadeDisponivel = ProdutosUnidades::where('produto_id', $produto->id)
-            ->where('status', 'disponivel')
-            ->count();
+        $disponibilidade = VendaEstoqueService::disponibilidadeAtual($produto);
+        $quantidadeDisponivel = $disponibilidade['total'];
         $quantidadeSolicitada = $this->quantidades[$produto->id] ?? 1;
 
         $carrinho = session('carrinho', []);
@@ -80,10 +77,30 @@ class CatalogoProduto extends Component
             ->withCount([
                 'unidades as disponiveis_count' => fn($q) => $q->where('status', 'disponivel'),
             ])
+            ->withSum([
+                'chegadasAbertas as a_chegar_total' => fn($q) => $q,
+            ], 'quantidade_total')
+            ->withSum([
+                'chegadasAbertas as a_chegar_comprometida_total' => fn($q) => $q,
+            ], 'quantidade_comprometida')
             ->Ativo()
             ->where('nome', 'like', '%' . $this->search . '%')
-            ->whereHas('unidades', fn($q) => $q->where('status', 'disponivel'))
+            ->where(function ($query) {
+                $query->whereHas('unidades', fn($q) => $q->where('status', 'disponivel'))
+                    ->orWhereHas('chegadasAbertas', fn($q) => $q->whereColumn('quantidade_comprometida', '<', 'quantidade_total'));
+            })
             ->paginate($this->perPage);
+
+        $products->getCollection()->transform(function ($product) {
+            $aChegarDisponivel = max(
+                0,
+                (int) ($product->a_chegar_total ?? 0) - (int) ($product->a_chegar_comprometida_total ?? 0)
+            );
+            $product->a_chegar_disponivel_count = $aChegarDisponivel;
+            $product->disponivel_para_venda_count = (int) $product->disponiveis_count + $aChegarDisponivel;
+
+            return $product;
+        });
 
         return view('livewire.produto.catalogo-produto', [
             'products' => $products,

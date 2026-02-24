@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Usuario;
 
+use App\Models\Loja;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -20,6 +21,8 @@ class AtualizarUsuario extends Component
     public $password_confirmation;
     public $profile_photo;
     public $perfil;
+    public $loja_id;
+    public $lojas = [];
     public $formId;
 
     public $user;
@@ -32,6 +35,9 @@ class AtualizarUsuario extends Component
         $this->name = $this->user->name;
         $this->email = $this->user->email;
         $this->perfil = $this->user->perfil;
+        $this->loja_id = $this->user->loja_id;
+        $empresaId = auth()->user()->empresa_id ?? 1;
+        $this->lojas = Loja::where('empresa_id', $empresaId)->orderBy('nome')->get();
     }
 
     public function rules()
@@ -42,6 +48,7 @@ class AtualizarUsuario extends Component
             'password' => 'nullable|min:8|confirmed',
             'profile_photo' => 'nullable|image|max:2048',
             'perfil' => 'required|in:admin,operador,gerente,vendedor',
+            'loja_id' => 'nullable|exists:lojas,id',
         ];
     }
 
@@ -52,6 +59,20 @@ class AtualizarUsuario extends Component
         $this->user->name = $this->name;
         $this->user->email = $this->email;
         $this->user->perfil = $this->perfil;
+
+        if (!empty($this->loja_id)) {
+            $empresaId = auth()->user()->empresa_id ?? 1;
+            $lojaValida = Loja::where('empresa_id', $empresaId)
+                ->where('id', $this->loja_id)
+                ->exists();
+
+            if (!$lojaValida) {
+                $this->addError('loja_id', 'A loja selecionada não pertence à sua empresa.');
+                return;
+            }
+        }
+
+        $this->user->loja_id = $this->loja_id ?: null;
 
         if ($this->password) {
             $this->user->password = Hash::make($this->password);

@@ -91,7 +91,7 @@
     </style>
 </head>
 <body>
-    @if (!($apenasVerso ?? false))
+    @if (empty($apenasVerso))
         <div class="pagina">
             {!! $emissao->conteudo_frente !!}
         </div>

@@ -40,6 +40,11 @@ class VendaItem extends Model
         );
     }
 
+    public function reservasChegada()
+    {
+        return $this->hasMany(ProdutoChegadaReserva::class, 'venda_item_id');
+    }
+
     public function getQuantidadeAttribute()
     {
         if (!empty($this->attributes['quantidade'])) {

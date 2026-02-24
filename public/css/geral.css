@@ -63,6 +63,11 @@ dialog[open] {
     user-select: none;
     -webkit-user-select: none;
 }
+[class*="sidebar-dark-"] .nav-treeview > .nav-item > .nav-link.active {
+    background-color: #54734b !important;
+    color: #fff !important;
+}
+
 /* .select2-container .select2-selection--single {
     box-sizing: border-box;
     cursor: pointer;

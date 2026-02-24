@@ -24,11 +24,14 @@
                             </label>
                             <input type="number" id="quantidade_{{ $product->id }}"
                                 name="quantidade_{{ $product->id }}" class="form-control" min="1"
-                                max="{{ $product->disponiveis_count }}"
+                                max="{{ $product->disponivel_para_venda_count }}"
                                 wire:model.defer="quantidades.{{ $product->id }}"
-                                placeholder="Máx: {{ $product->disponiveis_count }}">
+                                placeholder="Máx: {{ $product->disponivel_para_venda_count }}">
                             <small class="text-muted">
-                                Disponível: {{ $product->disponiveis_count }}
+                                Disponível: {{ $product->disponivel_para_venda_count }}
+                                @if (($product->a_chegar_disponivel_count ?? 0) > 0)
+                                    <span class="ml-1 badge badge-warning">A chegar: {{ $product->a_chegar_disponivel_count }}</span>
+                                @endif
                             </small>
                         </div>
 

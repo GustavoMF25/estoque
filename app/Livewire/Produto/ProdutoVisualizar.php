@@ -3,10 +3,8 @@
 namespace App\Livewire\Produto;
 
 use App\Models\Produto;
-use App\Models\ProdutosAgrupados;
 use App\Models\ProdutosUnidades;
 use Livewire\Component;
-use Livewire\Attributes\On;
 
 class ProdutoVisualizar extends Component
 {
@@ -18,6 +16,9 @@ class ProdutoVisualizar extends Component
     public $produto;
     public $qtdVendidos;
     public $qtdDisponiveis;
+    public $qtdAChegar;
+    public $qtdDisponivelVenda;
+    public $saldoEstoqueReal;
     public $valorRecebido;
 
 
@@ -36,6 +37,9 @@ class ProdutoVisualizar extends Component
         
         $this->qtdVendidos = ProdutosUnidades::where('produto_id', $this->produto->id)->Vendidas()->count();
         $this->qtdDisponiveis = ProdutosUnidades::where('produto_id', $this->produto->id)->Disponiveis()->count();
+        $this->qtdAChegar = $this->produto->quantidade_a_chegar_disponivel;
+        $this->qtdDisponivelVenda = $this->produto->disponivel_para_venda;
+        $this->saldoEstoqueReal = $this->produto->saldo_estoque_real;
 
         $valorVenda = $this->produto->valor_venda ?? $this->produto->preco;
         $this->valorRecebido = $this->qtdVendidos * $valorVenda;

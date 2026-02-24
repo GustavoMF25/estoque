@@ -2,8 +2,23 @@
     @php
         $itensCount = $venda->itens->count();
         $linhasExtras = max(0, 15 - $itensCount);
-        $logoFile = $empresa->logo ?? null;
+        $emitente = $venda->loja ?? $empresa;
+        $logoFile = $emitente->logo ?? null;
         $logoPath = $logoFile ? public_path('storage/' . $logoFile) : public_path('storage/logos/logo-fake.png');
+        $contatosEmitente = collect($emitente->contatos ?? [])
+            ->map(function ($contato) {
+                $motivo = trim((string) ($contato['name'] ?? ''));
+                $numero = trim((string) ($contato['numero'] ?? ''));
+                if ($motivo === '' && $numero === '') {
+                    return null;
+                }
+                if ($motivo !== '' && $numero !== '') {
+                    return $motivo . ': ' . $numero;
+                }
+                return $motivo !== '' ? $motivo : $numero;
+            })
+            ->filter()
+            ->values();
         $logoSrc = null;
         if ($logoPath && file_exists($logoPath)) {
             $logoExt = pathinfo($logoPath, PATHINFO_EXTENSION) ?: 'png';
@@ -21,17 +36,23 @@
                     @endif
                 </td>
                 <td style="width: 80%; text-align: right; font-size: 12px;">
-                    <strong style="font-size: 14px;">{{ strtoupper($empresa->nome ?? 'EMPRESA NÃO INFORMADA') }}</strong><br>
-                    CNPJ: {{ $empresa->cnpj ?? '-' }}<br>
-                    {{ $empresa->endereco ?? '-' }}<br>
-                    Tel: {{ $empresa->telefone ?? '-' }}
+                    <strong style="font-size: 14px;">{{ strtoupper($emitente->nome ?? 'LOJA NÃO INFORMADA') }}</strong><br>
+                    Razão Social: {{ $emitente->razao_social ?? '-' }}<br>
+                    CNPJ: {{ $emitente->cnpj ?? '-' }}<br>
+                    {{ $emitente->endereco ?? '-' }}<br>
+                    Contatos:
+                    @if ($contatosEmitente->isNotEmpty())
+                        {{ $contatosEmitente->implode(' | ') }}
+                    @else
+                        {{ $emitente->telefone ?? '-' }}
+                    @endif
                 </td>
             </tr>
         </table>
     </div>
 
     <div class="documento">
-        <small>Protocolo: {{ $venda->protocolo }} | Data: {{ $venda->created_at->format('d/m/Y H:i') }}</small>
+        <small>Pedido: {{ $venda->protocolo }} | Data: {{ $venda->created_at->format('d/m/Y') }}</small>
     </div>
 
     {{-- Destinatário --}}
@@ -113,6 +134,10 @@
                 <td class="right">R$ {{ number_format($venda->valor_total, 2, ',', '.') }}</td>
             </tr>
             <tr>
+                <td><strong>Frete:</strong></td>
+                <td class="right">R$ {{ number_format($venda->frete ?? 0, 2, ',', '.') }}</td>
+            </tr>
+            <tr>
                 <td><strong>Descontos:</strong></td>
                 <td class="right">R$ {{ number_format($venda->desconto ?? 0, 2, ',', '.') }}</td>
             </tr>
@@ -131,8 +156,14 @@
         <div class="secao-titulo">INFORMAÇÕES DE PAGAMENTO</div>
         <table>
             <tr>
-                <td><strong>Forma de Pagamento:</strong> {{ ucfirst($venda->forma_pagamento ?? '') }}</td>
-                <td><strong>Situação:</strong> {{ ucfirst($venda->status_pagamento ?? '') }}</td>
+                <td>
+                    <strong>Forma de Pagamento:</strong>
+                    {{ $venda->forma_pagamento ? ucfirst(str_replace('_', ' ', $venda->forma_pagamento)) : '-' }}
+                    @if (($venda->forma_pagamento ?? null) === 'cartao_credito' && !empty($venda->parcelas_cartao))
+                        ({{ (int) $venda->parcelas_cartao }}x)
+                    @endif
+                </td>
+                <td><strong>Situação:</strong> {{ $venda->status_pagamento ? ucfirst(str_replace('_', ' ', $venda->status_pagamento)) : '-' }}</td>
             </tr>
         </table>
     </div>
@@ -154,6 +185,6 @@
 
     {{-- Rodapé --}}
     <div class="footer">
-        Emitido por {{ $empresa->nome ?? 'Sistema de Estoque' }} em {{ now()->format('d/m/Y H:i') }}
+        Emitido por {{ $emitente->nome ?? 'Sistema de Estoque' }} em {{ now()->format('d/m/Y H:i') }}
     </div>
 </div>

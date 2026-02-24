@@ -14,7 +14,65 @@ class EstoqueController extends Controller
 {
     public function index()
     {
-        return view('estoque.index');
+        $estoques = Estoque::query()
+            ->with('loja')
+            ->withCount([
+                'produtos as produtos_ativos_count' => fn($q) => $q->where('ativo', true),
+            ])
+            ->orderBy('nome')
+            ->get();
+
+        $unidadesPorEstoque = DB::table('produtos_unidades as pu')
+            ->join('produtos as p', 'p.id', '=', 'pu.produto_id')
+            ->whereNull('p.deleted_at')
+            ->selectRaw('
+                p.estoque_id,
+                COUNT(*) as unidades_totais,
+                SUM(CASE WHEN pu.status = "disponivel" THEN 1 ELSE 0 END) as unidades_disponiveis,
+                SUM(CASE WHEN pu.status = "vendido" THEN 1 ELSE 0 END) as unidades_vendidas
+            ')
+            ->groupBy('p.estoque_id')
+            ->get()
+            ->keyBy('estoque_id');
+
+        $chegadasPorEstoque = DB::table('produto_chegadas as pc')
+            ->join('produtos as p', 'p.id', '=', 'pc.produto_id')
+            ->whereNull('p.deleted_at')
+            ->where('pc.status', 'aberto')
+            ->selectRaw('
+                p.estoque_id,
+                SUM(pc.quantidade_total) as a_chegar_total,
+                SUM(pc.quantidade_comprometida) as a_chegar_comprometida,
+                SUM(pc.quantidade_total - pc.quantidade_comprometida) as a_chegar_disponivel
+            ')
+            ->groupBy('p.estoque_id')
+            ->get()
+            ->keyBy('estoque_id');
+
+        $cards = $estoques->map(function (Estoque $estoque) use ($unidadesPorEstoque, $chegadasPorEstoque) {
+            $unidades = $unidadesPorEstoque->get($estoque->id);
+            $chegadas = $chegadasPorEstoque->get($estoque->id);
+
+            $unidadesTotais = (int) ($unidades->unidades_totais ?? 0);
+            $limite = (int) ($estoque->quantidade_maxima ?? 0);
+            $ocupacao = $limite > 0 ? round(($unidadesTotais / $limite) * 100, 1) : null;
+
+            return [
+                'id' => $estoque->id,
+                'nome' => $estoque->nome,
+                'status' => $estoque->status,
+                'loja' => $estoque->loja?->nome,
+                'produtos_ativos' => (int) ($estoque->produtos_ativos_count ?? 0),
+                'unidades_totais' => $unidadesTotais,
+                'unidades_disponiveis' => (int) ($unidades->unidades_disponiveis ?? 0),
+                'unidades_vendidas' => (int) ($unidades->unidades_vendidas ?? 0),
+                'a_chegar_disponivel' => (int) ($chegadas->a_chegar_disponivel ?? 0),
+                'limite' => $limite,
+                'ocupacao_percentual' => $ocupacao,
+            ];
+        });
+
+        return view('estoque.index', compact('cards'));
     }
 
     public function create()

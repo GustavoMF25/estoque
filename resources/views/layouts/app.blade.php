@@ -91,6 +91,7 @@
         </div>
     </div>
 
+    <script src="{{ asset('adminlte/plugins/inputmask/jquery.inputmask.min.js') }}"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             if (!localStorage.getItem('novaVersaoAviso')) {
@@ -118,6 +119,17 @@
                 setTimeout(() => {
                     location.reload();
                 }, 5000);
+            });
+
+            $('.select2').select2({
+                width: '100%',
+            });
+
+            $('.inputmask-datetime').inputmask('datetime', {
+                inputFormat: 'dd/mm/yyyy',
+                placeholder: 'dd/mm/aaaa',
+                clearIncomplete: true,
+                showMaskOnHover: false,
             });
         })
 

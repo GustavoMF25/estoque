@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Loja;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -16,7 +17,9 @@ class UsuarioController extends Controller
 
     public function create()
     {
-        return view('configurar.usuario.create');
+        $empresaId = auth()->user()->empresa_id ?? 1;
+        $lojas = Loja::where('empresa_id', $empresaId)->orderBy('nome')->get();
+        return view('configurar.usuario.create', compact('lojas'));
     }
 
     public function store(Request $request)
@@ -28,7 +31,18 @@ class UsuarioController extends Controller
             'cpf' => 'nullable|string|max:14',
             'status' => 'required|string|in:ativo,inativo',
             'perfil' => 'required|string|in:admin,gerente,operador,vendedor',
+            'loja_id' => 'nullable|exists:lojas,id',
         ]);
+
+        $empresaId = auth()->user()->empresa_id ?? 1;
+        $lojaValida = null;
+        if (!empty($validated['loja_id'])) {
+            $lojaValida = Loja::where('empresa_id', $empresaId)->where('id', $validated['loja_id'])->exists();
+            if (!$lojaValida) {
+                return back()->withErrors(['loja_id' => 'A loja selecionada não pertence à sua empresa.'])->withInput();
+            }
+        }
+
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
@@ -36,6 +50,7 @@ class UsuarioController extends Controller
             'cpf' => $validated['cpf'] ?? null,
             'status' => $validated['status'],
             'perfil' => $validated['perfil'],
+            'loja_id' => $validated['loja_id'] ?? null,
         ]);
 
         return redirect()->route('usuarios.index')->with('success', 'Usuário cadastrado com sucesso.');

@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuditLogController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ClienteController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\EstoqueController;
 use App\Http\Controllers\FabricanteController;
@@ -10,11 +11,10 @@ use App\Http\Controllers\LojaController;
 use App\Http\Controllers\NotificacaoController;
 use App\Http\Controllers\NotaModeloController;
 use App\Http\Controllers\ProdutosController;
+use App\Http\Controllers\ProdutoChegadaController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\VendaController;
 use App\Livewire\Carrinho\ConfirmarVenda;
-use App\Livewire\TesteLivewire;
-use App\Livewire\Vendas\VendasTable;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -33,9 +33,7 @@ Route::get('/', function () {
 });
 
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::middleware(['auth', 'perfil:admin'])->group(function () {
         Route::get('/usuarios', [UsuarioController::class, 'index'])->name('usuarios.index');
@@ -49,12 +47,18 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
         Route::resource('nota-modelos', NotaModeloController::class);
     });
 
-    Route::resource('lojas', LojaController::class);
+    Route::resource('lojas', LojaController::class)->except(['show']);
     Route::resource('estoques', EstoqueController::class);
     Route::patch('estoques/{id}/restaurar', [EstoqueController::class, 'restore'])->name('estoques.restore');
 
     Route::resource('produtos', ProdutosController::class)->only(['index', 'create', 'store', 'destroy']);
     Route::get('produtos/catalogo', [ProdutosController::class, 'catalogo'])->name('produtos.catalogo');
+    Route::get('estoque-a-chegar', [ProdutoChegadaController::class, 'index'])->name('produto-chegadas.index');
+    Route::middleware('perfil:admin,operador')->group(function () {
+        Route::post('estoque-a-chegar', [ProdutoChegadaController::class, 'store'])->name('produto-chegadas.store');
+        Route::post('estoque-a-chegar/{produtoChegada}/receber', [ProdutoChegadaController::class, 'receber'])->name('produto-chegadas.receber');
+        Route::post('estoque-a-chegar/{produtoChegada}/cancelar', [ProdutoChegadaController::class, 'cancelar'])->name('produto-chegadas.cancelar');
+    });
     Route::get('/produtos/visualizar', [ProdutosController::class, 'show'])->name('produtos.show');
     Route::post('/produtos/vender', [ProdutosController::class, 'vender'])->name('produtos.vender');
     Route::patch('/produtos/{produto}/desativar', [ProdutosController::class, 'desativar'])

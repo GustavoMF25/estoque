@@ -31,7 +31,8 @@ class User extends Authenticatable
         'password',
         'cpf',
         'status',
-        'perfil'
+        'perfil',
+        'loja_id',
     ];
 
     /**
@@ -77,5 +78,10 @@ class User extends Authenticatable
     public function isVendedor()
     {
         return $this->perfil === 'vendedor';
+    }
+
+    public function loja()
+    {
+        return $this->belongsTo(Loja::class);
     }
 }

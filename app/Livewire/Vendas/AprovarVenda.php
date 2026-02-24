@@ -3,9 +3,8 @@
 namespace App\Livewire\Vendas;
 
 use App\Models\Notificacao;
-use App\Models\ProdutosUnidades;
 use App\Models\Venda;
-use App\Services\MovimentacaoService;
+use App\Services\VendaEstoqueService;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
@@ -34,26 +33,7 @@ class AprovarVenda extends Component
         DB::beginTransaction();
         try {
             foreach ($this->venda->itens as $item) {
-                $unidadesDisponiveis = ProdutosUnidades::where('produto_id', $item->produto_id)
-                    ->where('status', 'disponivel')
-                    ->limit($item->quantidade)
-                    ->get();
-
-                if ($unidadesDisponiveis->count() < $item->quantidade) {
-                    throw new \Exception("Estoque insuficiente para o produto '{$item->produto->nome}'.");
-                }
-
-                $item->unidades()->attach($unidadesDisponiveis->pluck('id')->toArray());
-
-                foreach ($unidadesDisponiveis as $unidade) {
-                    $unidade->update(['status' => 'vendido']);
-                    MovimentacaoService::registrar([
-                        'produto_id' => $item->produto_id,
-                        'quantidade' => 1,
-                        'tipo' => 'saida',
-                        'observacao' => "Venda ID: {$this->venda->id} - Unidade {$unidade->codigo_unico}",
-                    ]);
-                }
+                VendaEstoqueService::aplicarSaidaItem($item, (int) $item->quantidade);
             }
 
             $this->venda->update([

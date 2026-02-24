@@ -40,14 +40,14 @@ class VendasTable extends DataTableComponent
                 ->sortable()
                 ->searchable(),
 
-            Column::make("Protocolo", "protocolo")
+            Column::make("Pedido", "protocolo")
                 ->sortable()
                 ->searchable(),
 
             Column::make("Usuário", "usuario.name")
                 ->sortable()
                 ->searchable(),
-            Column::make("Valor Total", "valor_total")
+            Column::make("Valor da Venda", "valor_final")
                 ->sortable()
                 ->format(fn($value) => 'R$ ' . FormatHelper::brl($value)),
             Column::make("Status", "status")

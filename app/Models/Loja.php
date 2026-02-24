@@ -12,8 +12,17 @@ class Loja extends Model
     protected $fillable = [
         'empresa_id',
         'nome',
+        'razao_social',
+        'cnpj',
         'endereco',
         'telefone',
+        'contatos',
+        'email',
+        'logo',
+    ];
+
+    protected $casts = [
+        'contatos' => 'array',
     ];
 
     public function empresa()

@@ -38,7 +38,7 @@
                     </div>
 
                     <div class="row g-3">
-                        <div class="col-md-4 col-sm-6">
+                        <div class="col-md-3 col-sm-6">
                             <div class="border rounded-3 p-3 h-100 d-flex align-items-center gap-3">
                                 <div class="rounded-5 bg-info bg-opacity-10 text-info d-flex align-items-center justify-content-center flex-shrink-0"
                                     style="width: 44px; height: 44px;">
@@ -50,7 +50,31 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4 col-sm-6">
+                        <div class="col-md-3 col-sm-6">
+                            <div class="border rounded-3 p-3 h-100 d-flex align-items-center gap-3">
+                                <div class="rounded-5 bg-warning bg-opacity-10 text-warning d-flex align-items-center justify-content-center flex-shrink-0"
+                                    style="width: 44px; height: 44px;">
+                                    <i class="fa fa-truck"></i>
+                                </div>
+                                <div class="ml-2">
+                                    <div class="text-muted small">A chegar</div>
+                                    <div class="fw-bold fs-5">{{ $qtdAChegar }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <div class="border rounded-3 p-3 h-100 d-flex align-items-center gap-3">
+                                <div class="rounded-5 bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center flex-shrink-0"
+                                    style="width: 44px; height: 44px;">
+                                    <i class="fa fa-shopping-basket"></i>
+                                </div>
+                                <div class="ml-2">
+                                    <div class="text-muted small">Disponível para venda</div>
+                                    <div class="fw-bold fs-5">{{ $qtdDisponivelVenda }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6">
                             <div class="border rounded-3 p-3 h-100 d-flex align-items-center gap-3">
                                 <div class="rounded-5 bg-success bg-opacity-10 text-success d-flex align-items-center justify-content-center flex-shrink-0"
                                     style="width: 44px; height: 44px;">
@@ -62,8 +86,20 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-md-3 col-sm-6">
+                            <div class="border rounded-3 p-3 h-100 d-flex align-items-center gap-3">
+                                <div class="rounded-5 bg-secondary bg-opacity-10 text-secondary d-flex align-items-center justify-content-center flex-shrink-0"
+                                    style="width: 44px; height: 44px;">
+                                    <i class="fa fa-balance-scale"></i>
+                                </div>
+                                <div class="ml-2">
+                                    <div class="text-muted small">Saldo real</div>
+                                    <div class="fw-bold fs-5">{{ $saldoEstoqueReal }}</div>
+                                </div>
+                            </div>
+                        </div>
                         @if (auth()->user()->isAdmin())
-                            <div class="col-md-4 col-sm-6">
+                            <div class="col-md-3 col-sm-6">
                                 <div class="border rounded-3 p-3 h-100 d-flex align-items-center gap-3">
                                     <div class="rounded-5 bg-warning bg-opacity-10 text-warning d-flex align-items-center justify-content-center flex-shrink-0"
                                         style="width: 44px; height: 44px;">
