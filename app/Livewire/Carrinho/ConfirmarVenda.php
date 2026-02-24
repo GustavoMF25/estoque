@@ -413,10 +413,6 @@ class ConfirmarVenda extends Component
                     ]);
                 }
 
-                if ($precisaAprovacao) {
-                    continue;
-                }
-
                 VendaEstoqueService::aplicarSaidaItem($vendaItem, (int) $item['quantidade']);
             }
 

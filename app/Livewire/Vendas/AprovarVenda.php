@@ -33,7 +33,14 @@ class AprovarVenda extends Component
         DB::beginTransaction();
         try {
             foreach ($this->venda->itens as $item) {
-                VendaEstoqueService::aplicarSaidaItem($item, (int) $item->quantidade);
+                $qtdUnidades = (int) $item->unidades()->count();
+                $qtdReservas = (int) $item->reservasChegada()->sum('quantidade');
+                $qtdJaAplicada = $qtdUnidades + $qtdReservas;
+                $qtdFaltante = max(0, ((int) $item->quantidade) - $qtdJaAplicada);
+
+                if ($qtdFaltante > 0) {
+                    VendaEstoqueService::aplicarSaidaItem($item, $qtdFaltante);
+                }
             }
 
             $this->venda->update([
