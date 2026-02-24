@@ -3,6 +3,7 @@
 namespace App\Livewire\Usuario;
 
 use App\Models\Loja;
+use App\Models\Perfil;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -24,6 +25,7 @@ class AtualizarUsuario extends Component
     public $loja_id;
     public $lojas = [];
     public $formId;
+    public $perfis = [];
 
     public $user;
 
@@ -38,6 +40,7 @@ class AtualizarUsuario extends Component
         $this->loja_id = $this->user->loja_id;
         $empresaId = auth()->user()->empresa_id ?? 1;
         $this->lojas = Loja::where('empresa_id', $empresaId)->orderBy('nome')->get();
+        $this->perfis = Perfil::where('ativo', true)->orderBy('nome')->get();
     }
 
     public function rules()
@@ -47,7 +50,7 @@ class AtualizarUsuario extends Component
             'email' => 'required|email|unique:users,email,' . $this->userId,
             'password' => 'nullable|min:8|confirmed',
             'profile_photo' => 'nullable|image|max:2048',
-            'perfil' => 'required|in:admin,operador,gerente,vendedor',
+            'perfil' => 'required|exists:perfis,slug',
             'loja_id' => 'nullable|exists:lojas,id',
         ];
     }

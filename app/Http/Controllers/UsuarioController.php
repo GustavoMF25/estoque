@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Loja;
+use App\Models\Perfil;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -19,7 +20,8 @@ class UsuarioController extends Controller
     {
         $empresaId = auth()->user()->empresa_id ?? 1;
         $lojas = Loja::where('empresa_id', $empresaId)->orderBy('nome')->get();
-        return view('configurar.usuario.create', compact('lojas'));
+        $perfis = Perfil::where('ativo', true)->orderBy('nome')->get();
+        return view('configurar.usuario.create', compact('lojas', 'perfis'));
     }
 
     public function store(Request $request)
@@ -30,7 +32,7 @@ class UsuarioController extends Controller
             'password' => 'required|string|min:8|confirmed',
             'cpf' => 'nullable|string|max:14',
             'status' => 'required|string|in:ativo,inativo',
-            'perfil' => 'required|string|in:admin,gerente,operador,vendedor',
+            'perfil' => 'required|string|exists:perfis,slug',
             'loja_id' => 'nullable|exists:lojas,id',
         ]);
 

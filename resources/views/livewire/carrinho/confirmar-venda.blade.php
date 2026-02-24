@@ -40,8 +40,21 @@
                                             <i class="fas fa-plus"></i>
                                         </button>
                                     </div>
-                                    <div class="text-right">
-                                        <div class="text-muted small">{{ App\Helpers\FormatHelper::brl($item['preco_unitario']) }} (unit)</div>
+                                    <div class="item-price-box">
+                                        <div class="text-muted small mb-1">Valor unitário</div>
+                                        <div class="input-group input-group-sm mb-2 unit-price-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">R$</span>
+                                            </div>
+                                            <input type="number" step="0.01" min="0"
+                                                wire:model.live="preco_unitario.{{ $item['produto_id'] }}"
+                                                class="form-control text-right">
+                                        </div>
+                                        <label class="price-update-check mb-1">
+                                            <input type="checkbox"
+                                                wire:model.live="atualizar_preco_base.{{ $item['produto_id'] }}">
+                                            <span>Atualizar preço na base</span>
+                                        </label>
                                         <div class="produto-total">{{ App\Helpers\FormatHelper::brl($item['preco_unitario'] * $item['quantidade']) }}</div>
                                     </div>
                                 </div>
@@ -263,10 +276,41 @@
         }
 
         .venda-page .produto-total {
-            font-size: 1.85rem;
+            font-size: 2rem;
             font-weight: 700;
             line-height: 1;
             color: #1f2d3d;
+            text-align: right;
+        }
+
+        .venda-page .item-price-box {
+            width: 180px;
+        }
+
+        .venda-page .unit-price-group .input-group-text {
+            background: #f3f6f9;
+            color: #4a5968;
+            border-color: #dbe3ea;
+            font-weight: 600;
+        }
+
+        .venda-page .unit-price-group .form-control {
+            border-color: #dbe3ea;
+            font-weight: 600;
+        }
+
+        .venda-page .price-update-check {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: .82rem;
+            color: #3a4a5a;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .venda-page .price-update-check input {
+            margin: 0;
         }
 
         .venda-page .resumo-line {

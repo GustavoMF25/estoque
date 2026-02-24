@@ -41,7 +41,7 @@
     </div>
 
     <div class="col-md-12 mb-3">
-        <label class="form-label">Contatos adicionais (JSON)</label>
+        <label class="form-label">Contatos adicionais</label>
         <div id="contatos-wrapper">
             @forelse ($contatos as $i => $contato)
                 <div class="row g-2 align-items-end mb-2 contato-row">
@@ -76,9 +76,6 @@
             @endforelse
         </div>
         <button type="button" id="contato-add" class="btn btn-outline-primary btn-sm">Adicionar contato</button>
-        <small class="form-text text-muted">
-            Estrutura salva em JSON: <code>{"name":"assistencia","numero":"(21)9999999999"}</code>
-        </small>
         @error('contatos')
             <div class="text-danger small">{{ $message }}</div>
         @enderror

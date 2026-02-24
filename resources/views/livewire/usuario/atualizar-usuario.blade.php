@@ -20,10 +20,9 @@
             <label class="form-label">Perfil</label>
             <select class="form-control" wire:model.defer="perfil">
                 <option value="">Selecione</option>
-                <option value="admin">Administrador</option>
-                <option value="operador">Operador</option>
-                <option value="gerente">Gerente</option>
-                <option value="vendedor">Vendedor</option>
+                @foreach ($perfis as $perfilItem)
+                    <option value="{{ $perfilItem->slug }}">{{ $perfilItem->nome }}</option>
+                @endforeach
             </select>
             @error('perfil')
                 <small class="text-danger">{{ $message }}</small>

@@ -7,9 +7,12 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\EstoqueController;
 use App\Http\Controllers\FabricanteController;
+use App\Http\Controllers\FuncionalidadeController;
 use App\Http\Controllers\LojaController;
 use App\Http\Controllers\NotificacaoController;
 use App\Http\Controllers\NotaModeloController;
+use App\Http\Controllers\PerfilController;
+use App\Http\Controllers\PerfilFuncionalidadeController;
 use App\Http\Controllers\ProdutosController;
 use App\Http\Controllers\ProdutoChegadaController;
 use App\Http\Controllers\UsuarioController;
@@ -32,7 +35,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->group(function () {
+Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified', 'funcionalidade'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::middleware(['auth', 'perfil:admin'])->group(function () {
@@ -45,6 +48,11 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
         Route::put('/empresa', [EmpresaController::class, 'update'])->name('empresa.update');
         Route::get('/auditoria', [AuditLogController::class, 'index'])->name('auditoria.index');
         Route::resource('nota-modelos', NotaModeloController::class);
+        Route::resource('perfis', PerfilController::class)
+            ->parameters(['perfis' => 'perfil'])
+            ->except(['show']);
+        Route::resource('funcionalidades', FuncionalidadeController::class)->except(['show']);
+        Route::get('/perfil-funcionalidades', [PerfilFuncionalidadeController::class, 'edit'])->name('perfil-funcionalidades.edit');
     });
 
     Route::resource('lojas', LojaController::class)->except(['show']);

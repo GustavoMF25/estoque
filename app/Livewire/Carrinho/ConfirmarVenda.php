@@ -30,6 +30,8 @@ class ConfirmarVenda extends Component
     public $forma_pagamento = '';
     public $status_pagamento = '';
     public $parcelas_cartao = '';
+    public $preco_unitario = [];
+    public $atualizar_preco_base = [];
 
     protected $rules = [
         'protocolo' => 'required|string|max:255',
@@ -66,6 +68,7 @@ class ConfirmarVenda extends Component
             }
         }
 
+        $this->sincronizarPrecosComCarrinho();
         $this->sincronizarValorVendaComCarrinho();
     }
 
@@ -100,6 +103,7 @@ class ConfirmarVenda extends Component
         }
 
         session(['carrinho' => $carrinho]);
+        $this->sincronizarPrecosComCarrinho();
         $this->sincronizarValorVendaComCarrinho();
 
         $this->dispatch('toast', [
@@ -120,6 +124,7 @@ class ConfirmarVenda extends Component
                 unset($carrinho[$produtoId]);
             }
             session(['carrinho' => $carrinho]);
+            $this->sincronizarPrecosComCarrinho();
             $this->sincronizarValorVendaComCarrinho();
 
             $this->dispatch('toast', [
@@ -180,6 +185,43 @@ class ConfirmarVenda extends Component
     private function totalItensCarrinho(array $carrinho): float
     {
         return (float) collect($carrinho)->sum(fn($item) => ((float) $item['quantidade']) * ((float) $item['preco_unitario']));
+    }
+
+    private function sincronizarPrecosComCarrinho(): void
+    {
+        $carrinho = session('carrinho', []);
+        $idsCarrinho = collect($carrinho)->keys()->map(fn($id) => (string) $id)->all();
+
+        foreach ($carrinho as $produtoId => $item) {
+            $key = (string) $produtoId;
+            if (!array_key_exists($key, $this->preco_unitario)) {
+                $this->preco_unitario[$key] = (float) ($item['preco_unitario'] ?? 0);
+            }
+            if (!array_key_exists($key, $this->atualizar_preco_base)) {
+                $this->atualizar_preco_base[$key] = false;
+            }
+        }
+
+        foreach (array_keys($this->preco_unitario) as $key) {
+            if (!in_array((string) $key, $idsCarrinho, true)) {
+                unset($this->preco_unitario[$key], $this->atualizar_preco_base[$key]);
+            }
+        }
+    }
+
+    private function aplicarPrecosEditadosNoCarrinho(): array
+    {
+        $carrinho = session('carrinho', []);
+
+        foreach ($carrinho as $produtoId => $item) {
+            $key = (string) $produtoId;
+            $novoPreco = max(0, (float) ($this->preco_unitario[$key] ?? $item['preco_unitario'] ?? 0));
+            $this->preco_unitario[$key] = $novoPreco;
+            $carrinho[$produtoId]['preco_unitario'] = $novoPreco;
+        }
+
+        session(['carrinho' => $carrinho]);
+        return $carrinho;
     }
 
     private function sincronizarValorVendaComCarrinho(): void
@@ -247,10 +289,23 @@ class ConfirmarVenda extends Component
         }
     }
 
+    public function updatedPrecoUnitario($value, $key): void
+    {
+        $preco = max(0, (float) ($value ?? 0));
+        $this->preco_unitario[(string) $key] = $preco;
+
+        $carrinho = session('carrinho', []);
+        if (isset($carrinho[$key])) {
+            $carrinho[$key]['preco_unitario'] = $preco;
+            session(['carrinho' => $carrinho]);
+            $this->sincronizarValorVendaComCarrinho();
+        }
+    }
+
     public function confirmar()
     {
         // $this->validate();
-        $carrinho = session('carrinho', []);
+        $carrinho = $this->aplicarPrecosEditadosNoCarrinho();
 
         if (empty($carrinho)) {
             return $this->dispatch('toast', ['type' => 'error', 'message' => 'Carrinho está vazio.']);
@@ -350,6 +405,14 @@ class ConfirmarVenda extends Component
                     'valor_total' => $item['preco_unitario'] * $item['quantidade'],
                 ]);
 
+                $key = (string) $produto->id;
+                if (!empty($this->atualizar_preco_base[$key])) {
+                    $produto->update([
+                        'valor_venda' => $item['preco_unitario'],
+                        'preco' => $item['preco_unitario'],
+                    ]);
+                }
+
                 if ($precisaAprovacao) {
                     continue;
                 }
@@ -405,6 +468,7 @@ class ConfirmarVenda extends Component
 
     public function render()
     {
+        $this->sincronizarPrecosComCarrinho();
         $this->sincronizarValorVendaComCarrinho();
 
         $carrinho = session('carrinho', []);

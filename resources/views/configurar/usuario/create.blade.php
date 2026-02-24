@@ -44,10 +44,12 @@
             <div class="form-group">
                 <label for="perfil">Perfil</label>
                 <select name="perfil" class="form-control @error('perfil') is-invalid @enderror" required>
-                    <option value="admin" {{ old('perfil') == 'admin' ? 'selected' : '' }}>Admin</option>
-                    <option value="operador" {{ old('perfil') == 'operador' ? 'selected' : '' }}>Operador</option>
-                    <option value="gerente" {{ old('perfil') == 'gerente' ? 'selected' : '' }}>Gerente</option>
-                    <option value="vendedor" {{ old('perfil') == 'vendedor' ? 'selected' : '' }}>Vendedor</option>
+                    <option value="">Selecione</option>
+                    @foreach (($perfis ?? []) as $perfil)
+                        <option value="{{ $perfil->slug }}" {{ old('perfil') == $perfil->slug ? 'selected' : '' }}>
+                            {{ $perfil->nome }}
+                        </option>
+                    @endforeach
                 </select>
                 @error('perfil')
                     <span class="text-danger">{{ $message }}</span>
