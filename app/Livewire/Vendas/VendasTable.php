@@ -87,7 +87,7 @@ class VendasTable extends DataTableComponent
                             'permitir' => true,
                         ],
                     ];
-                    if (optional(auth()->user())->isAdmin()) {
+                    if (optional(auth()->user())->temFuncionalidade('vendas-nota-emissao')) {
                         $custonComponents[] = [
                             'title' => 'Emitir nota',
                             'componente' => 'vendas.emitir-nota',
