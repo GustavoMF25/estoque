@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Empresa;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
@@ -22,11 +23,25 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if (app()->runningInConsole()) {
+
+        $this->ajustarDriverSessaoDuranteInstalacao();    
+    }
+
+    private function ajustarDriverSessaoDuranteInstalacao(): void
+    {
+        if (Config::get('session.driver') !== 'database') {
             return;
         }
-        if (Schema::hasTable('empresas')) {
+
+        $tabelaSessao = (string) Config::get('session.table', 'sessions');
+
+        try {
+            if (!Schema::hasTable($tabelaSessao)) {
+                Config::set('session.driver', 'file');
+            }
             View::share('empresa', Empresa::first());
+        } catch (\Throwable) {
+            Config::set('session.driver', 'file');
         }
     }
 }

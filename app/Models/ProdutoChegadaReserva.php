@@ -22,8 +22,4 @@ class ProdutoChegadaReserva extends Model
         return $this->belongsTo(ProdutoChegada::class, 'produto_chegada_id');
     }
 
-    public function vendaItem()
-    {
-        return $this->belongsTo(VendaItem::class, 'venda_item_id');
-    }
 }

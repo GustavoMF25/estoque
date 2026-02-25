@@ -39,16 +39,6 @@ class ProdutosUnidades extends Model
         return $this->hasMany(Movimentacao::class, 'produto_id', 'produto_id');
     }
 
-    public function vendaItens()
-    {
-        return $this->belongsToMany(
-            \App\Models\VendaItem::class,
-            'venda_item_unidades',
-            'produto_unidade_id',
-            'venda_item_id'
-        );
-    }
-
     /**
      * 🧮 Escopo: unidades disponíveis
      */

@@ -31,4 +31,8 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'gestao_sistemas' => [
+        'api_url' => env('GESTAO_SISTEMAS_API_URL', 'http://127.0.0.1:8096/api'),
+    ],
+
 ];

@@ -7,17 +7,11 @@ use Illuminate\Database\Seeder;
 
 class PerfilSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
         $perfis = [
-            ['nome' => 'Administrador', 'slug' => 'admin', 'descricao' => 'Acesso total ao sistema', 'ativo' => true],
-            ['nome' => 'Gerente', 'slug' => 'gerente', 'descricao' => 'Gestão operacional e comercial', 'ativo' => true],
-            ['nome' => 'Operador', 'slug' => 'operador', 'descricao' => 'Operação de estoque e vendas', 'ativo' => true],
-            ['nome' => 'Vendedor', 'slug' => 'vendedor', 'descricao' => 'Operação de vendas', 'ativo' => true],
-            ['nome' => 'Escritório', 'slug' => 'escritorio', 'descricao' => 'Emissão de nota e gestão de produtos', 'ativo' => true],
+            ['nome' => 'Administrador', 'slug' => 'admin', 'descricao' => 'Acesso total ao Lite de estoque', 'ativo' => true],
+            ['nome' => 'Operador de Estoque', 'slug' => 'operador', 'descricao' => 'Operação diária de estoque', 'ativo' => true],
         ];
 
         foreach ($perfis as $perfil) {

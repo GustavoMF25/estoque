@@ -75,11 +75,6 @@ class User extends Authenticatable
         return $this->perfil === 'operador';
     }
 
-    public function isVendedor()
-    {
-        return $this->perfil === 'vendedor';
-    }
-
     public function loja()
     {
         return $this->belongsTo(Loja::class);
@@ -88,32 +83,5 @@ class User extends Authenticatable
     public function perfilInfo()
     {
         return $this->belongsTo(Perfil::class, 'perfil', 'slug');
-    }
-
-    public function funcionalidades()
-    {
-        return $this->belongsToMany(
-            Funcionalidade::class,
-            'perfil_funcionalidade',
-            'perfil',
-            'funcionalidade_id',
-            'perfil',
-            'id'
-        );
-    }
-
-    public function temFuncionalidade(string $slug): bool
-    {
-        if (!$this->perfil) {
-            return false;
-        }
-
-        return Funcionalidade::query()
-            ->where('slug', $slug)
-            ->where('ativo', true)
-            ->whereHas('perfis', function ($query) {
-                $query->where('perfil_funcionalidade.perfil', $this->perfil);
-            })
-            ->exists();
     }
 }
