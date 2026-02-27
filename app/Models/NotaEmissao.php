@@ -24,6 +24,7 @@ class NotaEmissao extends Model
         'bairro',
         'cidade',
         'estado',
+        'observacao',
         'conteudo_frente',
         'conteudo_verso',
     ];

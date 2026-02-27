@@ -32,6 +32,7 @@ class EmitirNota extends Component
     public $bairro;
     public $cidade;
     public $estado;
+    public $observacao;
 
     public $previewFrente = '';
     public $previewVerso = '';
@@ -141,7 +142,26 @@ class EmitirNota extends Component
             '{{valor_total}}' => e(FormatHelper::brl($this->venda->valor_total)),
             '{{valor_final}}' => e(FormatHelper::brl($this->venda->valor_final ?? $this->venda->valor_total)),
             '{{data}}' => e(now()->format('d/m/Y')),
+            '{{observacao}}' => e($this->observacao ?? ''),
             '{{itens_tabela}}' => $this->montarTabelaItens(),
+        ];
+    }
+
+    protected function dadosNotaConteudo(): array
+    {
+        return [
+            'cliente_nome' => $this->cliente_nome,
+            'cliente_documento' => $this->cliente_documento,
+            'cliente_email' => $this->cliente_email,
+            'cliente_telefone' => $this->cliente_telefone,
+            'cep' => $this->cep,
+            'rua' => $this->rua,
+            'numero' => $this->numero,
+            'complemento' => $this->complemento,
+            'bairro' => $this->bairro,
+            'cidade' => $this->cidade,
+            'estado' => $this->estado,
+            'observacao' => $this->observacao,
         ];
     }
 
@@ -161,7 +181,10 @@ class EmitirNota extends Component
 
         $this->modeloIcone = $modelo->icone ?? '';
         $this->previewFrente = $this->renderTemplate($modelo->conteudo_frente);
-        $this->previewVerso = view('vendas.nota._conteudo', ['venda' => $this->venda])->render();
+        $this->previewVerso = view('vendas.nota._conteudo', [
+            'venda' => $this->venda,
+            'dadosNota' => $this->dadosNotaConteudo(),
+        ])->render();
     }
 
     public function emitir()
@@ -172,6 +195,7 @@ class EmitirNota extends Component
             'cliente_documento' => 'nullable|string|max:255',
             'cliente_email' => 'nullable|email|max:255',
             'cliente_telefone' => 'nullable|string|max:50',
+            'observacao' => 'nullable|string|max:1000',
         ]);
 
         return DB::transaction(function () {
@@ -236,8 +260,12 @@ class EmitirNota extends Component
                 'bairro' => $this->bairro,
                 'cidade' => $this->cidade,
                 'estado' => $this->estado,
+                'observacao' => $this->observacao,
                 'conteudo_frente' => $this->renderTemplate($modelo->conteudo_frente),
-                'conteudo_verso' => view('vendas.nota._conteudo', ['venda' => $this->venda])->render(),
+                'conteudo_verso' => view('vendas.nota._conteudo', [
+                    'venda' => $this->venda,
+                    'dadosNota' => $this->dadosNotaConteudo(),
+                ])->render(),
             ]);
 
             return $this->redirect(route('vendas.nota.editavel', [

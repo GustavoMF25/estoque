@@ -1,5 +1,7 @@
 <div class="container">
     @php
+        $dadosNota = $dadosNota ?? [];
+
         $itensCount = $venda->itens->count();
         $linhasExtras = max(0, 15 - $itensCount);
         $emitente = $venda->loja ?? $empresa;
@@ -25,8 +27,22 @@
             $logoData = base64_encode(Storage::disk('public')->get($logoFile));
             $logoSrc = 'data:image/' . $logoExt . ';base64,' . $logoData;
         }
+
+        $enderecoPadrao = optional(optional($venda->cliente)->enderecoPadrao);
+        $clienteNome = $dadosNota['cliente_nome'] ?? ($venda->cliente->nome ?? '-');
+        $clienteDocumento = $dadosNota['cliente_documento'] ?? ($venda->cliente->documento ?? '-');
+        $clienteTelefone = $dadosNota['cliente_telefone'] ?? ($venda->cliente->telefone ?? '-');
+        $clienteEmail = $dadosNota['cliente_email'] ?? ($venda->cliente->email ?? '-');
+        $rua = $dadosNota['rua'] ?? ($enderecoPadrao->rua ?? '');
+        $numero = $dadosNota['numero'] ?? ($enderecoPadrao->numero ?? '');
+        $complemento = $dadosNota['complemento'] ?? ($enderecoPadrao->complemento ?? '');
+        $bairro = $dadosNota['bairro'] ?? ($enderecoPadrao->bairro ?? '');
+        $cidade = $dadosNota['cidade'] ?? ($enderecoPadrao->cidade ?? '');
+        $estado = $dadosNota['estado'] ?? ($enderecoPadrao->estado ?? '');
+        $cep = $dadosNota['cep'] ?? ($enderecoPadrao->cep ?? '');
+        $observacaoNota = trim((string) ($dadosNota['observacao'] ?? ''));
     @endphp
-    {{-- Cabeçalho --}}
+    {{-- CabeÃ§alho --}}
     <div class="header">
         <table style="width: 100%; border-bottom: 1px solid #000; margin-bottom: 5px;">
             <tr>
@@ -36,7 +52,7 @@
                     @endif
                 </td>
                 <td style="width: 80%; text-align: right; font-size: 12px;">
-                    <strong style="font-size: 14px;">{{ strtoupper($emitente->nome ?? 'LOJA NÃO INFORMADA') }}</strong><br>
+                    <strong style="font-size: 14px;">{{ strtoupper($emitente->nome ?? 'LOJA NÃƒO INFORMADA') }}</strong><br>
                     Razão Social: {{ $emitente->razao_social ?? '-' }}<br>
                     CNPJ: {{ $emitente->cnpj ?? '-' }}<br>
                     {{ $emitente->endereco ?? '-' }}<br>
@@ -55,27 +71,28 @@
         <small>Pedido: {{ $venda->protocolo }} | Data: {{ $venda->created_at->format('d/m/Y') }}</small>
     </div>
 
-    {{-- Destinatário --}}
+    {{-- Destinatario --}}
     <div class="secao">
         <div class="secao-titulo">DESTINATÁRIO</div>
         <table>
             <tr>
-                <td><strong>Nome/Razão Social:</strong> {{ $venda->cliente->nome ?? '-' }}</td>
-                <td><strong>CPF/CNPJ:</strong> {{ $venda->cliente->documento ?? '-' }}</td>
+                <td><strong>Nome/Razão Social:</strong> {{ $clienteNome }}</td>
+                <td><strong>CPF/CNPJ:</strong> {{ $clienteDocumento }}</td>
             </tr>
             <tr>
                 <td colspan="2"><strong>Endereço:</strong>
-                    {{ optional(optional($venda->cliente)->enderecoPadrao)->rua ?? '' }},
-                    {{ optional(optional($venda->cliente)->enderecoPadrao)->numero ?? '' }}
-                    {{ optional(optional($venda->cliente)->enderecoPadrao)->bairro ? '- ' . optional(optional($venda->cliente)->enderecoPadrao)->bairro : '' }},
-                    {{ optional(optional($venda->cliente)->enderecoPadrao)->cidade ?? '' }}/{{ optional(optional($venda->cliente)->enderecoPadrao)->estado ?? '' }}
-                    {{ optional(optional($venda->cliente)->enderecoPadrao)->cep ? '- CEP ' . optional(optional($venda->cliente)->enderecoPadrao)->cep : '' }}
+                    {{ $rua }},
+                    {{ $numero }}
+                    @if (!empty($complemento)) - Compl.: {{ $complemento }} @endif
+                    @if (!empty($bairro)) - {{ $bairro }} @endif,
+                    {{ $cidade }}/{{ $estado }}
+                    @if (!empty($cep)) - CEP {{ $cep }} @endif
                 </td>
             </tr>
 
             <tr>
-                <td><strong>Telefone:</strong> {{ $venda->cliente->telefone ?? '-' }}</td>
-                <td><strong>Email:</strong> {{ $venda->cliente->email ?? '-' }}</td>
+                <td><strong>Telefone:</strong> {{ $clienteTelefone }}</td>
+                <td><strong>Email:</strong> {{ $clienteEmail }}</td>
             </tr>
         </table>
     </div>
@@ -173,7 +190,9 @@
         <div class="secao-titulo">OBSERVAÇÕES</div>
         <table>
             <tr>
-                <td style="height: 80px;"></td>
+                <td style="height: 80px;">
+                    {!! $observacaoNota !== '' ? nl2br(e($observacaoNota)) : '-' !!}
+                </td>
             </tr>
         </table>
     </div>

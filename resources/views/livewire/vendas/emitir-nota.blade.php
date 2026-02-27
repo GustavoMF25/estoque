@@ -7,7 +7,7 @@
         </li>
         <li class="nav-item">
             <a class="nav-link" id="tab-preview" data-toggle="tab" href="#preview" role="tab">
-                Pré-visualização
+                Pre-visualizacao
             </a>
         </li>
     </ul>
@@ -29,12 +29,12 @@
                     <div class="form-check mb-2">
                         <input class="form-check-input" type="checkbox" id="apenas_verso" wire:model="apenas_verso">
                         <label class="form-check-label" for="apenas_verso">
-                            Imprimir apenas a segunda página (verso)
+                            Imprimir apenas a segunda pagina (verso)
                         </label>
                     </div>
                     @if ($modeloIcone)
                         <div class="mb-2 text-muted">
-                            <i class="{{ $modeloIcone }}"></i> Ícone do modelo
+                            <i class="{{ $modeloIcone }}"></i> Icone do modelo
                         </div>
                     @endif
                 </div>
@@ -68,7 +68,7 @@
             </div>
 
             <hr>
-            <h6>Endereço</h6>
+            <h6>Endereco</h6>
             <div class="row">
                 <div class="col-md-4">
                     <div class="form-group">
@@ -89,7 +89,7 @@
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label>Número</label>
+                        <label>Numero</label>
                         <input type="text" class="form-control" wire:model.defer="numero" id="nota_numero">
                     </div>
                 </div>
@@ -118,16 +118,26 @@
                     </div>
                 </div>
             </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Observacao da nota</label>
+                        <textarea class="form-control" wire:model.defer="observacao" rows="3" maxlength="1000"></textarea>
+                        @error('observacao') <small class="text-danger">{{ $message }}</small> @enderror
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="tab-pane fade" id="preview" role="tabpanel">
             <div class="border rounded p-2 bg-light">
-                <div class="mb-2 text-muted">Pré-visualização (Frente)</div>
+                <div class="mb-2 text-muted">Pre-visualizacao (Frente)</div>
                 <div class="p-2 bg-white rounded" style="min-height: 200px;">
                     {!! $previewFrente !!}
                 </div>
                 <hr>
-                <div class="mb-2 text-muted">Pré-visualização (Verso)</div>
+                <div class="mb-2 text-muted">Pre-visualizacao (Verso)</div>
                 <div class="p-2 bg-white rounded" style="min-height: 200px;">
                     {!! $previewVerso !!}
                 </div>
