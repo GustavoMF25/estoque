@@ -1,6 +1,6 @@
 @php
     $canEdit = !empty($edit) && ((!empty($edit) && auth()->user()->perfil === 'admin') || $edit['permitir']);
-    $hasDropdown = !empty($show) || !empty($custonComponents) || !empty($custonComponent) || !empty($remove) || !empty($restore) || !empty($pdf);
+    $hasDropdown = !empty($show) || !empty($custonComponents) || !empty($custonComponent) || !empty($remove) || !empty($restore) || !empty($pdf) || !empty($linkActions) || !empty($postActions);
 @endphp
 
 <div class="btn-group btn-group-sm" role="group">
@@ -97,6 +97,41 @@
                             <i class="fas fa-trash-alt mr-2"></i>Excluir
                         </button>
                     </form>
+                @endif
+
+                @if (!empty($linkActions) && is_array($linkActions))
+                    @foreach ($linkActions as $action)
+                        @php
+                            $permitir = $action['permitir'] ?? true;
+                        @endphp
+                        @if ($permitir)
+                            <a href="{{ $action['route'] }}" class="dropdown-item {{ $action['class'] ?? '' }}">
+                                <i class="{{ $action['icon'] ?? 'fas fa-link' }} mr-2"></i>{{ $action['title'] ?? 'Ação' }}
+                            </a>
+                        @endif
+                    @endforeach
+                @endif
+
+                @if (!empty($postActions) && is_array($postActions))
+                    @foreach ($postActions as $action)
+                        @php
+                            $permitir = $action['permitir'] ?? true;
+                            $method = strtoupper($action['method'] ?? 'POST');
+                            $confirm = $action['confirm'] ?? null;
+                        @endphp
+                        @if ($permitir)
+                            <form action="{{ $action['route'] }}" method="POST"
+                                @if ($confirm) onsubmit="return confirm('{{ $confirm }}')" @endif>
+                                @csrf
+                                @if ($method !== 'POST')
+                                    @method($method)
+                                @endif
+                                <button type="submit" class="dropdown-item {{ $action['class'] ?? '' }}">
+                                    <i class="{{ $action['icon'] ?? 'fas fa-check' }} mr-2"></i>{{ $action['title'] ?? 'Executar' }}
+                                </button>
+                            </form>
+                        @endif
+                    @endforeach
                 @endif
 
                 @if (!empty($restore))

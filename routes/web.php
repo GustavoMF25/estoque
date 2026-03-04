@@ -64,6 +64,8 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
     Route::get('estoque-a-chegar', [ProdutoChegadaController::class, 'index'])->name('produto-chegadas.index');
     Route::middleware('perfil:admin,operador')->group(function () {
         Route::post('estoque-a-chegar', [ProdutoChegadaController::class, 'store'])->name('produto-chegadas.store');
+        Route::get('estoque-a-chegar/{produtoChegada}/editar', [ProdutoChegadaController::class, 'edit'])->name('produto-chegadas.edit');
+        Route::put('estoque-a-chegar/{produtoChegada}', [ProdutoChegadaController::class, 'update'])->name('produto-chegadas.update');
         Route::post('estoque-a-chegar/{produtoChegada}/receber', [ProdutoChegadaController::class, 'receber'])->name('produto-chegadas.receber');
         Route::post('estoque-a-chegar/{produtoChegada}/cancelar', [ProdutoChegadaController::class, 'cancelar'])->name('produto-chegadas.cancelar');
     });
