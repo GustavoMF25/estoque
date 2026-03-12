@@ -47,6 +47,8 @@ class ProdutoChegadaTable extends DataTableComponent
             Column::make('Previsão', 'previsao_chegada')
                 ->format(fn ($value) => $value ? $value->format('d/m/Y') : '-')
                 ->sortable(fn (Builder $query, string $direction) => $query->orderBy('produto_chegadas.previsao_chegada', $direction)),
+             Column::make('Observação', 'observacao')
+                ->format(fn ($value) => $value ?? '-'),
             Column::make('Status', 'status')
                 ->format(function ($value) {
                     if ($value === 'aberto') {

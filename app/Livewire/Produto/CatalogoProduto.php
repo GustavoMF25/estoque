@@ -15,6 +15,7 @@ class CatalogoProduto extends Component
     public $search = '';
     public $perPage = 8;
     public array $quantidades = [];
+    public array $chegadasAbertasAbertas = [];
 
 
     protected $queryString = ['search'];
@@ -22,6 +23,12 @@ class CatalogoProduto extends Component
     public function updatingSearch()
     {
         $this->resetPage();
+    }
+
+    public function toggleChegadas(int $produtoId): void
+    {
+        $aberto = (bool) ($this->chegadasAbertasAbertas[$produtoId] ?? false);
+        $this->chegadasAbertasAbertas[$produtoId] = ! $aberto;
     }
 
     public function adicionarCarrinho($produtoId)
@@ -74,6 +81,19 @@ class CatalogoProduto extends Component
     public function render()
     {
         $products = Produto::query()
+            ->with([
+                'chegadasAbertas' => fn($q) => $q
+                    ->select([
+                        'id',
+                        'produto_id',
+                        'quantidade_total',
+                        'quantidade_comprometida',
+                        'previsao_chegada',
+                    ])
+                    ->whereColumn('quantidade_comprometida', '<', 'quantidade_total')
+                    ->orderByRaw('previsao_chegada IS NULL')
+                    ->orderBy('previsao_chegada'),
+            ])
             ->withCount([
                 'unidades as disponiveis_count' => fn($q) => $q->where('status', 'disponivel'),
             ])
@@ -96,6 +116,17 @@ class CatalogoProduto extends Component
                 0,
                 (int) ($product->a_chegar_total ?? 0) - (int) ($product->a_chegar_comprometida_total ?? 0)
             );
+
+            $product->chegadas_abertas_catalogo = $product->chegadasAbertas
+                ->map(function ($chegada) {
+                    return [
+                        'quantidade_disponivel' => (int) $chegada->quantidade_disponivel,
+                        'previsao_chegada' => $chegada->previsao_chegada,
+                    ];
+                })
+                ->filter(fn($chegada) => $chegada['quantidade_disponivel'] > 0)
+                ->values();
+
             $product->a_chegar_disponivel_count = $aChegarDisponivel;
             $product->disponivel_para_venda_count = (int) $product->disponiveis_count + $aChegarDisponivel;
 

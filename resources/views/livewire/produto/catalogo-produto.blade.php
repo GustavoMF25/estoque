@@ -35,6 +35,38 @@
                             </small>
                         </div>
 
+                        @if (($product->chegadas_abertas_catalogo ?? collect())->isNotEmpty())
+                            <div class="mb-3">
+                                @php($chegadasAbertas = (bool) ($chegadasAbertasAbertas[$product->id] ?? false))
+                                <div class="card card-outline card-warning mb-0">
+                                    <div class="card-header p-2">
+                                        <button class="btn btn-block text-left text-white font-weight-bold p-0"
+                                            type="button"
+                                            wire:click="toggleChegadas({{ $product->id }})"
+                                            aria-expanded="{{ $chegadasAbertas ? 'true' : 'false' }}">
+                                            Próximos recebimentos
+                                            <span class="float-right">
+                                                <i class="fas fa-chevron-{{ $chegadasAbertas ? 'up' : 'down' }}"></i>
+                                            </span>
+                                        </button>
+                                    </div>
+                                    @if ($chegadasAbertas)
+                                        <ul class="list-group list-group-flush">
+                                            @foreach ($product->chegadas_abertas_catalogo as $chegada)
+                                                <li class="list-group-item py-2 px-3">
+                                                    <div><b>Quantidade:</b> {{ $chegada['quantidade_disponivel'] }}</div>
+                                                    <div>
+                                                        <b>Previsão:</b>
+                                                        {{ $chegada['previsao_chegada']?->format('d/m/Y') ?? 'Sem previsão' }}
+                                                    </div>
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    @endif
+                                </div>
+                            </div>
+                        @endif
+
                         <p><b>Valor de venda: </b> {{ App\Helpers\FormatHelper::brl($product->valor_venda ?? $product->preco) }}</p>
                         <p></p>
 
