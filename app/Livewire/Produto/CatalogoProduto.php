@@ -80,6 +80,12 @@ class CatalogoProduto extends Component
 
     public function render()
     {
+        $produtoIdsComChegadasAbertas = collect($this->chegadasAbertasAbertas)
+            ->filter()
+            ->keys()
+            ->map(fn($id) => (int) $id)
+            ->all();
+
         $products = Produto::query()
             ->with([
                 'chegadasAbertas' => fn($q) => $q
@@ -90,6 +96,11 @@ class CatalogoProduto extends Component
                         'quantidade_comprometida',
                         'previsao_chegada',
                     ])
+                    ->when(
+                        empty($produtoIdsComChegadasAbertas),
+                        fn($query) => $query->whereRaw('1 = 0'),
+                        fn($query) => $query->whereIn('produto_id', $produtoIdsComChegadasAbertas)
+                    )
                     ->whereColumn('quantidade_comprometida', '<', 'quantidade_total')
                     ->orderByRaw('previsao_chegada IS NULL')
                     ->orderBy('previsao_chegada'),

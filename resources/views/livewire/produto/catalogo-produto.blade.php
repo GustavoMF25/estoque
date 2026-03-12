@@ -1,6 +1,6 @@
 <div class="content mx-5">
     <h1>Catálogo de Produtos</h1>
-    <div wire:poll.2s.keep-alive>
+    <div wire:poll.15s.visible.keep-alive>
         <input type="text" wire:model.debounce.500ms="search" placeholder="Buscar produto..."
             class="form-control mb-3" />
         <div wire:loading wire:target="search" class="text-muted mt-2">
@@ -35,7 +35,7 @@
                             </small>
                         </div>
 
-                        @if (($product->chegadas_abertas_catalogo ?? collect())->isNotEmpty())
+                        @if (($product->a_chegar_disponivel_count ?? 0) > 0)
                             <div class="mb-3">
                                 @php($chegadasAbertas = (bool) ($chegadasAbertasAbertas[$product->id] ?? false))
                                 <div class="card card-outline card-warning mb-0">
@@ -52,7 +52,7 @@
                                     </div>
                                     @if ($chegadasAbertas)
                                         <ul class="list-group list-group-flush">
-                                            @foreach ($product->chegadas_abertas_catalogo as $chegada)
+                                            @foreach (($product->chegadas_abertas_catalogo ?? collect()) as $chegada)
                                                 <li class="list-group-item py-2 px-3">
                                                     <div><b>Quantidade:</b> {{ $chegada['quantidade_disponivel'] }}</div>
                                                     <div>
