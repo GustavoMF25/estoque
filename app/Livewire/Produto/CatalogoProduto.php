@@ -80,6 +80,8 @@ class CatalogoProduto extends Component
 
     public function render()
     {
+        $search = trim((string) $this->search);
+
         $produtoIdsComChegadasAbertas = collect($this->chegadasAbertasAbertas)
             ->filter()
             ->keys()
@@ -115,7 +117,10 @@ class CatalogoProduto extends Component
                 'chegadasAbertas as a_chegar_comprometida_total' => fn($q) => $q,
             ], 'quantidade_comprometida')
             ->Ativo()
-            ->where('nome', 'like', '%' . $this->search . '%')
+            ->when(
+                $search !== '',
+                fn($query) => $query->where('nome', 'like', '%' . $search . '%')
+            )
             ->where(function ($query) {
                 $query->whereHas('unidades', fn($q) => $q->where('status', 'disponivel'))
                     ->orWhereHas('chegadasAbertas', fn($q) => $q->whereColumn('quantidade_comprometida', '<', 'quantidade_total'));

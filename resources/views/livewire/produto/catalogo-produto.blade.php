@@ -1,7 +1,7 @@
 <div class="content mx-5">
     <h1>Catálogo de Produtos</h1>
     <div wire:poll.15s.visible.keep-alive>
-        <input type="text" wire:model.debounce.500ms="search" placeholder="Buscar produto..."
+        <input type="text" wire:model.live.debounce.700ms="search" placeholder="Buscar produto..."
             class="form-control mb-3" />
         <div wire:loading wire:target="search" class="text-muted mt-2">
             <div class="spinner-border spinner-border-sm text-primary" role="status">
