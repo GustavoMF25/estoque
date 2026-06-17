@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Loja;
 use App\Models\Perfil;
 use App\Models\User;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema;
 
 class UsuarioController extends Controller
 {
@@ -62,13 +65,65 @@ class UsuarioController extends Controller
     {
         try {
             $user = User::findOrFail($id);
+
+            if ($this->usuarioPossuiVinculos($user)) {
+                return $this->desativarUsuarioComVinculos($user);
+            }
+
             $user->delete();
 
             return redirect()->route('usuarios.index')
                 ->with('success', 'Usuário excluído com sucesso!');
+        } catch (QueryException $e) {
+            if ($this->isViolacaoChaveEstrangeira($e) && isset($user)) {
+                return $this->desativarUsuarioComVinculos($user);
+            }
+
+            return redirect()->route('usuarios.index')
+                ->with('error', 'Erro ao excluir o usuário: ' . $e->getMessage());
         } catch (\Exception $e) {
             return redirect()->route('usuarios.index')
                 ->with('error', 'Erro ao excluir o usuário: ' . $e->getMessage());
         }
+    }
+
+    private function usuarioPossuiVinculos(User $user): bool
+    {
+        $tabelas = [
+            'movimentacoes',
+            'vendas',
+            'nota_emissoes',
+            'notificacoes',
+            'audit_logs',
+            'teams',
+            'team_user',
+        ];
+
+        foreach ($tabelas as $tabela) {
+            if (
+                Schema::hasTable($tabela)
+                && Schema::hasColumn($tabela, 'user_id')
+                && DB::table($tabela)->where('user_id', $user->id)->exists()
+            ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function desativarUsuarioComVinculos(User $user)
+    {
+        if ($user->status !== 'inativo') {
+            $user->forceFill(['status' => 'inativo'])->save();
+        }
+
+        return redirect()->route('usuarios.index')
+            ->with('success', 'Usuário possui vínculos no sistema e foi desativado em vez de excluído.');
+    }
+
+    private function isViolacaoChaveEstrangeira(QueryException $e): bool
+    {
+        return in_array($e->getCode(), ['23000', '23503'], true);
     }
 }
